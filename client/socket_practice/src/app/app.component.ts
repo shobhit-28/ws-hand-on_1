@@ -1,12 +1,13 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { CommonModule } from '@angular/common';
+import { NavBarComponent } from './Components/nav-bar/nav-bar.component';
+import { AuthPageComponent } from './Pages/auth-page/auth-page.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [MatSlideToggleModule, CommonModule],
+  imports: [CommonModule, NavBarComponent, RouterOutlet, AuthPageComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })

@@ -1,0 +1,65 @@
+<div class="flex">
+    <div class="p-4 basis-[70%] h-screen bg-stone-900 rounded-r-[100px]">
+        <div class="flex justify-center items-center text-stone-200 mt-4 mb-8">
+            <h1>Welcome back</h1>
+        </div>
+        <div class="flex justify-center items-center">
+            <div class="w-[80%]">
+                <img src="assets/auth/undraw_sign-in_uva0.svg" alt="welcome">
+            </div>
+        </div>
+    </div>
+    <div class="basis-[30%] inner-radius">
+        <div class="p-4 h-screen flex justify-center items-center">
+            <div class="w-11/12">
+                <form [formGroup]="authForm" (ngSubmit)="login()">
+                    <div class="example-form">
+                        @for (item of formFields; track $index) {
+                        @switch (item.type) {
+                        @case ('mail') {
+                        <mat-form-field class="w-full" appearance="fill">
+                            <mat-label>{{item.displayName}}</mat-label>
+                            <input [required]="item.isMandatory" type="text" matInput
+                                [formControlName]="item.controlName" [placeholder]="item.placeHolder">
+                            @if (authForm.controls[item.controlName].hasError('invalidEmail') &&
+                            !authForm.controls[item.controlName].hasError('invalidFormat') &&
+                            !authForm.controls[item.controlName].hasError('required')) {
+                            <mat-error>{{ authForm.value[item.controlName] }} is not a valid email</mat-error>
+                            }
+                            @if (authForm.controls[item.controlName].hasError('invalidFormat') &&
+                            !authForm.controls[item.controlName].hasError('required')) {
+                            <mat-error>{{ authForm.value[item.controlName] }} is not a valid {{ item.displayName
+                                }}</mat-error>
+                            }
+                            @if (authForm.controls[item.controlName].hasError('required')) {
+                            <mat-error class="text-red-900">{{ item.displayName }} is <strong>required</strong></mat-error>
+                            }
+                        </mat-form-field>
+                        }
+                        @case ('password') {
+                        <mat-form-field class="w-full" appearance="fill">
+                            <mat-label>{{item.displayName}}</mat-label>
+                            <input [required]="item.isMandatory" type="password" matInput
+                                [formControlName]="item.controlName" [placeholder]="item.placeHolder">
+                            @if (authForm.controls[item.controlName].hasError('invalidFormat') &&
+                            !authForm.controls[item.controlName].hasError('required')) {
+                            <mat-error>{{ authForm.value[item.controlName] }} is not a valid {{ item.displayName
+                                }}</mat-error>
+                            }
+                            @if (authForm.controls[item.controlName].hasError('required')) {
+                            <mat-error>{{ item.displayName }} is <strong>required</strong></mat-error>
+                            }
+                        </mat-form-field>
+                        }
+                        }
+                        }
+                    </div>
+                    <button mat-flat-button
+                        class="my-4 rounded-md border-2 border-[#4c5554] py-2 w-full">Submit</button>
+                    <div class="flex gap-2">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
