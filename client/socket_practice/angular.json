@@ -8,7 +8,7 @@
       "schematics": {},
       "root": "",
       "sourceRoot": "src",
-      "prefix": "app",
+      "prefix": "raj-chat",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:application",
