@@ -10,7 +10,7 @@
         </div>
     </div>
     <div class="basis-[30%] inner-radius">
-      @if (authForm && formFields.length) {
+        @if (authForm && formFields.length) {
         <div class="p-4 h-screen flex justify-center items-center">
             <div class="w-11/12">
                 <form [formGroup]="authForm" (ngSubmit)="login()">
@@ -33,7 +33,8 @@
                                 }}</mat-error>
                             }
                             @if (authForm.controls[item.controlName].hasError('required')) {
-                            <mat-error class="text-red-900">{{ item.displayName }} is <strong>required</strong></mat-error>
+                            <mat-error>{{ item.displayName }} is
+                                <strong>required</strong></mat-error>
                             }
                         </mat-form-field>
                         }
@@ -61,13 +62,13 @@
                     </div>
                 </form>
                 <p class="text-center">
-                  {{ currForm === 'sign_in' ? "Don't have an account?" : "Already have an account" }}
-                  <span (click)="switchForm()" class="cursor-pointer text-sky-600 font-bold">
-                    {{ currForm === 'sign_in' ? 'Sign Up' : 'Sign In' }}
-                  </span>
+                    {{ currForm === 'sign_in' ? "Don't have an account?" : "Already have an account" }}
+                    <span (click)="switchForm()" class="cursor-pointer text-sky-600 font-bold">
+                        {{ currForm === 'sign_in' ? 'Sign Up' : 'Sign In' }}
+                    </span>
                 </p>
             </div>
         </div>
-      }
+        }
     </div>
 </div>

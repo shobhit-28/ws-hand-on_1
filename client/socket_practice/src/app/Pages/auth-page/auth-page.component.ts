@@ -31,22 +31,21 @@ export class AuthPageComponent implements OnInit {
 
   constructor(
     private authService: AuthServiceService,
-    private fb: FormBuilderService
+    private fb: FormBuilderService,
   ) { }
 
   async ngOnInit(): Promise<void> {
     this.formFields = this.authService.getFormFields(this.currForm)
     this.authForm = await this.fb.createForms(this.formFields, false)
-
-    console.log(this.authForm)
   }
 
   public switchForm = async () => {
-    this.authForm.reset()
-    console.log(this.authForm)
-    // this.formFields = this.authService.getFormFields(this.formKeysSwitch[this.currForm])
-    // this.authForm = await this.fb.createForms(this.formFields, false)
-    // this.currForm = this.formKeysSwitch[this.currForm]
+    this.formFields = new Array()
+    setTimeout(async () => {
+      this.formFields = this.authService.getFormFields(this.formKeysSwitch[this.currForm])
+      this.authForm = await this.fb.createForms(this.formFields, false)
+      this.currForm = this.formKeysSwitch[this.currForm]
+    })
   }
 
   public login() {
