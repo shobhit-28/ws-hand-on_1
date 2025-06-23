@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { formField } from '../../../DTO/formFields.dto';
 
-type authFormFieldsType = {
+export type authFormFieldsType = {
   sign_in: Array<formField>,
   sign_up: Array<formField>
 }
@@ -34,7 +34,39 @@ export class AuthServiceService {
         updateOn: 'change'
       },
     ],
-    sign_up: []
+    sign_up: [
+      {
+        controlName: "email",
+        displayName: "Email",
+        placeHolder: 'Please enter your email here',
+        type: 'mail',
+        isRegex: true,
+        isMandatory: true,
+        disable: false,
+        updateOn: 'change',
+        regexExp: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+      },
+      {
+        controlName: "password",
+        displayName: "Password",
+        placeHolder: 'Please enter your password here',
+        type: 'password',
+        isRegex: false,
+        isMandatory: true,
+        disable: false,
+        updateOn: 'change'
+      },
+      {
+        controlName: "password",
+        displayName: "Confirm Password",
+        placeHolder: 'Confirm Password',
+        type: 'password',
+        isRegex: false,
+        isMandatory: true,
+        disable: false,
+        updateOn: 'change'
+      },
+    ]
   }
 
   public getFormFields = (key: keyof authFormFieldsType): Array<formField> => this.authFormFields[key]

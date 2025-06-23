@@ -4,12 +4,13 @@
             <h1>Welcome back</h1>
         </div>
         <div class="flex justify-center items-center">
-            <div class="w-[80%]">
+            <div class="w-[70%]">
                 <img src="assets/auth/undraw_sign-in_uva0.svg" alt="welcome">
             </div>
         </div>
     </div>
     <div class="basis-[30%] inner-radius">
+      @if (authForm && formFields.length) {
         <div class="p-4 h-screen flex justify-center items-center">
             <div class="w-11/12">
                 <form [formGroup]="authForm" (ngSubmit)="login()">
@@ -59,7 +60,14 @@
                     <div class="flex gap-2">
                     </div>
                 </form>
+                <p class="text-center">
+                  {{ currForm === 'sign_in' ? "Don't have an account?" : "Already have an account" }}
+                  <span (click)="switchForm()" class="cursor-pointer text-sky-600 font-bold">
+                    {{ currForm === 'sign_in' ? 'Sign Up' : 'Sign In' }}
+                  </span>
+                </p>
             </div>
         </div>
+      }
     </div>
 </div>

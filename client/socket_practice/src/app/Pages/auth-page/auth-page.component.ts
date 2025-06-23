@@ -4,7 +4,7 @@ import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { formField } from '../../DTO/formFields.dto';
-import { AuthServiceService } from './auth-service/auth-service.service';
+import { authFormFieldsType, AuthServiceService } from './auth-service/auth-service.service';
 import { FormBuilderService } from '../../services/form-builder/form-builder.service';
 
 @Component({
@@ -23,6 +23,11 @@ export class AuthPageComponent implements OnInit {
 
   authForm!: FormGroup
   formFields: Array<formField> = new Array();
+  currForm: keyof authFormFieldsType = 'sign_in'
+  formKeysSwitch: { [k: string]: keyof authFormFieldsType } = {
+    sign_in: 'sign_up',
+    sign_up: 'sign_in'
+  }
 
   constructor(
     private authService: AuthServiceService,
@@ -30,13 +35,23 @@ export class AuthPageComponent implements OnInit {
   ) { }
 
   async ngOnInit(): Promise<void> {
-    this.formFields = this.authService.getFormFields('sign_in')
+    this.formFields = this.authService.getFormFields(this.currForm)
     this.authForm = await this.fb.createForms(this.formFields, false)
 
     console.log(this.authForm)
   }
 
-  public login() {
+  public switchForm = async () => {
+    this.authForm.reset()
+    console.log(this.authForm)
+    // this.formFields = this.authService.getFormFields(this.formKeysSwitch[this.currForm])
+    // this.authForm = await this.fb.createForms(this.formFields, false)
+    // this.currForm = this.formKeysSwitch[this.currForm]
+  }
 
+  public login() {
+    if (this.authForm.valid) {
+      console.log(this.authForm.getRawValue())
+    }
   }
 }
