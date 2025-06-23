@@ -57,7 +57,7 @@ export class AuthServiceService {
         updateOn: 'change'
       },
       {
-        controlName: "password",
+        controlName: "confirm_password",
         displayName: "Confirm Password",
         placeHolder: 'Confirm Password',
         type: 'password',
