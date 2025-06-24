@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -32,6 +32,7 @@ export class AuthPageComponent implements OnInit {
   constructor(
     private authService: AuthServiceService,
     private fb: FormBuilderService,
+    private cd: ChangeDetectorRef
   ) { }
 
   async ngOnInit(): Promise<void> {
@@ -41,11 +42,10 @@ export class AuthPageComponent implements OnInit {
 
   public switchForm = async () => {
     this.formFields = new Array()
-    setTimeout(async () => {
-      this.formFields = this.authService.getFormFields(this.formKeysSwitch[this.currForm])
-      this.authForm = await this.fb.createForms(this.formFields, false)
-      this.currForm = this.formKeysSwitch[this.currForm]
-    })
+    this.cd.detectChanges()
+    this.formFields = this.authService.getFormFields(this.formKeysSwitch[this.currForm])
+    this.authForm = await this.fb.createForms(this.formFields, false)
+    this.currForm = this.formKeysSwitch[this.currForm]
   }
 
   public login() {

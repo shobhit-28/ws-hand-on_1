@@ -1,39 +1,21 @@
-<mat-sidenav-container class="sidenav-container">
-  <mat-sidenav #drawer class="sidenav" fixedInViewport
-      [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
-      [mode]="(isHandset$ | async) ? 'over' : 'side'"
-      [opened]="(isHandset$ | async) === false">
-    <mat-toolbar>Menu</mat-toolbar>
-    <mat-nav-list>
-      <a mat-list-item routerLink="">Home</a>
-      <!-- @if (isLoggedIn()) {
-        <a  mat-list-item routerLink="/rooms">Rooms</a>
-        <a mat-list-item routerLink="/comments">Comments</a>
-
-      } @else {
-        <a mat-list-item routerLink="/auth">Signin</a>
-      } -->
-      <!-- <a mat-list-item routerLink="/booking">Booking</a> -->
-    </mat-nav-list>
-  </mat-sidenav>
-  <mat-sidenav-content>
-    <mat-toolbar color="">
-      @if (isHandset$ | async) {
-        <button
-          type="button"
-          aria-label="Toggle sidenav"
-          mat-icon-button
-          (click)="drawer.toggle()">
-          <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
-        </button>
-      }
-      <div class="flex justify-between w-full">
-        <span>Angular for Beginners Course</span>
-        <!-- <span>Hotel Inventory App</span> -->
-        <a href="https://www.youtube.com/watch?v=3qBXWUpoPHo" target="_blank">Go to course</a>
+<div class="page mt-[10.5vh]">
+  <div class="pr-2 bg-slate-900 fixed w-full opacity-95 top-0 z-50">
+    <div class="w-full flex justify-between items-center">
+      <div class="flex justify-center items-center cursor-pointer">
+        <div class="w-16">
+          <img src="assets/app/logo.svg" alt="" srcset="">
+        </div>
+        <div class="">
+          <p class="!m-0 !-ml-3 text-slate-50 text-xl cursive-font">R-Chat</p>
+        </div>
       </div>
-    </mat-toolbar>
-    <router-outlet></router-outlet>
-    <!-- Add Content Here -->
-  </mat-sidenav-content>
-</mat-sidenav-container>
+      <div class="text-slate-50 flex gap-5">
+        <a mat-list-item routerLink="">Home</a>
+        <a mat-list-item routerLink="/auth">Auth</a>
+        <button><mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="search"></mat-icon></button>
+        <button><mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="logout"></mat-icon></button>
+      </div>
+    </div>
+  </div>
+  <router-outlet></router-outlet>
+</div>

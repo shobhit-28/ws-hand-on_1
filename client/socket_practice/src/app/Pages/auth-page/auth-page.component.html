@@ -1,17 +1,17 @@
 <div class="flex">
-    <div class="p-4 basis-[70%] h-screen bg-stone-900 rounded-r-[100px]">
+    <div class="p-4 basis-[70%] page bg-stone-900 rounded-r-[100px]">
         <div class="flex justify-center items-center text-stone-200 mt-4 mb-8">
-            <h1>Welcome back</h1>
+            <p class="cursive-font text-5xl">Welcome Back</p>
         </div>
         <div class="flex justify-center items-center">
-            <div class="w-[70%]">
+            <div class="w-[50%]">
                 <img src="assets/auth/undraw_sign-in_uva0.svg" alt="welcome">
             </div>
         </div>
     </div>
-    <div class="basis-[30%] inner-radius">
+    <div class="basis-[30%]">
         @if (authForm && formFields.length) {
-        <div class="p-4 h-screen flex justify-center items-center">
+        <div class="p-4 page flex justify-center items-center">
             <div class="w-11/12">
                 <form [formGroup]="authForm" (ngSubmit)="login()">
                     <div class="example-form">

@@ -7,46 +7,54 @@
 /* @import "tailwindcss"; */
 
 * {
-    padding: 0;
-    margin: 0;
-    box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
 }
 
 ::selection {
-    color: white;
-    background: #212A3E;
+  color: white;
+  background: #212A3E;
 }
 
 body {
-    font-family: 'Montserrat', sans-serif;
+  font-family: 'Montserrat', sans-serif;
 }
 
 ::-webkit-scrollbar {
-    width: 5px;
+  width: 5px;
 }
 
 ::-webkit-scrollbar-thumb {
-    background-color: rgba(0, 0, 0, 0.4);
-    border-radius: 10px;
+  background-color: rgba(0, 0, 0, 0.4);
+  border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
 img {
-    width: 100%;
+  width: 100%;
 }
 
 button {
-    transition: 0.5s;
+  transition: 0.5s;
 }
 
 button:active {
-    transform: scale(0.9);
+  transform: scale(0.9);
 }
 
 html {
-    font-size: 100%;
-    scroll-behavior: smooth;
+  font-size: 100%;
+  scroll-behavior: smooth;
+}
+
+.page {
+  height: 89.5vh;
+}
+
+.cursive-font {
+  font-family: 'Pacifico', cursive;
 }

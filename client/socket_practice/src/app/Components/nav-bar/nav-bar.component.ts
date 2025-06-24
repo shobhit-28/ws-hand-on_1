@@ -8,6 +8,8 @@ import { RouterModule, RouterOutlet } from '@angular/router';
 import { AsyncPipe } from '@angular/common';
 import { map, Observable, shareReplay } from 'rxjs';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { AppComponent } from "../../app.component";
+import { HomeComponent } from '../../Pages/home/home.component';
 
 @Component({
   selector: 'raj-chat-nav-bar',
@@ -20,8 +22,10 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
     MatIconModule,
     RouterOutlet,
     RouterModule,
-    AsyncPipe
-  ],
+    AsyncPipe,
+    AppComponent,
+    HomeComponent
+],
   templateUrl: './nav-bar.component.html',
   styleUrl: './nav-bar.component.css'
 })
