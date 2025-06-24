@@ -7,6 +7,16 @@ const generateToken = (user) => {
 
 const testEmail = (emailStr) => /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(emailStr)
 
+const getCookieConfig = (maxAge = null) => {
+    const config = {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'strict',
+        maxAge
+    }
+    return maxAge !== null ? { ...config, maxAge } : config
+}
+
 export const signup = async (req, res) => {
     console.log('first')
     try {
@@ -18,13 +28,20 @@ export const signup = async (req, res) => {
                 const user = new authModel({ name, email, password });
                 await user.save();
                 const token = generateToken(user)
-                res.status(201).json({
-                    token, user: {
+                res.status(201)
+                    .cookie('token', token, getCookieConfig(24 * 60 * 60 * 1000))
+                    .cookie('user', JSON.stringify({
                         name: user?.name,
-                        email: user?.email,
-                        _id: user?._id
-                    }
-                })
+                        email: user?.email
+                    }), getCookieConfig())
+                    .json({
+                        token,
+                        user: {
+                            name: user?.name,
+                            email: user?.email,
+                            _id: user?._id
+                        }
+                    })
             }
         } else {
             res.status(400).json({ error: `Invalid Email` })
@@ -50,12 +67,21 @@ export const login = async (req, res) => {
                 res.status(401).json({ error: `Incorrect Password` })
             }
             const token = generateToken(user)
-            res.status(200).json({
-                token, user: {
+            console.log(user)
+            res.status(200)
+                .cookie('token', token, getCookieConfig(24 * 60 * 60 * 1000))
+                .cookie('user', JSON.stringify({
                     name: user?.name,
-                    _id: user?._id
-                }
-            })
+                    email: user?.email
+                }), getCookieConfig())
+                .json({
+                    token,
+                    user: {
+                        name: user?.name,
+                        email: user?.email,
+                        _id: user?._id
+                    }
+                })
         } else {
             res.status(400).json({ error: `Invalid Email` })
         }
@@ -63,4 +89,8 @@ export const login = async (req, res) => {
         console.error(error)
         res.status(400).json({ error: error.message })
     }
+}
+
+export const backendCheck = async (req, res) => {
+    res.status(200).json({ message: 'Hello from backend' })
 }

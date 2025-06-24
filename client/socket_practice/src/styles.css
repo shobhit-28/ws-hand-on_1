@@ -58,3 +58,7 @@ html {
 .cursive-font {
   font-family: 'Pacifico', cursive;
 }
+
+p {
+  margin: 0 !important;
+}

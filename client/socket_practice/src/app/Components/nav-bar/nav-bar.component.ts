@@ -10,6 +10,7 @@ import { map, Observable, shareReplay } from 'rxjs';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { AppComponent } from "../../app.component";
 import { HomeComponent } from '../../Pages/home/home.component';
+import { RouterModuleComponent } from '../router-module/router-module.component';
 
 @Component({
   selector: 'raj-chat-nav-bar',
@@ -24,7 +25,8 @@ import { HomeComponent } from '../../Pages/home/home.component';
     RouterModule,
     AsyncPipe,
     AppComponent,
-    HomeComponent
+    HomeComponent,
+    RouterModuleComponent
 ],
   templateUrl: './nav-bar.component.html',
   styleUrl: './nav-bar.component.css'

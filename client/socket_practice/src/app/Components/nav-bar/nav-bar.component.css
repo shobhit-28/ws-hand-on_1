@@ -16,6 +16,10 @@
     z-index: 1;
 }
 
+.box-shadow {
+    box-shadow: rgba(0, 0, 0, 0.5) 1px 1px 10px;
+}
+
 ::ng-deep mat-sidenav {
   border-radius: 0 !important;
 }

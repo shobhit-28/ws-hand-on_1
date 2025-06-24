@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { formField } from '../../../DTO/formFields.dto';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { loginPayload, loginResponse, signupPayload, signupResponse } from '../../../DTO/auth.dto';
 
 export type authFormFieldsType = {
   sign_in: Array<formField>,
@@ -36,6 +38,16 @@ export class AuthServiceService {
     ],
     sign_up: [
       {
+        controlName: "name",
+        displayName: "Name",
+        placeHolder: 'Please enter your name here',
+        type: 'string',
+        isRegex: false,
+        isMandatory: true,
+        disable: false,
+        updateOn: 'change'
+      },
+      {
         controlName: "email",
         displayName: "Email",
         placeHolder: 'Please enter your email here',
@@ -57,7 +69,7 @@ export class AuthServiceService {
         updateOn: 'change'
       },
       {
-        controlName: "confirm_password",
+        controlName: "confirmPassword",
         displayName: "Confirm Password",
         placeHolder: 'Confirm Password',
         type: 'password',
@@ -67,6 +79,36 @@ export class AuthServiceService {
         updateOn: 'change'
       },
     ]
+  }
+
+  constructor(
+    private http: HttpClient
+  ) { }
+
+  public login(payload: loginPayload): Promise<loginResponse> {
+    return new Promise<loginResponse>((resolve, reject) => {
+      this.http.post<loginResponse>('/rchat/auth/login', payload).subscribe({
+        next: (response: loginResponse) => {
+          resolve(response)
+        },
+        error: (error: HttpErrorResponse) => {
+          reject(error)
+        }
+      })
+    })
+  }
+
+  public signup(payload: signupPayload): Promise<signupResponse> {
+    return new Promise<signupResponse>((resolve, reject) => {
+      this.http.post<signupResponse>('/rchat/auth/signup', payload).subscribe({
+        next: (response: signupResponse) => {
+          resolve(response)
+        },
+        error: (error: HttpErrorResponse) => {
+          reject(error)
+        }
+      })
+    })
   }
 
   public getFormFields = (key: keyof authFormFieldsType): Array<formField> => this.authFormFields[key]

@@ -6,6 +6,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { formField } from '../../DTO/formFields.dto';
 import { authFormFieldsType, AuthServiceService } from './auth-service/auth-service.service';
 import { FormBuilderService } from '../../services/form-builder/form-builder.service';
+import { HttpClient } from '@angular/common/http';
+import { loginPayload, signupPayload } from '../../DTO/auth.dto';
 
 @Component({
   selector: 'raj-chat-auth-page',
@@ -32,7 +34,8 @@ export class AuthPageComponent implements OnInit {
   constructor(
     private authService: AuthServiceService,
     private fb: FormBuilderService,
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+    private http: HttpClient
   ) { }
 
   async ngOnInit(): Promise<void> {
@@ -48,9 +51,26 @@ export class AuthPageComponent implements OnInit {
     this.currForm = this.formKeysSwitch[this.currForm]
   }
 
-  public login() {
+  public authBtnClicked() {
+    // this.callTestApi()
     if (this.authForm.valid) {
-      console.log(this.authForm.getRawValue())
+      if (this.currForm === 'sign_in') {
+        this.login(this.authForm.getRawValue())
+      } else {
+        this.signup(this.authForm.getRawValue())
+      }
     }
+  }
+
+  private async login(formValue: loginPayload) {
+    console.log(await this.authService.login(formValue))
+  }
+
+  private async signup(formValue: signupPayload) {
+    console.log(await this.authService.signup(formValue))
+  }
+
+  private callTestApi() {
+    this.http.get('/rchat/auth/test').subscribe((res) => console.log(res))
   }
 }

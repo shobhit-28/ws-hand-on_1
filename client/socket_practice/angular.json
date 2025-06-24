@@ -29,7 +29,8 @@
             ],
             "styles": [
               "@angular/material/prebuilt-themes/cyan-orange.css",
-              "src/styles.css"
+              "src/styles.css",
+              "src/output.css"
             ],
             "scripts": [],
             "server": "src/main.server.ts",
@@ -69,7 +70,8 @@
               "buildTarget": "socket_practice:build:production"
             },
             "development": {
-              "buildTarget": "socket_practice:build:development"
+              "buildTarget": "socket_practice:build:development",
+              "proxyConfig": "proxy.conf.json"
             }
           },
           "defaultConfiguration": "development"

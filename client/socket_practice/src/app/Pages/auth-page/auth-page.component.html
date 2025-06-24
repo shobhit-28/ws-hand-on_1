@@ -13,14 +13,14 @@
         @if (authForm && formFields.length) {
         <div class="p-4 page flex justify-center items-center">
             <div class="w-11/12">
-                <form [formGroup]="authForm" (ngSubmit)="login()">
+                <form [formGroup]="authForm" (ngSubmit)="authBtnClicked()">
                     <div class="example-form">
                         @for (item of formFields; track $index) {
                         @switch (item.type) {
                         @case ('mail') {
                         <mat-form-field class="w-full" appearance="fill">
                             <mat-label>{{item.displayName}}</mat-label>
-                            <input [required]="item.isMandatory" type="text" matInput
+                            <input [required]="item.isMandatory" type="text" matInput autocomplete="email"
                                 [formControlName]="item.controlName" [placeholder]="item.placeHolder">
                             @if (authForm.controls[item.controlName].hasError('invalidEmail') &&
                             !authForm.controls[item.controlName].hasError('invalidFormat') &&
@@ -41,7 +41,22 @@
                         @case ('password') {
                         <mat-form-field class="w-full" appearance="fill">
                             <mat-label>{{item.displayName}}</mat-label>
-                            <input [required]="item.isMandatory" type="password" matInput
+                            <input [required]="item.isMandatory" type="password" matInput autocomplete="current-password"
+                                [formControlName]="item.controlName" [placeholder]="item.placeHolder">
+                            @if (authForm.controls[item.controlName].hasError('invalidFormat') &&
+                            !authForm.controls[item.controlName].hasError('required')) {
+                            <mat-error>{{ authForm.value[item.controlName] }} is not a valid {{ item.displayName
+                                }}</mat-error>
+                            }
+                            @if (authForm.controls[item.controlName].hasError('required')) {
+                            <mat-error>{{ item.displayName }} is <strong>required</strong></mat-error>
+                            }
+                        </mat-form-field>
+                        }
+                        @case ('string') {
+                        <mat-form-field class="w-full" appearance="fill">
+                            <mat-label>{{item.displayName}}</mat-label>
+                            <input [required]="item.isMandatory" type="string" matInput autocomplete="name"
                                 [formControlName]="item.controlName" [placeholder]="item.placeHolder">
                             @if (authForm.controls[item.controlName].hasError('invalidFormat') &&
                             !authForm.controls[item.controlName].hasError('required')) {
