@@ -1,0 +1,23 @@
+<div class="page w-full flex flex-col justify-between items-end">
+  @if (routes.length) {
+  <div class="flex flex-col gap-8 py-8 w-2/4">
+    @for (item of routes; track $index) {
+    <a [routerLink]="item?.path" class="flex items-center gap-4 text-xl cursive-font">
+      <mat-icon aria-hidden="false" [fontIcon]="item.icon"></mat-icon>
+      <span class="">{{item?.name}}</span>
+    </a>
+    }
+  </div>
+  }
+  <div class="w-2/4">
+    <div class="py-8 flex gap-2">
+      <div class="rounded-full border w-12 h-12">
+        <img src="/assets/profile/empty_profile_male.svg" alt="" srcset="">
+      </div>
+      <div class="flex flex-col">
+        <p class="cursive-font">{{userDetails.userName}}</p>
+        <p class="text-sm italic opacity-80">{{userDetails.userEmail}}</p>
+      </div>
+    </div>
+  </div>
+</div>
