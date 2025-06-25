@@ -55,6 +55,11 @@ html {
   height: 89.5vh;
 }
 
+.sub-page {
+  height: 89.5vh;
+  width: 100%;
+}
+
 .cursive-font {
   font-family: 'Pacifico', cursive;
 }

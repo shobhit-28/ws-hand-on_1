@@ -15,7 +15,7 @@ import { MatIconModule } from '@angular/material/icon';
 })
 export class SubRouterComponent {
   routes = Object.freeze([
-    { path: '', name: 'Home', icon: 'home' },
+    { path: '/explore', name: 'Explore', icon: 'explore' },
     { path: '/auth', name: 'Chat', icon: 'chat' }
   ]);
 
