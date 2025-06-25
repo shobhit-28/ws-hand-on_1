@@ -3,6 +3,7 @@ import { RouterModuleComponent } from './Components/router-module/router-module.
 import { loginCanMatchGuard } from './guards/authGuard/canMatchGuard/login-can-match.guard';
 import { loginCanActivateGuard } from './guards/authGuard/canActivateGuard/login-can-activate.guard';
 import { AuthPageComponent } from './Pages/auth-page/auth-page.component';
+import { signOutGuardGuard } from './guards/authGuard/signOutGuard/sign-out-guard.guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'rc', pathMatch: 'full' },
@@ -36,8 +37,6 @@ export const routes: Routes = [
   {
     path: 'auth',
     component: AuthPageComponent,
-    // loadComponent: () => import('./Pages/auth-page/auth-page.component').then((m) => m.AuthPageComponent),
-    // canActivate: [loginCanActivateGuard],
-    // data: { isAuth: true }
+    canActivate: [signOutGuardGuard]
   }
 ];
