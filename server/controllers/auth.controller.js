@@ -9,8 +9,8 @@ const testEmail = (emailStr) => /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}
 
 const getCookieConfig = (maxAge = null) => {
     const config = {
-        httpOnly: true,
-        secure: true,
+        httpOnly: process.env.NODE_ENV === 'production',
+        secure: process.env.NODE_ENV === 'production',
         sameSite: 'strict',
         maxAge
     }

@@ -24,17 +24,16 @@ import { AuthService } from '../../services/auth/auth.service';
     MatIconModule,
     RouterOutlet,
     RouterModule,
-    AsyncPipe,
-    AppComponent,
-    HomeComponent,
-    RouterModuleComponent
+    // AsyncPipe,
+    // AppComponent,
+    // HomeComponent,
+    // RouterModuleComponent
 ],
   templateUrl: './nav-bar.component.html',
   styleUrl: './nav-bar.component.css'
 })
 export class NavBarComponent {
   private breakpointObserver = inject(BreakpointObserver);
-
   private authService = inject(AuthService)
 
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
@@ -44,4 +43,6 @@ export class NavBarComponent {
     );
 
   isLoggedIn = () => this.authService.isLoggedIn()
+
+  logout = () => this.authService.setIsLoggedIn(false)
 }

@@ -8,6 +8,7 @@ import { authFormFieldsType, AuthServiceService } from './auth-service/auth-serv
 import { FormBuilderService } from '../../services/form-builder/form-builder.service';
 import { HttpClient } from '@angular/common/http';
 import { loginPayload, signupPayload } from '../../DTO/auth.dto';
+import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
   selector: 'raj-chat-auth-page',
@@ -35,7 +36,8 @@ export class AuthPageComponent implements OnInit {
     private authService: AuthServiceService,
     private fb: FormBuilderService,
     private cd: ChangeDetectorRef,
-    private http: HttpClient
+    private http: HttpClient,
+    private authCentralService: AuthService
   ) { }
 
   async ngOnInit(): Promise<void> {
@@ -53,6 +55,7 @@ export class AuthPageComponent implements OnInit {
 
   public authBtnClicked() {
     // this.callTestApi()
+    this.authCentralService.setIsLoggedIn(true)
     if (this.authForm.valid) {
       if (this.currForm === 'sign_in') {
         this.login(this.authForm.getRawValue())
