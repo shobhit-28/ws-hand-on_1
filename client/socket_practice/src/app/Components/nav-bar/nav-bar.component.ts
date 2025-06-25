@@ -11,6 +11,7 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { AppComponent } from "../../app.component";
 import { HomeComponent } from '../../Pages/home/home.component';
 import { RouterModuleComponent } from '../router-module/router-module.component';
+import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
   selector: 'raj-chat-nav-bar',
@@ -34,9 +35,13 @@ import { RouterModuleComponent } from '../router-module/router-module.component'
 export class NavBarComponent {
   private breakpointObserver = inject(BreakpointObserver);
 
+  private authService = inject(AuthService)
+
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
     .pipe(
       map(result => result.matches),
       shareReplay()
     );
+
+  isLoggedIn = () => this.authService.isLoggedIn()
 }
