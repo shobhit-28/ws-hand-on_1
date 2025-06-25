@@ -2,7 +2,8 @@
   @if (routes.length) {
   <div class="flex flex-col gap-8 py-8 w-2/4">
     @for (item of routes; track $index) {
-    <a [routerLink]="item?.path" class="flex items-center gap-4 text-xl cursive-font">
+    <a [routerLink]="[{ outlets: { sideBar: item.path } }]"
+      class="flex items-center gap-4 text-xl cursive-font">
       <mat-icon aria-hidden="false" [fontIcon]="item.icon"></mat-icon>
       <span class="">{{item?.name}}</span>
     </a>
