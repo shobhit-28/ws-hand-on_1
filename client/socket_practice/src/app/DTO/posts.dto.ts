@@ -71,6 +71,17 @@ export const posts = [
             },
             content: "Thanks",
           },
+          {
+            _id: "2",
+            user: {
+              _id: "4",
+              firstName: "Saurabh",
+              lastName: "Kumar",
+              username: "saurabh",
+              profile_pic: "https://res.cloudinary.com/randomwave45/image/upload/v1650022195/saitama_isaxm6.jpg",
+            },
+            content: "Yeah!",
+          },
         ],
         createdAt: Date.now(),
         updatedAt: Date.now(),

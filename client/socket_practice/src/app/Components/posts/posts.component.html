@@ -1,6 +1,6 @@
 @if (postsData.length) {
 <div class="w-full overflow-hidden px-32 py-4 flex flex-col gap-6">
-  @for (post of postsData; track $index) {
+  @for (post of postsData; track post._id) {
   <div
     class="border rounded-xl overflow-hidden flex flex-col gap-2 py-2 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] duration-700 hover:shadow-[rgba(0,_0,_0,_0.5)_0px_8px_18px]">
     <div class="px-2 flex justify-between items-center">
@@ -30,7 +30,7 @@
           class="text-red-700"></mat-icon>
         {{post.likes.likeCount}}
       </button>
-      <button class="flex items-center gap-1" (click)="expandColumn($index)">
+      <button class="flex items-center gap-1" (click)="expandColumn(post._id)">
         <mat-icon aria-hidden="false" fontIcon="comment"></mat-icon>
         {{post.comments.length}}
       </button>
@@ -38,64 +38,86 @@
         <mat-icon aria-hidden="false" fontIcon="share"></mat-icon>
       </button>
     </div>
-    @if (expandedPost === $index) {
-    <div class="px-2">
+    @if (expandedPost === post._id) {
+    <hr class="mx-4 my-1">
+    <div class="px-2 flex flex-col gap-2">
       @for (comment of post.comments; track comment._id) {
-      <div class="flex gap-2">
-        <div
-          class="flex items-center justify-center border-0 rounded-full h-[2rem] min-w-[2rem] w-[2rem] overflow-hidden ">
-          <img class="w-full h-full object-cover" [src]="comment.user.profile_pic" alt="" srcset="">
-        </div>
-        <div class="flex flex-col w-full">
-          <span class="text-xs flex items-center justify-between">
-            <span class="flex items-center gap-2">
-              <span class="italic">{{"@"+comment.user.username}}</span>
-              <span class="opacity-90">{{timeAgo(comment.updatedAt)}}</span>
-            </span>
-            @if (isMyComment(comment.user)) {
-            <button class="border-2 box-border py-[0.1rem] px-1 italic text-xs rounded">Delete</button>
-            }
-          </span>
-          <p class="text-sm">{{comment.content}}</p>
-          <div class="text-[0.7rem] flex gap-2">
-            <button>Reply</button>
-            @if (comment.replies.length) {
-            <button (click)="expandReply($index, comment._id)">
-              {{
-              (expandedReplies.postIndex === $index && expandedReplies.commentIndex === comment._id)
-              ? "Hide Replies"
-              : "View Replies"
-              }}
-            </button>
-            }
+      <div class="">
+        <div class="flex gap-2">
+          <div
+            class="flex items-center justify-center border-0 rounded-full h-[2rem] min-w-[2rem] w-[2rem] overflow-hidden ">
+            <img class="w-full h-full object-cover" [src]="comment.user.profile_pic" alt="" srcset="">
           </div>
-          @if (expandedReplies.postIndex === $index && expandedReplies.commentIndex === comment._id) {
-          <div class="">
-            @for (reply of comment.replies; track reply._id) {
-            <div class="flex gap-2">
-              <div
-                class="flex items-center justify-center border-0 rounded-full h-[2rem] min-w-[2rem] w-[2rem] overflow-hidden ">
-                <img class="w-full h-full object-cover" [src]="reply.user.profile_pic" alt="" srcset="">
-              </div>
-              <div class="flex flex-col w-full">
-                <span class="text-xs flex items-center justify-between">
-                  <span class="flex items-center gap-2">
-                    <span class="italic">{{"@"+reply.user.username}}</span>
-                    <!-- <span class="opacity-90">{{timeAgo(reply.updatedAt)}}</span> -->
+          <div class="flex flex-col w-full">
+            <span class="text-xs flex items-center justify-between">
+              <span class="flex items-center gap-2">
+                <span class="italic">{{"@"+comment.user.username}}</span>
+                <span class="opacity-90">{{timeAgo(comment.updatedAt)}}</span>
+              </span>
+              @if (isMyComment(comment.user)) {
+              <button class="border-2 box-border py-[0.1rem] px-1 italic text-xs rounded">Delete</button>
+              }
+            </span>
+            <p class="text-sm">{{comment.content}}</p>
+            <div class="text-[0.7rem] flex gap-2">
+              <button (click)="replyToAComment(post._id, comment._id)">Reply</button>
+              @if (comment.replies.length) {
+              <button (click)="expandReply(post._id, comment._id)">
+                {{
+                (expandedReplies.postIndex === post._id && expandedReplies.commentIndex === comment._id)
+                ? "Hide Replies"
+                : "View Replies"
+                }}
+              </button>
+              }
+            </div>
+            @if (expandedReplies.postIndex === post._id && expandedReplies.commentIndex === comment._id) {
+            <div class="flex flex-col gap-2">
+              @for (reply of comment.replies; track reply._id) {
+              <div class="flex gap-2">
+                <div
+                  class="flex items-center justify-center border-0 rounded-full h-[2rem] min-w-[2rem] w-[2rem] overflow-hidden ">
+                  <img class="w-full h-full object-cover" [src]="reply.user.profile_pic" alt="" srcset="">
+                </div>
+                <div class="flex flex-col w-full">
+                  <span class="text-xs flex items-center justify-between">
+                    <span class="flex items-center gap-2">
+                      <span class="italic">{{"@"+reply.user.username}}</span>
+                      <!-- <span class="opacity-90">{{timeAgo(reply.updatedAt)}}</span> -->
+                    </span>
+                    @if (isMyComment(reply.user)) {
+                    <button class="border-2 box-border py-[0.1rem] px-1 italic text-xs rounded">Delete</button>
+                    }
                   </span>
-                  @if (isMyComment(reply.user)) {
-                  <button class="border-2 box-border py-[0.1rem] px-1 italic text-xs rounded">Delete</button>
-                  }
-                </span>
-                <p class="text-sm">{{reply.content}}</p>
+                  <p class="text-sm">{{reply.content}}</p>
+                </div>
               </div>
+              }
+              <form (ngSubmit)="addReply(replyForm, post._id, comment._id)" #replyForm="ngForm">
+                <div class="border rounded-md flex items-center gap-2 text-xs">
+                  <input #replyInput class="font-sans p-2 border-0 outline-none w-full" type="text" name="Reply"
+                    placeholder="Reply to above comments" [(ngModel)]="commentReplies.reply.reply">
+                  <button class="flex justify-center items-center -mb-[0.4rem]">
+                    <mat-icon class="text-[1rem]" aria-hidden="false" fontIcon="send"></mat-icon>
+                  </button>
+                </div>
+              </form>
             </div>
             }
           </div>
-          }
         </div>
+        <!-- <hr> -->
       </div>
       }
+      <form (ngSubmit)="addComment(commentsForm, post._id)" #commentsForm="ngForm">
+        <div class="border rounded-md flex items-center gap-2 text-xs">
+          <input #commentInput class="font-sans p-2 border-0 outline-none w-full" type="text" name="Comment"
+            placeholder="Comment on this post" [(ngModel)]="commentReplies.comment.comment">
+          <button class="flex justify-center items-center -mb-[0.4rem]">
+            <mat-icon class="text-[1rem]" aria-hidden="false" fontIcon="send"></mat-icon>
+          </button>
+        </div>
+      </form>
     </div>
     }
   </div>

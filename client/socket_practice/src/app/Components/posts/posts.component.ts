@@ -1,5 +1,7 @@
-import { Component, Input } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, Input, ViewChild } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
+import { CoreJsService } from '../../services/coreJs/core-js.service';
+import { FormsModule, NgForm } from '@angular/forms';
 
 type User = {
   _id: string
@@ -48,7 +50,8 @@ type StringNull = string | null
   selector: 'raj-chat-posts',
   standalone: true,
   imports: [
-    MatIconModule
+    MatIconModule,
+    FormsModule
   ],
   templateUrl: './posts.component.html',
   styleUrl: './posts.component.css'
@@ -56,29 +59,70 @@ type StringNull = string | null
 export class PostsComponent {
   @Input() postsData: Array<Post> = new Array()
 
-  expandedPost: NumberNull = null
+  @ViewChild('replyInput') replyInput!: ElementRef<HTMLInputElement>
+  @ViewChild('commentInput') commentInput!: ElementRef<HTMLInputElement>
+
+  constructor(
+    private coreJsService: CoreJsService,
+    private cdr: ChangeDetectorRef
+  ) { }
+
+  expandedPost: StringNull = null
   expandedReplies: {
-    postIndex: NumberNull;
+    postIndex: StringNull;
     commentIndex: StringNull;
   } = {
       postIndex: null,
       commentIndex: null
     }
+  defaultCommentReplyValue: {
+    comment: {
+      postIndex: null,
+      comment: null
+    }, reply: {
+      commentId: null,
+      postIndex: null,
+      reply: null
+    }
+  } = {
+      comment: {
+        postIndex: null,
+        comment: null
+      }, reply: {
+        commentId: null,
+        postIndex: null,
+        reply: null
+      }
+    }
+  commentReplies: {
+    comment: {
+      postIndex: StringNull;
+      comment: StringNull;
+    };
+    reply: {
+      postIndex: StringNull
+      commentId: StringNull;
+      reply: StringNull;
+    }
+  } = this.coreJsService.makeDeepCopy(this.defaultCommentReplyValue)
 
   public parseDate = (dateStr: number): string => new Date(dateStr).toDateString();
 
   public isLikedByUser = (post: Post) => post.likes.likedBy.find((user) => user.username === 'shobhitraj')
 
-  public expandColumn = (index: number) => {
+  public expandColumn = (index: string) => {
     if (index === this.expandedPost) {
       this.expandedPost = null
     } else {
       this.expandedPost = index
+      this.cdr.detectChanges()
+      this.focusOnHtmlComponent(this.commentInput)
     }
     this.expandedReplies = {
       postIndex: null,
       commentIndex: null
     }
+    this.commentReplies = this.coreJsService.makeDeepCopy(this.defaultCommentReplyValue)
   }
 
   timeAgo(ms: number): string {
@@ -102,7 +146,7 @@ export class PostsComponent {
 
   isMyComment = (user: User): boolean => user.username === 'shobhitraj'
 
-  expandReply = (postIndex: number, commentIndex: string): void => {
+  expandReply = (postIndex: string, commentIndex: string): void => {
     if (postIndex === this.expandedReplies.postIndex && commentIndex === this.expandedReplies.commentIndex) {
       this.expandedReplies = {
         postIndex: null,
@@ -112,6 +156,30 @@ export class PostsComponent {
       this.expandedReplies = {
         postIndex, commentIndex
       }
+    }
+    this.commentReplies['reply'] = this.coreJsService.makeDeepCopy(this.defaultCommentReplyValue.reply)
+  }
+
+  replyToAComment = (postIndex: string, commentIndex: string): void => {
+    this.expandReply(postIndex, commentIndex)
+    this.cdr.detectChanges()
+    this.focusOnHtmlComponent(this.replyInput)
+  }
+
+  addComment(formGroup: NgForm, postIndex: string) {
+    console.log(formGroup.value)
+    console.log(postIndex)
+  }
+
+  addReply(formGroup: NgForm, postIndex: string, commentId: string) {
+    console.log(formGroup.value)
+    console.log(postIndex)
+    console.log(commentId)
+  }
+
+  private focusOnHtmlComponent(element: ElementRef<HTMLInputElement>) {
+    if (element) {
+      element.nativeElement.focus()
     }
   }
 }
