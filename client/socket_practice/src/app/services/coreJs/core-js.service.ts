@@ -16,4 +16,19 @@ export class CoreJsService {
         ? { url: true, text: subTxt }
         : { url: false, text: subTxt }
     )
+
+  debounceFunc(func: Function, delay: number) {
+    let timer: any = null;
+    return function (this: any, ...args: Array<any>) {
+      let context = this;
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        func.apply(context, args)
+      }, delay)
+    }
+  }
+
+  truncateText(text: string, maxLen: number): string {
+    return text.length > maxLen ? text.slice(0, maxLen) + "..." : text;
+  }
 }
