@@ -14,9 +14,17 @@
           <span class="text-xs italic opacity-60">{{parseDate(post.createdAt)}}</span>
         </div>
       </div>
+      @if (isMyPost(post.postedBy)) {
+      <div class="">
+        <button class="p-1 rounded-lg">
+          <mat-icon aria-hidden="false" fontIcon="delete"></mat-icon>
+        </button>
+      </div>
+      } @else {
       <div class="">
         <button class="border-2 px-6 py-1 rounded-lg font-medium text-sm">Follow</button>
       </div>
+      }
     </div>
     <div class="px-2">
       <p class="text-sm opacity-80 italic">

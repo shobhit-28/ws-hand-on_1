@@ -190,4 +190,6 @@ export class PostsComponent {
   }
 
   public getUrls = (text: string): Array<{ url: boolean, text: string }> => this.coreJsService.bifurcateTextIntoTextAndUrls(text)
+
+  isMyPost = (post: User): boolean => post.username === 'shobhitraj'
 }
