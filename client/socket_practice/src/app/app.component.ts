@@ -7,7 +7,7 @@ import { AuthPageComponent } from './Pages/auth-page/auth-page.component';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, NavBarComponent, RouterOutlet, AuthPageComponent],
+  imports: [CommonModule, NavBarComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
