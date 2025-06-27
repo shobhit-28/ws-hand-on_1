@@ -1,5 +1,12 @@
 @if (usersList.length) {
-
+<div class="sub-page flex">
+  <div class="basis-[30%] border-r">
+    <raj-chat-connections-list [usersList]="usersList"></raj-chat-connections-list>
+  </div>
+  <div class="flex justify-center items-center basis-[70%]">
+    <p class="">chat here</p>
+  </div>
+</div>
 } @else {
 <div class="flex justify-center items-center text-center font-medium opacity-50 sub-page text-2xl">
   <p class="">No chats yet — go connect with someone!</p>

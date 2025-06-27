@@ -1,10 +1,11 @@
 import { Component, Input } from '@angular/core';
 import { UserDetails } from '../../DTO/users.dto';
+import { ConnectionsListComponent } from "./connections-list/connections-list.component";
 
 @Component({
   selector: 'raj-chat-chat-outlet',
   standalone: true,
-  imports: [],
+  imports: [ConnectionsListComponent],
   templateUrl: './chat-outlet.component.html',
   styleUrl: './chat-outlet.component.css'
 })

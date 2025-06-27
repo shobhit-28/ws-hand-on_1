@@ -1,0 +1,10 @@
+<div class="">
+  <div class="">
+    Search
+  </div>
+  <div class="w-full flex flex-col gap-3 py-3 px-[.15rem]">
+    @for (user of usersList; track $index) {
+    <raj-chat-individual-connection [user]="user"></raj-chat-individual-connection>
+    }
+  </div>
+</div>
