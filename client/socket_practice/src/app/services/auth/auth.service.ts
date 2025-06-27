@@ -14,12 +14,16 @@ export class AuthService {
 
   private isLoggedInFlag!: boolean
 
-  setIsLoggedIn(flag: boolean) {
+  setIsLoggedIn(flag: boolean, isNav?: boolean) {
     this.isLoggedInFlag = flag;
     if (flag) {
-      this.router.navigateByUrl('')
+      if (isNav) {
+        this.router.navigateByUrl('')
+      }
     } else {
-      this.router.navigateByUrl('/auth')
+      if (isNav) {
+        this.router.navigateByUrl('/auth')
+      }
       this.chromeDataTransactionService.clearAllCookies()
     }
   }

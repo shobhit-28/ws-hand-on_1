@@ -1,10 +1,23 @@
 <div class="">
-  <div class="">
-    Search
+  <div class="pt-3 px-1">
+    <input #replyInput class="outline-none border w-full text-sm p-2 rounded-lg" type="text" name="Search"
+      placeholder="Search your mates" [(ngModel)]="connectionFilter">
   </div>
-  <div class="w-full flex flex-col gap-3 py-3 px-[.15rem]">
-    @for (user of usersList; track $index) {
+  @if (usersList.length) {
+  @if (filterConnections(usersList).length) {
+  <div class="w-full flex flex-col gap-3 py-3 px-[.15rem] h-[81vh] overflow-x-auto">
+    @for (user of filterConnections(usersList); track $index) {
     <raj-chat-individual-connection [user]="user"></raj-chat-individual-connection>
     }
   </div>
+  } @else {
+  <div class="w-full flex justify-center items-center h-[50vh] p-4">
+    <p class="opacity-50">Oops! No users match your search.</p>
+  </div>
+  }
+  } @else {
+  <div class="w-full flex justify-center items-center h-[50vh] p-4">
+    <p class="opacity-50">No users found</p>
+  </div>
+  }
 </div>

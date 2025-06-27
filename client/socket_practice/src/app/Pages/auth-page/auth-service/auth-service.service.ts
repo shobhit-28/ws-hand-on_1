@@ -118,11 +118,11 @@ export class AuthServiceService {
   }
 
   private signInFunc() {
-    this.centralAuthService.setIsLoggedIn(true)
+    this.centralAuthService.setIsLoggedIn(true, true)
   }
 
   private signOutFunc() {
-    this.centralAuthService.setIsLoggedIn(false)
+    this.centralAuthService.setIsLoggedIn(false, true)
   }
 
   public getFormFields = (key: keyof authFormFieldsType): Array<formField> => this.authFormFields[key]

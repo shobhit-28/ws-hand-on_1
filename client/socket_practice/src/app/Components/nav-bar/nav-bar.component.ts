@@ -44,5 +44,5 @@ export class NavBarComponent {
 
   isLoggedIn = () => this.authService.isLoggedIn()
 
-  logout = () => this.authService.setIsLoggedIn(false)
+  logout = () => this.authService.setIsLoggedIn(false, true)
 }
