@@ -161,12 +161,17 @@ export class PostsComponent {
   }
 
   replyToAComment = (postIndex: string, commentIndex: string): void => {
-    this.expandReply(postIndex, commentIndex)
+    if (!this.isReplyExpanded(postIndex, commentIndex)) {
+      this.expandReply(postIndex, commentIndex)
+    }
     this.cdr.detectChanges()
     this.focusOnHtmlComponent(this.replyInput)
   }
 
+  isReplyExpanded = (postIndex: string, commentIndex: string) => postIndex === this.expandedReplies.postIndex && commentIndex === this.expandedReplies.commentIndex
+
   addComment(formGroup: NgForm, postIndex: string) {
+    console.log(this.postsData.find(post => post._id === postIndex))
     console.log(formGroup.value)
     console.log(postIndex)
   }
@@ -175,6 +180,7 @@ export class PostsComponent {
     console.log(formGroup.value)
     console.log(postIndex)
     console.log(commentId)
+    console.log(this.postsData.find((post) => post._id === postIndex)?.comments.find((comment) => comment._id === commentId))
   }
 
   private focusOnHtmlComponent(element: ElementRef<HTMLInputElement>) {
@@ -182,4 +188,6 @@ export class PostsComponent {
       element.nativeElement.focus()
     }
   }
+
+  public getUrls = (text: string): Array<{ url: boolean, text: string }> => this.coreJsService.bifurcateTextIntoTextAndUrls(text)
 }

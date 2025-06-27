@@ -19,7 +19,15 @@
       </div>
     </div>
     <div class="px-2">
-      <p class="text-sm opacity-80 italic">{{post.content}}</p>
+      <p class="text-sm opacity-80 italic">
+        @for (item of getUrls(post.content); track $index) {
+        @if (item.url) {
+        <a class="text-cyan-800" [href]="item.text" target="_blank">{{ item.text + " " }}</a>
+        } @else {
+        <span>{{item.text + " "}}</span>
+        }
+        }
+      </p>
     </div>
     <div class="">
       <img [src]="post.pic" alt="">
