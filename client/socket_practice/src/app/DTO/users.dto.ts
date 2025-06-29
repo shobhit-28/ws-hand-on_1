@@ -27,6 +27,23 @@ export type UserDetails = {
   }>;
 }
 
+export const defaultUserDetail: UserDetails = {
+  _id: '',
+  firstName: '',
+  lastName: '',
+  user_email: '',
+  username: '',
+  password: '',
+  createdAt: 0,
+  updatedAt: 0,
+  profile_pic: '',
+  cover_pic: '',
+  link: '',
+  bio: '',
+  followers: new Array(),
+  following: new Array(),
+}
+
 export const usersList: Array<UserDetails> = [
   {
     _id: "1",

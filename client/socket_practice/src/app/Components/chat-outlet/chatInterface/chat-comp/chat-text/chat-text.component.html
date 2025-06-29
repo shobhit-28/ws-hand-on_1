@@ -1,0 +1,9 @@
+<div #chatContainer class="w-full h-[74vh] flex flex-col p-4 gap-4 max-h-[76vh] overflow-y-auto">
+    <div *ngFor="let chat of chats" [ngClass]="{ 
+            'text-stone-800 rounded-br-none bg-stone-300 self-end': !chat.received,
+             'bg-stone-800 rounded-bl-none text-stone-200 self-start': chat.received 
+             }" class="max-w-[60%] rounded-lg p-4 relative break-words inline-block">
+        <div class="text-sm">{{ chat.message }}</div>
+        <div class="text-[.6rem] text-right opacity-60 italic">{{ dateNumToDateStr(chat.timestamp) }}</div>
+    </div>
+</div>

@@ -1,4 +1,5 @@
-<div class="w-full rounded-md cursor-pointer duration-200 hover:bg-slate-200/90 p-[.5rem]" [ngClass]="{'bg-slate-200/90': selectedUser}">
+<div class="w-full rounded-md cursor-pointer duration-200 hover:bg-slate-200/90 p-[.5rem]"
+  [ngClass]="{'bg-slate-200/90': getSelectedUser()._id === user._id}">
   <div class="flex items-center gap-2">
     <div class="flex items-center justify-center border-0 rounded-full h-[3rem] w-[3rem] overflow-hidden ">
       <img class="w-full h-full object-cover" [src]="user.profile_pic" alt="" srcset="">

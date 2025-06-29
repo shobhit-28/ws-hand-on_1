@@ -8,7 +8,8 @@
   <div class="w-full flex flex-col gap-3 py-3 px-[.15rem] h-[81vh] overflow-x-auto">
     @for (user of filterConnections(usersList); track $index) {
     <div (click)="selectUser(user)">
-      <raj-chat-individual-connection [user]="user" [selectedUser]="selectedUser === user._id"></raj-chat-individual-connection>
+      <raj-chat-individual-connection [user]="user"
+        [selectedUser]="getSelectedUser()._id === user._id"></raj-chat-individual-connection>
     </div>
     }
   </div>

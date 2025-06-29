@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { UserDetails } from '../../../DTO/users.dto';
 import { IndividualConnectionComponent } from "./individual-connection/individual-connection.component";
 import { FormsModule } from '@angular/forms';
+import { ChatService } from '../../../services/chat/chat.service';
 
 @Component({
   selector: 'raj-chat-connections-list',
@@ -12,15 +13,14 @@ import { FormsModule } from '@angular/forms';
   ],
   templateUrl: './connections-list.component.html',
   styleUrl: './connections-list.component.css',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  // changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ConnectionsListComponent {
   @Input() usersList!: Array<UserDetails>
 
-  @Output() emitUserId: EventEmitter<UserDetails> = new EventEmitter<UserDetails>()
-
   connectionFilter: string = ''
-  selectedUser: string | null = null
+
+  private chatService = inject(ChatService)
 
   public filterConnections(users: Array<UserDetails>): Array<UserDetails> {
     if (this.connectionFilter === null || this.connectionFilter === '' || this.connectionFilter === undefined) {
@@ -40,7 +40,8 @@ export class ConnectionsListComponent {
   }
 
   public selectUser(user: UserDetails) {
-    this.selectedUser = user._id
-    this.emitUserId.emit(user)
+    this.chatService.setSelectedChat(user)
   }
+
+  public getSelectedUser = (): UserDetails => this.chatService.getSelectedChat()
 }

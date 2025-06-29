@@ -1,7 +1,8 @@
-import { Component, Input } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { UserDetails } from '../../../../DTO/users.dto';
 import { CoreJsService } from '../../../../services/coreJs/core-js.service';
 import { CommonModule } from '@angular/common';
+import { ChatService } from '../../../../services/chat/chat.service';
 
 @Component({
   selector: 'raj-chat-individual-connection',
@@ -14,7 +15,8 @@ import { CommonModule } from '@angular/common';
 })
 export class IndividualConnectionComponent {
   constructor(
-    private coreJsService: CoreJsService
+    private coreJsService: CoreJsService,
+    private chatService: ChatService
   ) {}
 
   @Input() user!: UserDetails
@@ -23,4 +25,6 @@ export class IndividualConnectionComponent {
   add2Str = (str1: string, str2: string) => `${str1} ${str2}`
 
   returnTruncatedStr = (str: string, maxLen: number) => this.coreJsService.truncateText(str, maxLen)
+
+  getSelectedUser = (): UserDetails => this.chatService.getSelectedChat()
 }

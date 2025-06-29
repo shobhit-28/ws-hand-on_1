@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ChatOutletComponent } from "../../Components/chat-outlet/chat-outlet.component";
-import { usersList } from '../../DTO/users.dto';
+import { UserDetails, usersList } from '../../DTO/users.dto';
+import { ChatService } from '../../services/chat/chat.service';
 
 @Component({
   selector: 'raj-chat-chat',
@@ -10,5 +11,7 @@ import { usersList } from '../../DTO/users.dto';
   styleUrl: './chat.component.css'
 })
 export class ChatComponent {
-  usersList = usersList
+  private chatService = inject(ChatService)
+
+  getAllMates = (): Array<UserDetails> => this.chatService.getAllChattingMates()
 }

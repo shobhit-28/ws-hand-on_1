@@ -1,3 +1,40 @@
-<div class="w-full flex justify-center items-center h-[60vh] p-4">
-    <p class="opacity-50">{{user.username}}</p>
+<div class="w-full">
+    <div class="h-[7.5vh] w-full bg-stone-800/85 flex justify-between text-stone-300">
+        <div class="flex gap-2">
+            <div class="h-[7.5vh] flex items-center">
+                <button (click)="back()">
+                    <mat-icon class="" aria-hidden="false" aria-label="Back Button" fontIcon="chevron_left"></mat-icon>
+                </button>
+            </div>
+            <div class="flex gap-2 h-[7.5vh] items-center">
+                <div
+                    class="flex items-center justify-center border-0 rounded-full h-[6.25vh] w-[6.25vh] overflow-hidden ">
+                    <img class="w-full h-full object-cover" [src]="user.profile_pic" alt="" srcset="">
+                </div>
+                <div class="flex flex-col italic">
+                    <span class="">{{user.firstName}}</span>
+                </div>
+            </div>
+        </div>
+        <div class="h-[7.5vh] flex gap-2 items-center mr-2">
+            <button title="video call">
+                <mat-icon class="" aria-hidden="false" aria-label="Video call" fontIcon="video_call"></mat-icon>
+            </button>
+            <button title="call">
+                <mat-icon class="" aria-hidden="false" aria-label="call" fontIcon="call"></mat-icon>
+            </button>
+        </div>
+    </div>
+    <div class="h-[82vh] bg-stone-50 overflow-auto">
+        <raj-chat-chat-text [chats]="chatArr"></raj-chat-chat-text>
+        <form (ngSubmit)="sendMessage(chatForm)" #chatForm="ngForm">
+            <div class="border rounded-md flex items-center gap-2 text-xs h-[6vh] m-1">
+                <input #commentInput class="font-sans p-2 border-0 outline-none w-full bg-stone-50" type="text" name="Chat"
+                    placeholder="Chat" [(ngModel)]="message">
+                <button class="flex justify-center items-center -mb-[0.4rem]">
+                    <mat-icon class="text-[1rem]" aria-hidden="false" fontIcon="send"></mat-icon>
+                </button>
+            </div>
+        </form>
+    </div>
 </div>
