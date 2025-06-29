@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { UserDetails } from '../../../DTO/users.dto';
 import { IndividualConnectionComponent } from "./individual-connection/individual-connection.component";
 import { FormsModule } from '@angular/forms';
@@ -16,7 +16,11 @@ import { FormsModule } from '@angular/forms';
 })
 export class ConnectionsListComponent {
   @Input() usersList!: Array<UserDetails>
+
+  @Output() emitUserId: EventEmitter<UserDetails> = new EventEmitter<UserDetails>()
+
   connectionFilter: string = ''
+  selectedUser: string | null = null
 
   public filterConnections(users: Array<UserDetails>): Array<UserDetails> {
     if (this.connectionFilter === null || this.connectionFilter === '' || this.connectionFilter === undefined) {
@@ -33,5 +37,10 @@ export class ConnectionsListComponent {
         }
       )
     }
+  }
+
+  public selectUser(user: UserDetails) {
+    this.selectedUser = user._id
+    this.emitUserId.emit(user)
   }
 }

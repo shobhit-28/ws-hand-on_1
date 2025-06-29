@@ -1,10 +1,14 @@
 @if (usersList.length) {
 <div class="sub-page flex">
   <div class="basis-[30%] border-r">
-    <raj-chat-connections-list [usersList]="usersList"></raj-chat-connections-list>
+    <raj-chat-connections-list [usersList]="usersList" (emitUserId)="userIdEmitted($event)"></raj-chat-connections-list>
   </div>
-  <div class="flex justify-center items-center basis-[70%]">
-    <p class="">chat here</p>
+  <div class="basis-[70%]">
+    @if (selectedUser === null) {
+      <raj-chat-empty-chat></raj-chat-empty-chat>
+    } @else {
+      <raj-chat-chat-comp [user]="selectedUser"></raj-chat-chat-comp>
+    }
   </div>
 </div>
 } @else {

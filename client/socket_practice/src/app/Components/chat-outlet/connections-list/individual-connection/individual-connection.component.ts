@@ -1,11 +1,14 @@
 import { Component, Input } from '@angular/core';
 import { UserDetails } from '../../../../DTO/users.dto';
 import { CoreJsService } from '../../../../services/coreJs/core-js.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'raj-chat-individual-connection',
   standalone: true,
-  imports: [],
+  imports: [
+    CommonModule
+  ],
   templateUrl: './individual-connection.component.html',
   styleUrl: './individual-connection.component.css'
 })
@@ -15,6 +18,7 @@ export class IndividualConnectionComponent {
   ) {}
 
   @Input() user!: UserDetails
+  @Input() selectedUser: boolean = false
 
   add2Str = (str1: string, str2: string) => `${str1} ${str2}`
 
