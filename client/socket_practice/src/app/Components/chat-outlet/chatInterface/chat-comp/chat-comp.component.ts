@@ -63,7 +63,11 @@ export class ChatCompComponent {
     this.chatService.clearSelection()
   }
 
-  sendMessage(chatForm: NgForm) {
-    console.log(chatForm)
+  sendMessage(chatForm: NgForm, userId: string) {
+    this.chatService.sendMessage(chatForm.value, userId)
+  }
+
+  getMessages(userId: string) {
+    return this.chatService.getMessagesForUser(userId)
   }
 }

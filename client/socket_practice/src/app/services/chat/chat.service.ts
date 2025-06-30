@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { defaultUserDetail, UserDetails, usersList } from '../../DTO/users.dto';
+import { ChatArr, chatArr } from '../../DTO/message.dto';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,10 @@ export class ChatService {
   getAllChattingMates = (): Array<UserDetails> => usersList
 
   setSelectedChat(user: UserDetails): void {
-    this.selectedChat = user
+    this.selectedChat = defaultUserDetail;
+    setTimeout(() => {
+      this.selectedChat = user
+    }, 100)
   }
 
   clearSelection = (): void => {
@@ -20,4 +24,12 @@ export class ChatService {
   }
 
   getSelectedChat = (): UserDetails => this.selectedChat
+
+  getMessagesForUser(userId: string): ChatArr {
+    return chatArr
+  }
+
+  sendMessage(message: string, userId: string) {
+    console.log(message, userId)
+  }
 }

@@ -26,11 +26,11 @@
         </div>
     </div>
     <div class="h-[82vh] bg-stone-50 overflow-auto">
-        <raj-chat-chat-text [chats]="chatArr"></raj-chat-chat-text>
-        <form (ngSubmit)="sendMessage(chatForm)" #chatForm="ngForm">
+        <raj-chat-chat-text [chats]="getMessages(user._id)"></raj-chat-chat-text>
+        <form (ngSubmit)="sendMessage(chatForm, user._id)" #chatForm="ngForm">
             <div class="border rounded-md flex items-center gap-2 text-xs h-[6vh] m-1">
                 <input #commentInput class="font-sans p-2 border-0 outline-none w-full bg-stone-50" type="text" name="Chat"
-                    placeholder="Chat" [(ngModel)]="message">
+                    placeholder="Chat" [(ngModel)]="message" autocomplete="off">
                 <button class="flex justify-center items-center -mb-[0.4rem]">
                     <mat-icon class="text-[1rem]" aria-hidden="false" fontIcon="send"></mat-icon>
                 </button>
