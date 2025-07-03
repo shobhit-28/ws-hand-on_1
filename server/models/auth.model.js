@@ -6,6 +6,7 @@ const userSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     profile_pic: { type: String, required: false },
+    firstMessageSent: { type: Boolean, default: false }
 })
 
 userSchema.pre('save', async function (next) {
@@ -20,4 +21,15 @@ userSchema.methods.comparePassword = function (password) {
     return bcrypt.compare(password, this.password)
 }
 
-export default mongoose.model('User', userSchema);
+const User = mongoose.model('User', userSchema);
+
+export default User
+
+
+// Code to run for updating multiple fields to add a false for firstMessageSent
+// User.updateMany(
+//     { firstMessageSent: { $exists: false } },
+//     { $set: { firstMessageSent: false } }
+// )
+//     .then(res => console.log(res))
+//     .catch(res => console.error(res))
