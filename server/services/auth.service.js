@@ -8,7 +8,7 @@ export const loginUser = async ({ email, password }) => {
     }
     const user = await authModel.findOne({ email })
     if (!user) {
-        throw new AppError('User not found', 400)
+        throw new AppError('User not found', 404)
     }
     const isMatch = await user.comparePassword(password)
     if (!isMatch) {
@@ -26,7 +26,13 @@ export const signUpUser = async ({ name, email, password, confirmPassword }) => 
         throw new AppError(`Passwords don't match`, 400)
     }
     const user = new authModel({ name, email, password })
-    user.save();
+    try {
+        await user.save();
+    } catch (error) {
+        if (error.code === 11000) {
+            throw new AppError(`Email already exists`, 400)
+        }
+    }
     const token = generateToken(user)
     return { token, user }
 }

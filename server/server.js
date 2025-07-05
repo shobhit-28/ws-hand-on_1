@@ -18,8 +18,8 @@ export const startServer = async () => {
 
     app.use('/rchat', routes)
 
-    app.use(globalErrorHandler)
     app.use(asyncHandler)
+    app.use(globalErrorHandler)
 
     await connectDB()
 

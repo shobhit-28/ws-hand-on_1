@@ -15,7 +15,7 @@ export const signup = asyncHandler(async (req, res) => {
     })
 })
 
-export const login = async (req, res) => {
+export const login = asyncHandler(async (req, res) => {
     const { token, user } = await loginUser(req.body)
     setAuthCookies(res, token, user);
     return successResponse(res, 'User logged in successfully', {
@@ -26,7 +26,7 @@ export const login = async (req, res) => {
         }
     }
     )
-}
+})
 
 export const backendCheck = async (req, res) => {
     res.status(200).json({ message: 'Hello from backend' })
