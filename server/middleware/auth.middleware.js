@@ -1,11 +1,11 @@
 import jwt from "jsonwebtoken";
 
 export const authenticateToken = (req, res, next) => {
-    const auth = req.headers.authToken;
-    if (!auth) {
+    const authTokenHeader = req.headers.authToken;
+    if (!authTokenHeader) {
         res.status(401).json({ error: `Authorization token not found` });
     }
-    const token = auth.split(' ')[1]
+    const token = authTokenHeader.includes(' ') ? authTokenHeader.split(' ')[1] : authTokenHeader
     if (!token) {
         return res.status(401).json({ error: `Token not found` })
     }
