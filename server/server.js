@@ -5,6 +5,8 @@ import cookieParser from "cookie-parser";
 import routes from './routes/central.routes.js'
 import { connectDB } from "./config/db.js";
 import { initSocket } from "./config/socket.js";
+import { globalErrorHandler } from "./middleware/errorHandler.js";
+import { asyncHandler } from "./middleware/asyncHandler.js";
 
 export const startServer = async () => {
     const app = express();
@@ -15,6 +17,9 @@ export const startServer = async () => {
     app.use(cookieParser());
 
     app.use('/rchat', routes)
+
+    app.use(globalErrorHandler)
+    app.use(asyncHandler)
 
     await connectDB()
 

@@ -15,3 +15,11 @@ export const getCookieConfig = (maxAge = null) => {
     }
     return maxAge !== null ? { ...config, maxAge } : config
 }
+
+export const setAuthCookies = (res, token, user) => {
+    res.cookie('token', token, getCookieConfig(24 * 60 * 60 * 1000)) // 1 day
+    res.cookie('user', JSON.stringify({
+        name: user.name,
+        email: user.email
+    }), getCookieConfig())
+}
