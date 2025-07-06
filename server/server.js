@@ -7,6 +7,7 @@ import { connectDB } from "./config/db.js";
 import { initSocket } from "./config/socket.js";
 import { globalErrorHandler } from "./middleware/errorHandler.js";
 import { asyncHandler } from "./middleware/asyncHandler.js";
+import { authenticateToken } from "./middleware/auth.middleware.js";
 
 export const startServer = async () => {
     const app = express();

@@ -8,7 +8,9 @@ const messageSchema = new mongoose.Schema({
     receiver: userRef,
     createdAt: { type: Date, default: Date.now },
     expireAt: { type: Date, index: { expires: 0 } },
-    deletedBy: { ...userRef, required: false }
+    deletedBy: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User', default: [] }]
 })
+
+messageSchema.index({ sender: 1, receiver: 1, createdAt: 1 })
 
 export default mongoose.model('Message', messageSchema)
