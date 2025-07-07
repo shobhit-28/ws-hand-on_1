@@ -8,7 +8,7 @@ export class CoreJsService {
 
   constructor() { }
 
-  makeDeepCopy = (obj: Object) => JSON.parse(JSON.stringify(obj))
+  makeDeepCopy = <T>(obj: T): T => structuredClone(obj)
 
   bifurcateTextIntoTextAndUrls = (txt: string): Array<{ url: boolean, text: string }> =>
     txt.split(' ').map(
