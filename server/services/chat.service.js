@@ -70,11 +70,19 @@ export const deleteMessage = async ({ messageId, userId }) => {
     message.deletedBy.push(userIdStr)
     message.markModified('deletedBy')
 
-    const senderDeleted = message.deletedBy.some(id => id === message.sender);
-    const receiverDeleted = message.deletedBy.some(id => id === message.receiver);
+    const senderDeleted = message.deletedBy.some(id => {
+        return id.equals(message.sender)
+    });
+    const receiverDeleted = message.deletedBy.some(id => {
+        return id.equals(message.receiver)
+    });
 
     if (senderDeleted && receiverDeleted) {
-        await Message.findByIdAndDelete(messageId)
+        try {
+            await Message.findByIdAndDelete(messageId)
+        } catch (error) {
+            console.error(error)
+        }
     } else {
         await message.save()
     }
