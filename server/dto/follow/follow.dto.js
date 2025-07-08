@@ -13,7 +13,7 @@ export class FollowUnfollowDTO {
             throw new AppError(error.message)
         }
 
-        this.follower = follower
-        this.following = following
+        this.follower = value.follower
+        this.following = value.following
     }
 }

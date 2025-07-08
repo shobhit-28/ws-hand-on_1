@@ -2,6 +2,7 @@ import Follow from "../models/follow.model.js";
 import User from "../models/auth.model.js";
 import { AppError } from "../utils/appError.js"
 import { isAlreadyFollowing } from "../utils/follow.util.js";
+import { findUser } from "../utils/user.util.js";
 
 export const followUser = async ({ follower, following }) => {
     if (follower === following) {
@@ -38,4 +39,24 @@ export const unfollowUser = async ({ follower, following }) => {
     await follow.deleteOne();
 
     return { follower, following }
+}
+
+export const getFollowers = async (follower) => {
+    const followers = await Follow.find({ follower })
+        .populate({
+            path: 'following',
+            select: '-password -__v -firstMessageSent'
+        })
+        .sort({ follower: 1 })
+    return followers
+}
+
+export const getFollowing = async (follower) => {
+    const followings = await Follow.find({ following: follower })
+        .populate({
+            path: 'follower',
+            select: '-password -__v -firstMessageSent'
+        })
+        .sort({ following: 1 })
+    return followings
 }
