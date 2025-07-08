@@ -5,7 +5,7 @@ import cookieParser from "cookie-parser";
 import routes from './routes/central.routes.js'
 import { connectDB } from "./config/db.js";
 import { initSocket } from "./config/socket.js";
-import { globalErrorHandler } from "./middleware/errorHandler.js";
+import { apiNotFoundHandler, globalErrorHandler } from "./middleware/errorHandler.js";
 import { asyncHandler } from "./middleware/asyncHandler.js";
 import { authenticateToken } from "./middleware/auth.middleware.js";
 
@@ -19,7 +19,9 @@ export const startServer = async () => {
 
     app.use('/rchat', routes)
 
-    app.use(asyncHandler)
+    // app.use(asyncHandler)
+
+    app.use(apiNotFoundHandler)
     app.use(globalErrorHandler)
 
     await connectDB()

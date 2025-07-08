@@ -16,7 +16,7 @@ export const follow = asyncHandler(async (req, res) => {
 })
 
 export const unfollow = asyncHandler(async (req, res) => {
-    console.log(req.body)
+    console.log('unfollow controller', req.body)
     const dto = new FollowUnfollowDTO({
         follower: req.user.id,
         following: req.body.followingId

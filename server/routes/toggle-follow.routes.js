@@ -1,14 +1,18 @@
 import express from 'express';
 import { authenticateToken } from '../middleware/auth.middleware.js';
 import { follow, getFollowers, getFollowing, unfollow } from '../controllers/follow.controller.js';
+import { allowedMethods } from '../utils/allowedMethods.util.js';
 
 const router = express.Router();
 
-router.post('/follow', authenticateToken, follow);
-router.delete('/unfollow', authenticateToken, unfollow);
-router.get('/followers', authenticateToken, getFollowers)
-router.get('/followers/:userId', authenticateToken, getFollowers)
-router.get('/following', authenticateToken, getFollowing)
-router.get('/following/:userId', authenticateToken, getFollowing)
+router.use('/follow', authenticateToken, allowedMethods({ POST: follow }))
+router.use('/unfollow', authenticateToken, allowedMethods({ DELETE: unfollow }))
+
+router.use('/followers', authenticateToken, allowedMethods({ GET: getFollowers }))
+router.use('/followers/:userId', authenticateToken, allowedMethods({ GET: getFollowers }))
+
+router.use('/following', authenticateToken, allowedMethods({ GET: getFollowing }))
+router.use('/following/:userId', authenticateToken, allowedMethods({ GET: getFollowing }))
+
 
 export default router;

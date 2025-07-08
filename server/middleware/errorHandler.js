@@ -10,3 +10,7 @@ export const globalErrorHandler = (err, req, res, next) => {
     const message = err.message || "Something went wrong";
     return errorResponse(res, message, statusCode)
 }
+
+export const apiNotFoundHandler = (req, res, next) => {
+    return errorResponse(res, `Api not found`, 404)
+}

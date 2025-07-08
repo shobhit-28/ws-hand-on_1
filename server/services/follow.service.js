@@ -27,11 +27,12 @@ export const followUser = async ({ follower, following }) => {
 }
 
 export const unfollowUser = async ({ follower, following }) => {
+    console.log(follower, following)
     if (following === follower) {
         throw new AppError(`You cannot unfollow yourself 😂`, 400)
     }
 
-    const follow = Follow.findOne({ follower, following });
+    const follow = await Follow.findOne({ follower, following });
     if (!follow) {
         throw new AppError(`You are not following this user`, 400)
     }
