@@ -1,8 +1,7 @@
 import Follow from "../models/follow.model.js";
 import User from "../models/auth.model.js";
 import { AppError } from "../utils/appError.js"
-import { isAlreadyFollowing } from "../utils/follow.util.js";
-import { findUser } from "../utils/user.util.js";
+import { isAlreadyFollowing, isGettingFollowed } from "../utils/follow.util.js";
 
 export const followUser = async ({ follower, following }) => {
     if (follower === following) {
@@ -60,4 +59,15 @@ export const getFollowing = async (follower) => {
         })
         .sort({ following: 1 })
     return followings
+}
+
+export const checkStatus = async ({ action, userId, withUserId }) => {
+    let status;
+    if (action === 'isAlreadyFollowing') {
+        status = await isAlreadyFollowing(userId, withUserId)
+    } else {
+        status = await isGettingFollowed(userId, withUserId)
+    }
+
+    return status
 }

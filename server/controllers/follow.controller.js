@@ -1,11 +1,10 @@
+import { CheckStatusDTO } from "../dto/follow/checkStatus.dto.js";
 import { FollowUnfollowDTO } from "../dto/follow/follow.dto.js";
 import { asyncHandler } from "../middleware/asyncHandler.js";
 import * as fs from '../services/follow.service.js'
 import { successResponse } from "../utils/apiResponse.util.js";
-import { findUser } from "../utils/user.util.js";
 
 export const follow = asyncHandler(async (req, res) => {
-    console.log(req.body)
     const dto = new FollowUnfollowDTO({
         follower: req.user.id,
         following: req.body.followingId
@@ -16,7 +15,6 @@ export const follow = asyncHandler(async (req, res) => {
 })
 
 export const unfollow = asyncHandler(async (req, res) => {
-    console.log('unfollow controller', req.body)
     const dto = new FollowUnfollowDTO({
         follower: req.user.id,
         following: req.body.followingId
@@ -38,6 +36,13 @@ export const getFollowing = asyncHandler(async (req, res) => {
     successResponse(res, `Successfully fetched following list`, followingList)
 })
 
-export const isGettingFollowed = asyncHandler(async (req, res) => {
-    
+export const checkStatus = asyncHandler(async (req, res) => {
+    const dto = new CheckStatusDTO({
+        ...req.query,
+        userId: req.user.id
+    })
+
+    const status = await fs.checkStatus(dto)
+
+    successResponse(res, `Successfully fetched response`, status)
 })
