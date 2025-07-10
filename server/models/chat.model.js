@@ -4,8 +4,8 @@ const userRef = { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: t
 
 const messageSchema = new mongoose.Schema({
     content: { type: String, required: true },
-    sender: userRef,
-    receiver: userRef,
+    sender: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    receiver: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     createdAt: { type: Date, default: Date.now },
     expireAt: { type: Date, index: { expires: 0 } },
     deletedBy: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User', default: [] }]

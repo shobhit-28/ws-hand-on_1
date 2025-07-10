@@ -20,6 +20,7 @@ export const setAuthCookies = (res, token, user) => {
     res.cookie('token', token, getCookieConfig(24 * 60 * 60 * 1000)) // 1 day
     res.cookie('user', JSON.stringify({
         name: user.name,
-        email: user.email
+        email: user.email,
+        id: user._id
     }), getCookieConfig())
 }

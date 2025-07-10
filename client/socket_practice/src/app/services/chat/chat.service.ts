@@ -14,21 +14,8 @@ export class ChatService {
   private socket: Socket | null = null
 
   constructor(
-    @Inject(PLATFORM_ID) private platformId: Object,
     private notificationService: NotificationService
-  ) {
-    if (isPlatformBrowser(this.platformId)) {
-      this.socket = io('http://localhost:5000');
-
-      this.socket.on('connect', () => {
-        console.log('✅ Connected to WebSocket');
-      });
-
-      this.socket.on('message', (msg) => {
-        console.log('📨 Message from server:', msg);
-      });
-    }
-  }
+  ) { }
 
   getAllChattingMates = (): Array<UserDetails> => usersList
 
@@ -55,16 +42,5 @@ export class ChatService {
       this.socket.emit('send-message', message, userId)
       this.notificationService.askForBrowserNotificationPermission()
     }
-  }
-
-  onMessage(): Observable<any> {
-    return new Observable((observer) => {
-      if (this.socket) {
-        this.socket.on('receive-message', (msg: any) => {
-          this.notificationService.sendBrowserNotification(`Notification from ${msg.userId}`, msg.Chat, true)
-          observer.next(msg)
-        })
-      }
-    })
   }
 }

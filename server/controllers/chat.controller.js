@@ -5,6 +5,7 @@ import { asyncHandler } from "../middleware/asyncHandler.js"
 import * as chatService from "../services/chat.service.js"
 import { successResponse } from "../utils/apiResponse.util.js"
 
+
 export const sendMessage = asyncHandler(async (req, res) => {
     const dto = new SendMessageDto({
         senderId: req.user.id,
@@ -15,6 +16,10 @@ export const sendMessage = asyncHandler(async (req, res) => {
     // console.log(dto)
 
     const message = await chatService.createNewMessage(dto)
+
+    const io = req.app.get('io')
+    io.to(dto.receiverId).emit('receive-message', message)
+
     successResponse(res, `Message sent successfully`, message, 201)
 })
 

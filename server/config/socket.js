@@ -12,10 +12,10 @@ export const initSocket = async (server) => {
         io.on('connection', (socket) => {
             console.log(`🟢 Socket connected: ${socket.id}`);
 
-            socket.on('send-message', (data, userId) => {
-                console.log('📨 Message received:', data, userId);
-                io.emit('receive-message', { ...data, userId });
-            });
+            socket.on('join', (userId) => {
+                socket.join(userId)
+                console.log(`👤 User ${userId} joined their room`)
+            })
 
             socket.on('disconnect', () => {
                 console.log(`🔴 Socket disconnected: ${socket.id}`);

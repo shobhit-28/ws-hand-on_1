@@ -29,6 +29,11 @@ export const createNewMessage = async ({ senderId, receiverId, content }) => {
         expireAt
     })
 
+    await message.populate({
+        path: 'sender receiver',
+        select: '-password -__v -firstMessageSent'
+    })
+
     return message
 }
 
@@ -39,6 +44,9 @@ export const fetchMessages = async ({ userId, withUserId }) => {
             { sender: withUserId, receiver: userId }
         ],
         deletedBy: { $ne: userId }
+    }).populate({
+        path: 'sender receiver',
+        select: '-password -__v -firstMessageSent'
     }).sort({ createdAt: 1 })
 
     return messages;

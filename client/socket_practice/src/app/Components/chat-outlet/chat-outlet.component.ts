@@ -24,11 +24,11 @@ export class ChatOutletComponent implements OnInit {
   private chatService = inject(ChatService)
 
   ngOnInit(): void {
-    this.chatService.onMessage().subscribe((msg) => {
-      console.log(msg)
-    }, (err) => {
-      console.error(err)
-    })
+    // this.chatService.onMessage().subscribe((msg) => {
+    //   console.log(msg)
+    // }, (err) => {
+    //   console.error(err)
+    // })
   }
 
   getAllChatMates = (): Array<UserDetails> => this.chatService.getAllChattingMates()

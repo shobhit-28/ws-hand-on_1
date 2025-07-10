@@ -30,5 +30,7 @@ export const startServer = async () => {
         console.log(`🚀 Server listening on http://localhost:${port}`)
     })
 
-    await initSocket(server)
+    const io = await initSocket(server)
+
+    app.set(`io`, io)
 } 
