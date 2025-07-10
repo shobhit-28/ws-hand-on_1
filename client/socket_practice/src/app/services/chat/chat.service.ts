@@ -5,6 +5,7 @@ import { io, Socket } from 'socket.io-client'
 import { Observable } from 'rxjs';
 import { isPlatformBrowser } from '@angular/common';
 import { NotificationService } from '../notification/notification.service';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -14,10 +15,18 @@ export class ChatService {
   private socket: Socket | null = null
 
   constructor(
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private http: HttpClient
   ) { }
 
   getAllChattingMates = (): Array<UserDetails> => usersList
+
+  getChattableMates = () => {
+    this.http.get(`/rchat/toggle-follow/followers`).subscribe({
+      next: (res) => console.log(res),
+      error: (err) => console.error(err)
+    })
+  }
 
   setSelectedChat(user: UserDetails): void {
     this.selectedChat = defaultUserDetail;

@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { ChatOutletComponent } from "../../Components/chat-outlet/chat-outlet.component";
 import { UserDetails, usersList } from '../../DTO/users.dto';
 import { ChatService } from '../../services/chat/chat.service';
@@ -10,8 +10,12 @@ import { ChatService } from '../../services/chat/chat.service';
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.css'
 })
-export class ChatComponent {
+export class ChatComponent implements OnInit {
   private chatService = inject(ChatService)
+
+  ngOnInit(): void {
+    this.chatService.getChattableMates()
+  }
 
   getAllMates = (): Array<UserDetails> => this.chatService.getAllChattingMates()
 }

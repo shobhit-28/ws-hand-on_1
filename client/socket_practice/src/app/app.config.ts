@@ -4,9 +4,10 @@ import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { provideClientHydration } from '@angular/platform-browser';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { provideHttpClient, withFetch } from '@angular/common/http';
+import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { MatSnackBarModule } from '@angular/material/snack-bar'
 import { AppInitialiserService } from './services/appInitialiser/app-initialiser.service';
+import { tokenInterceptor } from './interceptors/token/token.interceptor';
 
 const appInitializerFunction = (initService: AppInitialiserService): () => Promise<void> => () => initService.initFunc();
 
@@ -16,7 +17,10 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideClientHydration(),
     provideAnimationsAsync(),
-    provideHttpClient(withFetch()),
+    provideHttpClient(
+      withFetch(),
+      withInterceptors([tokenInterceptor])
+    ),
     importProvidersFrom(MatSnackBarModule),
     { provide: APP_INITIALIZER, useFactory: appInitializerFunction, multi: true, deps: [AppInitialiserService] }
   ]
