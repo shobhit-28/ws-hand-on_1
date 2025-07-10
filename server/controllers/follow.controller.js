@@ -11,6 +11,10 @@ export const follow = asyncHandler(async (req, res) => {
     })
 
     const response = await fs.followUser(dto)
+
+    const io = req.app.get('io')
+    io.to(dto.following).emit('got-followed', response)
+
     successResponse(res, `Followed ${response.followerUser.name} successfully`, {}, 201)
 })
 

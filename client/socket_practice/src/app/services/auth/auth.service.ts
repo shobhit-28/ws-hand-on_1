@@ -41,6 +41,10 @@ export class AuthService {
           console.log('🗑️ Message deleted:', messageId);
         });
 
+        this.socket.on('got-followed', (follower) => {
+          console.log('You got followed', follower);
+        });
+
         this.socket.on('disconnect', () => {
           console.log('❌ Disconnected from WebSocket');
         });
