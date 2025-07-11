@@ -1,5 +1,5 @@
 import express from 'express';
-import { deleteMessage, getMessages, sendMessage } from '../controllers/chat.controller.js';
+import { chattableMates, deleteMessage, getMessages, sendMessage } from '../controllers/chat.controller.js';
 import { authenticateToken } from '../middleware/auth.middleware.js';
 import { allowedMethods } from '../utils/allowedMethods.util.js';
 
@@ -21,6 +21,12 @@ router.use(
     '/deleteMessage/:messageId',
     authenticateToken,
     allowedMethods({ DELETE: deleteMessage })
+)
+
+router.use(
+    '/getchatfriendslist',
+    authenticateToken,
+    allowedMethods({ GET: chattableMates })
 )
 
 export default router;

@@ -1,5 +1,5 @@
 import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
-import { UserDetails } from '../../../../DTO/users.dto';
+import { ChatFriendsList } from '../../../../DTO/users.dto';
 import { MatIcon } from '@angular/material/icon';
 import { ChatComponent } from "../../../../Pages/chat/chat.component";
 import { ChatTextComponent } from "./chat-text/chat-text.component";
@@ -18,7 +18,7 @@ import { ChatService } from '../../../../services/chat/chat.service';
   styleUrl: './chat-comp.component.css'
 })
 export class ChatCompComponent {
-  @Input() user!: UserDetails
+  @Input() user!: ChatFriendsList
 
   chatArr: Array<{ received: boolean, message: string, timestamp: number }> = [
     { received: true, message: "Hey, you up?", timestamp: 1720065600000 },

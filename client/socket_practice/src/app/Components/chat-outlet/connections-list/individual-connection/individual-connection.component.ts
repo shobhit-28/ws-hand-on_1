@@ -1,5 +1,5 @@
 import { Component, inject, Input } from '@angular/core';
-import { UserDetails } from '../../../../DTO/users.dto';
+import { ChatFriendsList } from '../../../../DTO/users.dto';
 import { CoreJsService } from '../../../../services/coreJs/core-js.service';
 import { CommonModule } from '@angular/common';
 import { ChatService } from '../../../../services/chat/chat.service';
@@ -19,12 +19,12 @@ export class IndividualConnectionComponent {
     private chatService: ChatService
   ) {}
 
-  @Input() user!: UserDetails
+  @Input() user!: ChatFriendsList
   @Input() selectedUser: boolean = false
 
   add2Str = (str1: string, str2: string) => `${str1} ${str2}`
 
   returnTruncatedStr = (str: string, maxLen: number) => this.coreJsService.truncateText(str, maxLen)
 
-  getSelectedUser = (): UserDetails => this.chatService.getSelectedChat()
+  getSelectedUser = (): ChatFriendsList => this.chatService.getSelectedChat()
 }

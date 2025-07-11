@@ -1,6 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { ChatOutletComponent } from "../../Components/chat-outlet/chat-outlet.component";
-import { UserDetails, usersList } from '../../DTO/users.dto';
+import { defaultChatFriendVal, ChatFriendsList } from '../../DTO/users.dto';
 import { ChatService } from '../../services/chat/chat.service';
 
 @Component({
@@ -17,5 +17,5 @@ export class ChatComponent implements OnInit {
     this.chatService.getChattableMates()
   }
 
-  getAllMates = (): Array<UserDetails> => this.chatService.getAllChattingMates()
+  getAllMates = (): Array<ChatFriendsList> => this.chatService.getAllChattingMates()
 }

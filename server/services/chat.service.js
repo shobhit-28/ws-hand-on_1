@@ -1,5 +1,7 @@
+import mongoose from "mongoose";
 import User from "../models/auth.model.js";
 import Message from "../models/chat.model.js"
+import Follow from "../models/follow.model.js";
 import { AppError } from "../utils/appError.js";
 import { calculateExpiryHours } from "../utils/chat.util.js";
 
@@ -96,4 +98,30 @@ export const deleteMessage = async ({ messageId, userId }) => {
     }
 
     return message;
+}
+
+export const getChattableMates = async (userId) => {
+    if (!userId) {
+        throw new AppError(`User not found`, 404)
+    }
+
+    const following = (await Follow.find({ following: userId }).select(`follower`)).map(objId => objId.follower.toString());
+    const follower = (await Follow.find({ follower: userId }).select(`following`)).map(objId => objId.following.toString());
+
+    const friendsList = following.filter(id => follower.includes(id))
+
+    const mates = await User.find({ _id: { $in: friendsList } }).select('-password -__v -firstMessageSent')
+
+    const matesList = []
+
+    for (const mongooseObj of mates) {
+        const mate = mongooseObj.toObject()
+        if (!mate?.profile_pic) {
+            matesList.push({ ...mate, profile_pic: "/assets/profile/empty_profile_male.svg" })
+        } else {
+            matesList.push(mate)
+        }
+    }
+
+    return matesList;
 }

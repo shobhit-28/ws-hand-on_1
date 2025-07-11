@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, inject, Input, Output } from '@angular/core';
-import { UserDetails } from '../../../DTO/users.dto';
+import { ChatFriendsList } from '../../../DTO/users.dto';
 import { IndividualConnectionComponent } from "./individual-connection/individual-connection.component";
 import { FormsModule } from '@angular/forms';
 import { ChatService } from '../../../services/chat/chat.service';
@@ -16,13 +16,13 @@ import { ChatService } from '../../../services/chat/chat.service';
   // changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ConnectionsListComponent {
-  @Input() usersList!: Array<UserDetails>
+  @Input() usersList!: Array<ChatFriendsList>
 
   connectionFilter: string = ''
 
   private chatService = inject(ChatService)
 
-  public filterConnections(users: Array<UserDetails>): Array<UserDetails> {
+  public filterConnections(users: Array<ChatFriendsList>): Array<ChatFriendsList> {
     if (this.connectionFilter === null || this.connectionFilter === '' || this.connectionFilter === undefined) {
       return users
     } else {
@@ -30,18 +30,17 @@ export class ConnectionsListComponent {
         (user) => {
           const filter = this.connectionFilter.toLowerCase()
           return (
-            user.username.toLocaleLowerCase().includes(filter) ||
-            user.firstName.toLocaleLowerCase().includes(filter) ||
-            user.lastName.toLocaleLowerCase().includes(filter)
+            user.name.toLocaleLowerCase().includes(filter) ||
+            user.email.toLocaleLowerCase().includes(filter)
           )
         }
       )
     }
   }
 
-  public selectUser(user: UserDetails) {
+  public selectUser(user: ChatFriendsList) {
     this.chatService.setSelectedChat(user)
   }
 
-  public getSelectedUser = (): UserDetails => this.chatService.getSelectedChat()
+  public getSelectedUser = (): ChatFriendsList => this.chatService.getSelectedChat()
 }

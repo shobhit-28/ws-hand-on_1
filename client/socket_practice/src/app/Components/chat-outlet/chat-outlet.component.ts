@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, inject, Input, OnInit, ViewChild } from '@angular/core';
-import { UserDetails, usersList } from '../../DTO/users.dto';
+import { defaultChatFriendVal, ChatFriendsList } from '../../DTO/users.dto';
 import { ConnectionsListComponent } from "./connections-list/connections-list.component";
 import { EmptyChatComponent } from './chatInterface/empty-chat/empty-chat.component';
 import { ChatCompComponent } from './chatInterface/chat-comp/chat-comp.component';
@@ -17,7 +17,7 @@ import { ChatService } from '../../services/chat/chat.service';
   styleUrl: './chat-outlet.component.css'
 })
 export class ChatOutletComponent implements OnInit {
-  @Input() usersList: Array<UserDetails> = new Array;
+  @Input() usersList: Array<ChatFriendsList> = new Array;
 
   @ViewChild(ConnectionsListComponent) ConnectionListComp !: ConnectionsListComponent
 
@@ -31,7 +31,7 @@ export class ChatOutletComponent implements OnInit {
     // })
   }
 
-  getAllChatMates = (): Array<UserDetails> => this.chatService.getAllChattingMates()
+  getAllChatMates = (): Array<ChatFriendsList> => this.chatService.getAllChattingMates()
 
-  getSelectedUser = (): UserDetails => this.chatService.getSelectedChat()
+  getSelectedUser = (): ChatFriendsList => this.chatService.getSelectedChat()
 }

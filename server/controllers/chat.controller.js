@@ -41,3 +41,10 @@ export const deleteMessage = asyncHandler(async (req, res) => {
     const deletedMessage = await chatService.deleteMessage(dto)
     successResponse(res, `Message deleted successfully`, deletedMessage)
 })
+
+export const chattableMates = asyncHandler(async (req, res) => {
+    const userId = req.user.id
+
+    const mates = await chatService.getChattableMates(userId)
+    successResponse(res, `Successfully fetched chat list`, mates)
+})
