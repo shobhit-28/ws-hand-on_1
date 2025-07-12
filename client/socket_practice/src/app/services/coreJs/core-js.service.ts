@@ -31,4 +31,6 @@ export class CoreJsService {
   truncateText(text: string, maxLen: number): string {
     return text.length > maxLen ? text.slice(0, maxLen) + "..." : text;
   }
+
+  imgResizer = (url: string, height: number, width: number): string => url.replace('/upload/', `/upload/w_${width},h_${height},c_thumb/`)
 }

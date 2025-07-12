@@ -4,9 +4,6 @@ import { uploadProfilePicService } from "../services/user.service.js";
 import { successResponse } from "../utils/apiResponse.util.js";
 
 export const uploadProfilePic = asyncHandler(async (req, res) => {
-    console.log(req.file)
-    console.log(req.user)
-
     const dto = new UploadProfilePicDto({
         userId: req.user.id,
         file: req.file

@@ -1,0 +1,1 @@
+export const imgResizer = (url, height, width) => url.replace('/upload/', `/upload/w_${width},h_${height},c_thumb/`)

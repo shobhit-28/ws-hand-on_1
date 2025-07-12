@@ -17,7 +17,7 @@ export class IndividualConnectionComponent {
   constructor(
     private coreJsService: CoreJsService,
     private chatService: ChatService
-  ) {}
+  ) { }
 
   @Input() user!: ChatFriendsList
   @Input() selectedUser: boolean = false
@@ -27,4 +27,6 @@ export class IndividualConnectionComponent {
   returnTruncatedStr = (str: string, maxLen: number) => this.coreJsService.truncateText(str, maxLen)
 
   getSelectedUser = (): ChatFriendsList => this.chatService.getSelectedChat()
+
+  getResizedImg = (url: string) => this.coreJsService.imgResizer(url, 400, 400)
 }
