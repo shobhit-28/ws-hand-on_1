@@ -6,6 +6,7 @@ const userSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     profile_pic: { type: String, required: false },
+    profile_pic_id: { type: String, required: false },
     firstMessageSent: { type: Boolean, default: false }
 })
 
