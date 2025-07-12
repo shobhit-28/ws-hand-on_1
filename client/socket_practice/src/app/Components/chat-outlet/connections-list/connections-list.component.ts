@@ -39,7 +39,9 @@ export class ConnectionsListComponent {
   }
 
   public selectUser(user: ChatFriendsList) {
-    this.chatService.setSelectedChat(user)
+    if (this.getSelectedUser()._id !== user._id) {
+      this.chatService.setSelectedChat(user)
+    }
   }
 
   public getSelectedUser = (): ChatFriendsList => this.chatService.getSelectedChat()

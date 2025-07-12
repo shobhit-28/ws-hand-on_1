@@ -5,6 +5,7 @@ import { ChatComponent } from "../../../../Pages/chat/chat.component";
 import { ChatTextComponent } from "./chat-text/chat-text.component";
 import { FormsModule, NgForm } from '@angular/forms';
 import { ChatService } from '../../../../services/chat/chat.service';
+import { CoreJsService } from '../../../../services/coreJs/core-js.service';
 
 @Component({
   selector: 'raj-chat-chat-comp',
@@ -57,7 +58,12 @@ export class ChatCompComponent {
   ];
   message: string | null = null
 
-  private chatService = inject(ChatService)
+  constructor(
+    private chatService: ChatService,
+    private coreJsService: CoreJsService
+
+  ) { }
+
 
   back() {
     this.chatService.clearSelection()
@@ -70,4 +76,6 @@ export class ChatCompComponent {
   getMessages(userId: string) {
     return this.chatService.getMessagesForUser(userId)
   }
+
+  resizeImg = (url: string) => this.coreJsService.imgResizer(url, 300, 300)
 }
