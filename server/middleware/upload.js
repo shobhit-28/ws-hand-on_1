@@ -7,7 +7,7 @@ const storage = new CloudinaryStorage({
     params: {
         folder: 'profile-pictures',
         allowed_formats: ['jpg', 'png', 'jpeg'],
-        transformation: [{ width: 450, height: 450, crop: 'limit', quality: 'auto' }]
+        transformation: [{ width: 1920, height: 1080, crop: 'limit', quality: 'auto' }]
     }
 })
 
