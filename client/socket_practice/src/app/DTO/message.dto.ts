@@ -1,5 +1,21 @@
 export type ChatArr = Array<{ received: boolean, message: string, timestamp: number }>
 
+type User = {
+  _id: string
+  name: string
+  email: string
+  profile_pic?: string
+  profile_pic_id?: string
+}
+
+export type Messages = Array<{
+  _id: string
+  content: string
+  sender: User
+  receiver: User
+  createdAt: string
+}>
+
 export const chatArr: Array<{ received: boolean, message: string, timestamp: number }> = [
   { received: true, message: "Hey, you up?", timestamp: 1720065600000 },
   { received: true, message: "Need help with something real quick.", timestamp: 1720065660000 },

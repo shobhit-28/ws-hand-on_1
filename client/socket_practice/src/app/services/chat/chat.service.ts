@@ -1,11 +1,10 @@
 import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { defaultChatFriendVal, ChatFriendsList } from '../../DTO/users.dto';
-import { ChatArr, chatArr } from '../../DTO/message.dto';
-import { io, Socket } from 'socket.io-client'
-import { Observable } from 'rxjs';
+import { ChatArr, chatArr, Messages } from '../../DTO/message.dto';
+import { map, Observable } from 'rxjs';
 import { isPlatformBrowser } from '@angular/common';
 import { NotificationService } from '../notification/notification.service';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { ApiResponse } from '../../DTO/commonResponse.dto';
 
 @Injectable({
@@ -13,7 +12,6 @@ import { ApiResponse } from '../../DTO/commonResponse.dto';
 })
 export class ChatService {
   private selectedChat: ChatFriendsList = defaultChatFriendVal
-  private socket: Socket | null = null
   usersList: Array<ChatFriendsList> = [];
 
   constructor(
@@ -49,11 +47,18 @@ export class ChatService {
     return chatArr
   }
 
-  sendMessage(message: string, userId: string) {
-    console.log(message, userId)
-    if (this.socket) {
-      this.socket.emit('send-message', message, userId)
-      this.notificationService.askForBrowserNotificationPermission()
-    }
+  getM(userId: string): Observable<Messages> {
+    return this.http.get<ApiResponse<Messages>>(`/rchat/chat/getMessages/${userId}`).pipe(
+      map((res: ApiResponse<Messages>) => res.data)
+    )
+  }
+
+  sendMessage(message: string, userId: string): Observable<Messages[0]> {
+    return this.http.post<ApiResponse<Messages[0]>>(`/rchat/chat/sendMessage`, {
+      receiverId: userId,
+      content: message
+    }).pipe(
+      map(res => res.data)
+    )
   }
 }

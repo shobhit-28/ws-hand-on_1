@@ -36,7 +36,7 @@ export const createNewMessage = async ({ senderId, receiverId, content }) => {
         select: '-password -__v -firstMessageSent'
     })
 
-    return message
+    return message.toObject();
 }
 
 export const fetchMessages = async ({ userId, withUserId }) => {
@@ -51,7 +51,7 @@ export const fetchMessages = async ({ userId, withUserId }) => {
         select: '-password -__v -firstMessageSent'
     }).sort({ createdAt: 1 })
 
-    return messages;
+    return messages.map(message => message.toObject());
 }
 
 export const deleteMessage = async ({ messageId, userId }) => {
@@ -97,7 +97,7 @@ export const deleteMessage = async ({ messageId, userId }) => {
         await message.save()
     }
 
-    return message;
+    return message.toObject();
 }
 
 export const getChattableMates = async (userId) => {

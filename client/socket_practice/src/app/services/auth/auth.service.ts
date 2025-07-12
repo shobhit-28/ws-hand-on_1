@@ -4,6 +4,9 @@ import { Router } from '@angular/router';
 import { io, Socket } from 'socket.io-client';
 import { isPlatformBrowser } from '@angular/common';
 import { NotificationService } from '../notification/notification.service';
+import { Subject } from 'rxjs';
+import { Messages } from '../../DTO/message.dto';
+import { ChatService } from '../chat/chat.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,13 +14,16 @@ import { NotificationService } from '../notification/notification.service';
 export class AuthService {
   private socket: Socket | null = null
   private isLoggedInFlag!: boolean
+  private messageRevieverSub = new Subject<Messages[0]>();
+  public messageReviever$ = this.messageRevieverSub.asObservable()
 
   constructor(
     private chromeDataTransactionService: ChromeDataTransactionService,
     private router: Router,
     @Inject(PLATFORM_ID) private platformId: Object,
     private data: ChromeDataTransactionService,
-    private ns: NotificationService
+    private ns: NotificationService,
+    private chatService: ChatService
   ) { }
 
   initSocket(userId: string) {
@@ -32,9 +38,11 @@ export class AuthService {
           this.socket?.emit('join', userId);
         });
 
-        this.socket.on('receive-message', (msg) => {
+        this.socket.on('receive-message', (msg: Messages[0]) => {
           this.ns.sendBrowserNotification(msg.sender.name, msg.content, true)
-          console.log('📩 Message received from socket:', msg);
+          if (this.chatService.getSelectedChat()._id === msg.sender._id) {
+            this.messageRevieverSub.next(msg)
+          }
         });
 
         this.socket.on('message:deleted', (messageId) => {

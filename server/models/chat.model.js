@@ -11,6 +11,17 @@ const messageSchema = new mongoose.Schema({
     deletedBy: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User', default: [] }]
 })
 
-messageSchema.index({ sender: 1, receiver: 1, createdAt: 1 })
+const sanitizeTransform = (doc, responseObj) => {
+    delete responseObj.expireAt;
+    delete responseObj.__v;
+    delete responseObj.deletedBy;
+
+    return responseObj;
+}
+
+messageSchema.set('toObject', { transform: sanitizeTransform });
+messageSchema.set('toJSON', { transform: sanitizeTransform });
+
+messageSchema.index({ sender: 1, receiver: 1, createdAt: 1 });
 
 export default mongoose.model('Message', messageSchema)
