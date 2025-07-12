@@ -32,5 +32,15 @@ export class CoreJsService {
     return text.length > maxLen ? text.slice(0, maxLen) + "..." : text;
   }
 
-  imgResizer = (url: string, height: number, width: number): string => url.replace('/upload/', `/upload/w_${width},h_${height},c_thumb/`)
+  imgResizer = (url: string, height: number, width: number): string => {
+    if (url) {
+      if (url.includes('cloudinary')) {
+        return url.replace('/upload/', `/upload/w_${width},h_${height},c_thumb/`)
+      } else {
+        return url
+      }
+    } else {
+      return ''
+    }
+  }
 }
