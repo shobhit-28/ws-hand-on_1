@@ -4,6 +4,8 @@ import { ConnectionsListComponent } from "./connections-list/connections-list.co
 import { EmptyChatComponent } from './chatInterface/empty-chat/empty-chat.component';
 import { ChatCompComponent } from './chatInterface/chat-comp/chat-comp.component';
 import { ChatService } from '../../services/chat/chat.service';
+import { AuthService } from '../../services/auth/auth.service';
+import { CoreJsService } from '../../services/coreJs/core-js.service';
 
 @Component({
   selector: 'raj-chat-chat-outlet',
@@ -21,17 +23,27 @@ export class ChatOutletComponent implements OnInit {
 
   @ViewChild(ConnectionsListComponent) ConnectionListComp !: ConnectionsListComponent
 
-  private chatService = inject(ChatService)
+  constructor(
+    private chatService: ChatService,
+    private authService: AuthService,
+    private coreJsService: CoreJsService
+  ) { }
+
+  chattingUserList: Array<ChatFriendsList> = new Array();
 
   ngOnInit(): void {
-    // this.chatService.onMessage().subscribe((msg) => {
-    //   console.log(msg)
-    // }, (err) => {
-    //   console.error(err)
-    // })
+    this.authService.messageReviever$.subscribe({
+      next: (res) => {
+        this.usersList = this.coreJsService.moveToTop(this.usersList, res.sender._id)
+      }, error: (err) => console.error(err)
+    })
   }
 
-  getAllChatMates = (): Array<ChatFriendsList> => this.chatService.getAllChattingMates()
+  // getAllChatMates = (): Array<ChatFriendsList> => this.chatService.getAllChattingMates()
 
   getSelectedUser = (): ChatFriendsList => this.chatService.getSelectedChat()
+
+  messageSentTo(id: string) {
+    this.usersList = this.coreJsService.moveToTop(this.usersList, id)
+  }
 }

@@ -4,6 +4,7 @@ import Message from "../models/chat.model.js"
 import Follow from "../models/follow.model.js";
 import { AppError } from "../utils/appError.js";
 import { calculateExpiryHours } from "../utils/chat.util.js";
+import { ChatHistory } from "../models/chatHistory.model.js";
 
 export const createNewMessage = async ({ senderId, receiverId, content }) => {
     const sender = await User.findById(senderId);
@@ -31,12 +32,34 @@ export const createNewMessage = async ({ senderId, receiverId, content }) => {
         expireAt
     })
 
+    await updateChatHistory(senderId, receiverId)
+    await updateChatHistory(receiverId, senderId)
+
     await message.populate({
         path: 'sender receiver',
         select: '-password -__v -firstMessageSent'
     })
 
     return message.toObject();
+}
+
+export const updateChatHistory = async (userId, mateId) => {
+    const now = new Date()
+
+    const existing = await ChatHistory.findOne({ user: userId, 'mates.mate': mateId })
+
+    if (existing) {
+        await ChatHistory.updateOne(
+            { user: userId, 'mates.mate': mateId },
+            { $set: { 'mates.$.lastInteracted': now } }
+        )
+    } else {
+        await ChatHistory.updateOne(
+            { user: userId },
+            { $push: { mates: { mate: mateId, lastInteracted: now } } },
+            { upsert: true }
+        )
+    }
 }
 
 export const fetchMessages = async ({ userId, withUserId }) => {
@@ -105,23 +128,32 @@ export const getChattableMates = async (userId) => {
         throw new AppError(`User not found`, 404)
     }
 
-    const following = (await Follow.find({ following: userId }).select(`follower`)).map(objId => objId.follower.toString());
-    const follower = (await Follow.find({ follower: userId }).select(`following`)).map(objId => objId.following.toString());
+    const following = (await Follow.find({ following: userId }).select('follower')).map(objId => objId.follower.toString())
+    const follower = (await Follow.find({ follower: userId }).select('following')).map(objId => objId.following.toString())
 
     const friendsList = following.filter(id => follower.includes(id))
 
-    const mates = await User.find({ _id: { $in: friendsList } }).select('-password -__v -firstMessageSent')
+    const chatHistory = await ChatHistory.findOne({ user: userId }).lean()
 
-    const matesList = []
-
-    for (const mongooseObj of mates) {
-        const mate = mongooseObj.toObject()
-        if (!mate?.profile_pic) {
-            matesList.push({ ...mate, profile_pic: "/assets/profile/empty_profile_male.svg" })
-        } else {
-            matesList.push(mate)
+    const interactionMap = {}
+    if (chatHistory?.mates?.length) {
+        for (const entry of chatHistory.mates) {
+            interactionMap[entry.mate.toString()] = entry.lastInteracted
         }
     }
 
-    return matesList;
+    const mates = await User.find({ _id: { $in: friendsList } }).select('-password -__v -firstMessageSent')
+
+    const matesList = mates.map(mongooseObj => {
+        const mate = mongooseObj.toObject()
+        return {
+            ...mate,
+            profile_pic: mate.profile_pic || "/assets/profile/empty_profile_male.svg",
+            lastInteracted: interactionMap[mate._id.toString()] || new Date(0)
+        }
+    })
+
+    matesList.sort((a, b) => new Date(b.lastInteracted) - new Date(a.lastInteracted))
+
+    return matesList
 }

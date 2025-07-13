@@ -23,6 +23,7 @@ import { AuthService } from '../../../../services/auth/auth.service';
 })
 export class ChatCompComponent implements OnInit {
   @Input() user!: ChatFriendsList
+  @Output() messageSentTo: EventEmitter<string> = new EventEmitter<string>();
 
   chatArr: Messages = new Array();
   message: string | null = null
@@ -34,13 +35,15 @@ export class ChatCompComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.chatService.getM(this.chatService.getSelectedChat()._id).subscribe({
+    this.chatService.getMessagesForUser(this.chatService.getSelectedChat()._id).subscribe({
       next: (res) => this.chatArr = res,
       error: (err) => console.error(err)
     })
     this.authService.messageReviever$.subscribe({
       next: (res: Messages[0]) => {
-        this.chatArr = [...this.chatArr, res]
+        if (this.chatService.getSelectedChat()._id === res.sender._id) {
+          this.chatArr = [...this.chatArr, res]
+        }
       }, error: (err) => console.error(err)
     })
   }
@@ -52,14 +55,11 @@ export class ChatCompComponent implements OnInit {
   sendMessage(chatForm: NgForm, userId: string) {
     this.chatService.sendMessage(chatForm.value.Chat, userId).subscribe({
       next: (res) => {
+        this.messageSentTo.emit(userId)
         this.chatArr = [...this.chatArr, res]
         chatForm.reset()
       }, error: (err: HttpErrorResponse) => console.error(err)
     })
-  }
-
-  getMessages(userId: string) {
-    return this.chatService.getMessagesForUser(userId)
   }
 
   resizeImg = (url: string) => this.coreJsService.imgResizer(url, 300, 300)

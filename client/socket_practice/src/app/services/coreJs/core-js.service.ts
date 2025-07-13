@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { ChatFriendsList } from '../../DTO/users.dto';
 
 @Injectable({
   providedIn: 'root'
@@ -42,5 +43,12 @@ export class CoreJsService {
     } else {
       return ''
     }
+  }
+
+  moveToTop = (arr: Array<ChatFriendsList>, id: string) => {
+    const index = arr.findIndex(obj => obj._id === id)
+    if (index === -1) return arr
+    const item = arr[index]
+    return [item, ...arr.slice(0, index), ...arr.slice(index + 1)]
   }
 }

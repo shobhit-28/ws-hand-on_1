@@ -39,10 +39,9 @@ export class AuthService {
         });
 
         this.socket.on('receive-message', (msg: Messages[0]) => {
+          // console.log(first)
           this.ns.sendBrowserNotification(msg.sender.name, msg.content, true)
-          if (this.chatService.getSelectedChat()._id === msg.sender._id) {
-            this.messageRevieverSub.next(msg)
-          }
+          this.messageRevieverSub.next(msg)
         });
 
         this.socket.on('message:deleted', (messageId) => {

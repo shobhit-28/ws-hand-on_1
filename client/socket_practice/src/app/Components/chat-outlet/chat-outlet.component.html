@@ -1,13 +1,13 @@
 @if (usersList.length) {
 <div class="sub-page flex">
   <div class="basis-[30%] border-r">
-    <raj-chat-connections-list [usersList]="getAllChatMates()"></raj-chat-connections-list>
+    <raj-chat-connections-list [usersList]="usersList"></raj-chat-connections-list>
   </div>
   <div class="basis-[70%]">
     @if (getSelectedUser()._id === '') {
       <raj-chat-empty-chat></raj-chat-empty-chat>
     } @else {
-      <raj-chat-chat-comp [user]="getSelectedUser()"></raj-chat-chat-comp>
+      <raj-chat-chat-comp [user]="getSelectedUser()" (messageSentTo)="messageSentTo($event)"></raj-chat-chat-comp>
     }
   </div>
 </div>

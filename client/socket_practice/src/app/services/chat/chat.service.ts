@@ -16,7 +16,7 @@ export class ChatService {
 
   constructor(
     private notificationService: NotificationService,
-    private http: HttpClient
+    private http: HttpClient,
   ) { }
 
   getAllChattingMates = (): Array<ChatFriendsList> => this.usersList
@@ -43,11 +43,7 @@ export class ChatService {
 
   getSelectedChat = (): ChatFriendsList => this.selectedChat
 
-  getMessagesForUser(userId: string): ChatArr {
-    return chatArr
-  }
-
-  getM(userId: string): Observable<Messages> {
+  getMessagesForUser(userId: string): Observable<Messages> {
     return this.http.get<ApiResponse<Messages>>(`/rchat/chat/getMessages/${userId}`).pipe(
       map((res: ApiResponse<Messages>) => res.data)
     )
