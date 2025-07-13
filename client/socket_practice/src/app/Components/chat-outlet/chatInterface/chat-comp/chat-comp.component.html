@@ -26,7 +26,7 @@
   </div>
   <div class="h-[82vh] bg-stone-50 overflow-auto">
     @if (chatArr.length) {
-    <raj-chat-chat-text [chats]="chatArr"></raj-chat-chat-text>
+    <raj-chat-chat-text [chats]="chatArr" (deleteMessageEmitter)="deleteMessage($event)"></raj-chat-chat-text>
     } @else {
     <div class="w-full flex justify-center items-center h-[74vh] p-4">
       <p class="opacity-50">No messages here yet. Start the conversation!</p>

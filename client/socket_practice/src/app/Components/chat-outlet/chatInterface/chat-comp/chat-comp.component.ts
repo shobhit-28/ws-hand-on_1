@@ -2,11 +2,11 @@ import { ChangeDetectorRef, Component, EventEmitter, inject, Input, OnInit, Outp
 import { ChatFriendsList } from '../../../../DTO/users.dto';
 import { MatIcon } from '@angular/material/icon';
 import { ChatComponent } from "../../../../Pages/chat/chat.component";
-import { ChatTextComponent } from "./chat-text/chat-text.component";
+import { ChatTextComponent, deletEmitterType } from "./chat-text/chat-text.component";
 import { FormsModule, NgForm } from '@angular/forms';
 import { ChatService } from '../../../../services/chat/chat.service';
 import { CoreJsService } from '../../../../services/coreJs/core-js.service';
-import { Messages } from '../../../../DTO/message.dto';
+import { deletedMessageRecieverType, Messages } from '../../../../DTO/message.dto';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AuthService } from '../../../../services/auth/auth.service';
 
@@ -46,6 +46,13 @@ export class ChatCompComponent implements OnInit {
         }
       }, error: (err) => console.error(err)
     })
+    this.authService.deletedMessageReciever$.subscribe({
+      next: (res: deletedMessageRecieverType) => {
+        if (this.chatService.getSelectedChat()._id === res.userId) {
+          this.chatArr = this.chatArr.filter((msg) => msg._id !== res.messageId)
+        }
+      }, error: (err) => console.error(err)
+    })
   }
 
   back() {
@@ -63,4 +70,12 @@ export class ChatCompComponent implements OnInit {
   }
 
   resizeImg = (url: string) => this.coreJsService.imgResizer(url, 300, 300)
+
+  deleteMessage(msgid: deletEmitterType) {
+    this.chatService.deleteMessage(msgid.messageId, msgid.deleteFor).subscribe({
+      next: () => {
+        this.chatArr = this.chatArr.filter((msg) => msg._id !== msgid.messageId)
+      }, error: (err) => console.error(err)
+    })
+  }
 }

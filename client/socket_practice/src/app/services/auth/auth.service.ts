@@ -5,7 +5,7 @@ import { io, Socket } from 'socket.io-client';
 import { isPlatformBrowser } from '@angular/common';
 import { NotificationService } from '../notification/notification.service';
 import { Subject } from 'rxjs';
-import { Messages } from '../../DTO/message.dto';
+import { deletedMessageRecieverType, Messages } from '../../DTO/message.dto';
 import { ChatService } from '../chat/chat.service';
 
 @Injectable({
@@ -16,6 +16,9 @@ export class AuthService {
   private isLoggedInFlag!: boolean
   private messageRevieverSub = new Subject<Messages[0]>();
   public messageReviever$ = this.messageRevieverSub.asObservable()
+
+  private deletedMessageSub = new Subject<deletedMessageRecieverType>();
+  public deletedMessageReciever$ = this.deletedMessageSub.asObservable()
 
   constructor(
     private chromeDataTransactionService: ChromeDataTransactionService,
@@ -44,8 +47,8 @@ export class AuthService {
           this.messageRevieverSub.next(msg)
         });
 
-        this.socket.on('message:deleted', (messageId) => {
-          console.log('🗑️ Message deleted:', messageId);
+        this.socket.on('delete-message', (deletedMsg: deletedMessageRecieverType) => {
+          this.deletedMessageSub.next(deletedMsg)
         });
 
         this.socket.on('got-followed', (follower) => {

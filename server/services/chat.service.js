@@ -77,7 +77,7 @@ export const fetchMessages = async ({ userId, withUserId }) => {
     return messages.map(message => message.toObject());
 }
 
-export const deleteMessage = async ({ messageId, userId }) => {
+export const deleteMessage = async ({ messageId, userId }, deleteForEveryone) => {
     const message = await Message.findById(messageId);
 
     if (!message) {
@@ -98,6 +98,15 @@ export const deleteMessage = async ({ messageId, userId }) => {
 
     if (message.deletedBy.includes(userIdStr)) {
         throw new AppError(`Message has already been deleted`, 400)
+    }
+
+    if (deleteForEveryone) {
+        if (message.sender._id.toString() === userId) {
+            await Message.findByIdAndDelete(messageId)
+            return message.toObject();            
+        } else {
+            throw new AppError(`You can only delete your sent messages for everyone`, 400)
+        }
     }
 
     message.deletedBy.push(userIdStr)

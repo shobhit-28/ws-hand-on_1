@@ -1,13 +1,17 @@
 <div #chatContainer class="w-full h-[74vh] max-h-[76vh] overflow-y-auto">
   <div class="flex flex-col justify-end min-h-full p-4 gap-4">
     @for (chat of chats; track $index) {
-      <div [ngClass]="{
-            'text-stone-800 rounded-br-none bg-stone-300 self-end': !isRecieved(chat),
-            'bg-stone-800 rounded-bl-none text-stone-200 self-start': isRecieved(chat)
-          }" class="max-w-[60%] rounded-lg p-4 relative break-words inline-block">
-        <div class="text-sm">{{ chat.content }}</div>
-        <div class="text-[.6rem] text-right opacity-60 italic">{{ dateNumToDateStr(chat.createdAt) }}</div>
-      </div>
+    <div [ngClass]="{
+          'text-stone-800 rounded-br-none bg-stone-300 self-end': !isRecieved(chat),
+          'bg-stone-800 rounded-bl-none text-stone-200 self-start': isRecieved(chat)
+        }" class="max-w-[60%] rounded-lg p-4 relative break-words inline-block group">
+      <button (click)="deleteMessage(chat._id, isRecieved(chat))"
+        class="absolute top-2 right-2 text-red-600 hover:text-red-600 hidden group-hover:block">
+        <mat-icon class="text-[1.2rem]" aria-hidden="false" aria-label="Example home icon" fontIcon="delete"></mat-icon>
+      </button>
+      <div class="text-sm">{{ chat.content }}</div>
+      <div class="text-[.6rem] text-right opacity-60 italic">{{ dateNumToDateStr(chat.createdAt) }}</div>
+    </div>
     }
   </div>
 </div>

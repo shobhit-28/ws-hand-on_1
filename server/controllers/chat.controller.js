@@ -38,8 +38,22 @@ export const deleteMessage = asyncHandler(async (req, res) => {
         messageId: req.params.messageId
     })
 
-    const deletedMessage = await chatService.deleteMessage(dto)
-    successResponse(res, `Message deleted successfully`, deletedMessage)
+    await chatService.deleteMessage(dto, false)
+    successResponse(res, `Message deleted successfully`, null, 204)
+})
+
+export const deleteMessageForEveryone = asyncHandler(async (req, res) => {
+    const dto = new DeleteMessageDTO({
+        userId: req.user.id,
+        messageId: req.params.messageId
+    })
+
+    const msg = await chatService.deleteMessage(dto, true)
+
+    const io = req.app.get('io')
+    io.to(msg.receiver.toString()).emit('delete-message', dto)
+
+    successResponse(res, `Message deleted successfully`, null, 204)
 })
 
 export const chattableMates = asyncHandler(async (req, res) => {

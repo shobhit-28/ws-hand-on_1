@@ -1,6 +1,6 @@
 import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { defaultChatFriendVal, ChatFriendsList } from '../../DTO/users.dto';
-import { ChatArr, chatArr, Messages } from '../../DTO/message.dto';
+import { ChatArr, Messages } from '../../DTO/message.dto';
 import { map, Observable } from 'rxjs';
 import { isPlatformBrowser } from '@angular/common';
 import { NotificationService } from '../notification/notification.service';
@@ -56,5 +56,11 @@ export class ChatService {
     }).pipe(
       map(res => res.data)
     )
+  }
+
+  deleteMessage(msgId: string, deleteFor: 'me' | 'everyone'): Observable<void> {
+    return deleteFor === 'me'
+      ? this.http.delete<void>(`/rchat/chat/deleteMessage/${msgId}`)
+      : this.http.delete<void>(`/rchat/chat/deleteMessageForEveryone/${msgId}`)
   }
 }
