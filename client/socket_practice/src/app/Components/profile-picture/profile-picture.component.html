@@ -1,0 +1,17 @@
+<div class="dialog-header">
+    <div class="flex justify-between items-center w-full pr-4">
+        <span mat-dialog-title>Edit your image</span>
+        <button mat-icon-button class="" (click)="closeDialog()">
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
+</div>
+
+<div mat-dialog-content class="dialog-content">
+    Are you sure you want to delete this {{ data?.label || 'item' }}?
+</div>
+
+<div mat-dialog-actions class="dialog-actions" align="end">
+    <button mat-button (click)="closeDialog()">Cancel</button>
+    <button mat-flat-button (click)="closeDialog()">Delete</button>
+</div>

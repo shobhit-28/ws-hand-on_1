@@ -3,13 +3,17 @@ import { RouterModule } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { ChromeDataTransactionService } from '../../../services/chromeDataTransaction/chrome-data-transaction.service';
 import { CoreJsService } from '../../../services/coreJs/core-js.service';
+import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
+import { ProfilePictureComponent } from '../../profile-picture/profile-picture.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'raj-chat-sub-router',
   standalone: true,
   imports: [
     RouterModule,
-    MatIconModule
+    MatIconModule,
+    MatMenuModule
   ],
   templateUrl: './sub-router.component.html',
   styleUrl: './sub-router.component.css',
@@ -23,7 +27,8 @@ export class SubRouterComponent {
 
   constructor(
     private dataService: ChromeDataTransactionService,
-    private coreJsService: CoreJsService
+    private coreJsService: CoreJsService,
+    private dialog: MatDialog
   ) { }
 
   userDetails: {
@@ -38,4 +43,24 @@ export class SubRouterComponent {
   getUserDetails = () => this.dataService.getCookies('user')
 
   getImgOfUser = () => this.coreJsService.imgResizer(this.getUserDetails()?.profile_pic, 400, 400) || "/assets/profile/empty_profile_male.svg"
+
+  addProfilePic() {
+    this.openProfilePictureUpdationComponent()
+  }
+
+  openProfilePictureUpdationComponent() {
+    const dialogRef = this.dialog.open(
+      ProfilePictureComponent, {
+      // data: {},
+      // width: '400px'
+    })
+
+    dialogRef.afterClosed().subscribe({
+      next: (res) => {
+        if (res) {
+          console.log(res)
+        }
+      }, error: (err) => console.error(err)
+    })
+  }
 }

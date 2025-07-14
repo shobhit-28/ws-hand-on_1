@@ -67,7 +67,7 @@ export class ChatTextComponent implements AfterViewInit, AfterViewChecked {
     const dialogRef = this.dialog.open(
       DeleteConfirmationComponent, {
       data: {
-        dialog: `Are you sure you want to delete this message?${isRecieved ? '' : ` It will be removed only for you.`}`,
+        dialog: `Are you sure you want to delete this message?${!isRecieved ? '' : ` It will be removed only for you.`}`,
         buttonNames: {
           YES: `Delete ${isRecieved ? '' : ' for everyone'}`,
           NO: isRecieved ? "Cancel" : "Delete for me"
