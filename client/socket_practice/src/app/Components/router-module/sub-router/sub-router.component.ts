@@ -6,6 +6,7 @@ import { CoreJsService } from '../../../services/coreJs/core-js.service';
 import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 import { ProfilePictureComponent } from '../../profile-picture/profile-picture.component';
 import { MatDialog } from '@angular/material/dialog';
+import { ProfilePicHandlerService } from '../../../services/profilePicHandler/profile-pic-handler.service';
 
 @Component({
   selector: 'raj-chat-sub-router',
@@ -24,28 +25,32 @@ export class SubRouterComponent {
     { path: 'explore', name: 'Explore', icon: 'explore' },
     { path: 'chat', name: 'Chat', icon: 'chat' }
   ]);
+  selectedFile: File | null = null;
+  imagePreview: string | null = null;
 
   constructor(
     private dataService: ChromeDataTransactionService,
     private coreJsService: CoreJsService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private profilePicService: ProfilePicHandlerService
   ) { }
-
-  userDetails: {
-    userName: string,
-    userEmail: string,
-    userImg?: string
-  } = {
-      userName: 'Shobhit Raj',
-      userEmail: 's@gm.co'
-    }
 
   getUserDetails = () => this.dataService.getCookies('user')
 
   getImgOfUser = () => this.coreJsService.imgResizer(this.getUserDetails()?.profile_pic, 400, 400) || "/assets/profile/empty_profile_male.svg"
 
-  addProfilePic() {
-    this.openProfilePictureUpdationComponent()
+  async addProfilePic() {
+    try {
+      const { img, preview } = await this.profilePicService.triggerFileUpload()
+      console.log(`preview`, preview)
+      console.log(`file`, img)
+      if (img) {
+        this.profilePicService.uploadFile(img)
+      }
+      this.openProfilePictureUpdationComponent()
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   openProfilePictureUpdationComponent() {

@@ -8,10 +8,11 @@
 </div>
 
 <div mat-dialog-content class="dialog-content">
-    Are you sure you want to delete this {{ data?.label || 'item' }}?
+    <img [src]="img.preview" alt="" srcset="">
 </div>
 
 <div mat-dialog-actions class="dialog-actions" align="end">
+    <button mat-button (click)="closeDialog()">ReUpload</button>
     <button mat-button (click)="closeDialog()">Cancel</button>
-    <button mat-flat-button (click)="closeDialog()">Delete</button>
+    <button mat-flat-button (click)="closeDialog()">Change</button>
 </div>
