@@ -12,7 +12,13 @@
 </div>
 
 <div mat-dialog-actions class="dialog-actions" align="end">
-    <button mat-button (click)="closeDialog()">ReUpload</button>
+    <button mat-button (click)="reUpload()">ReUpload</button>
     <button mat-button (click)="closeDialog()">Cancel</button>
-    <button mat-flat-button (click)="closeDialog()">Change</button>
+    <button mat-flat-button (click)="uploadProfilePicture()" [disabled]="img.img === null">Change</button>
 </div>
+
+@if (loading) {
+    <div class=" fixed top-0 right-0 h-screen w-screen flex justify-center items-center bg-black-200/80 z-50">
+        <raj-chat-loader></raj-chat-loader>
+    </div>
+}

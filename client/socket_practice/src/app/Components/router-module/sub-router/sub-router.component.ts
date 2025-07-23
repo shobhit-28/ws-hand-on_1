@@ -18,7 +18,7 @@ import { ProfilePicHandlerService } from '../../../services/profilePicHandler/pr
   ],
   templateUrl: './sub-router.component.html',
   styleUrl: './sub-router.component.css',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  // changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SubRouterComponent {
   routes = Object.freeze([
@@ -42,11 +42,6 @@ export class SubRouterComponent {
   async addProfilePic() {
     try {
       const { img, preview } = await this.profilePicService.triggerFileUpload()
-      console.log(`preview`, preview)
-      console.log(`file`, img)
-      if (img) {
-        this.profilePicService.uploadFile(img)
-      }
       this.openProfilePictureUpdationComponent()
     } catch (error) {
       console.error(error)

@@ -1,4 +1,7 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { ApiResponse } from '../../DTO/commonResponse.dto';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +15,9 @@ export class ProfilePicHandlerService {
       preview: null
     }
 
-  constructor() { }
+  constructor(
+    private http: HttpClient
+  ) { }
 
   private async takeFileInput(): Promise<{ file: File; preview: string }> {
     return new Promise((resolve, reject) => {
@@ -44,16 +49,11 @@ export class ProfilePicHandlerService {
     });
   }
 
-  uploadFile(file: File) {
-    if (!file) {
-      console.error('❌ No file selected');
-      return;
-    }
-
+  uploadFile(file: File): Observable<ApiResponse<string>> {
     const formData = new FormData();
-    formData.append('image', file);
+    formData.append('profile_pic', file);
 
-    console.log('📤 Uploading file with FormData:', formData.get('image'));
+    return this.http.put<ApiResponse<string>>('/rchat/user/uploadProfilePic', formData)
   }
 
   public async triggerFileUpload() {
@@ -69,5 +69,11 @@ export class ProfilePicHandlerService {
     preview: string | null
   } {
     return this.imageFile
+  }
+
+  updateLatestProfilePic(): void {
+    this.http.get<ApiResponse<null>>('/rchat/user/updateProfilePic').subscribe({
+      error: (err) => console.error(err)
+    })
   }
 }

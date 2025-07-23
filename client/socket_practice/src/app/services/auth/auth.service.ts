@@ -7,6 +7,7 @@ import { NotificationService } from '../notification/notification.service';
 import { Subject } from 'rxjs';
 import { deletedMessageRecieverType, Messages } from '../../DTO/message.dto';
 import { ChatService } from '../chat/chat.service';
+import { ProfilePicHandlerService } from '../profilePicHandler/profile-pic-handler.service';
 
 @Injectable({
   providedIn: 'root'
@@ -26,7 +27,8 @@ export class AuthService {
     @Inject(PLATFORM_ID) private platformId: Object,
     private data: ChromeDataTransactionService,
     private ns: NotificationService,
-    private chatService: ChatService
+    private chatService: ChatService,
+    private profilePicHandler: ProfilePicHandlerService
   ) { }
 
   initSocket(userId: string) {
@@ -49,6 +51,11 @@ export class AuthService {
 
         this.socket.on('delete-message', (deletedMsg: deletedMessageRecieverType) => {
           this.deletedMessageSub.next(deletedMsg)
+        });
+
+        this.socket.on('profile-pic-changed', (changedBool: true) => {
+          console.log('changed')
+          this.profilePicHandler.updateLatestProfilePic();
         });
 
         this.socket.on('got-followed', (follower) => {
