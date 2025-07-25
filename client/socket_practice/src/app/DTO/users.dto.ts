@@ -11,3 +11,18 @@ export const defaultChatFriendVal: ChatFriendsList = {
   email: '',
   profile_pic: ''
 }
+
+export type SearchUserList = {
+  users: Array<{
+    _id: string,
+    name: string,
+    email: string,
+    firstMessageSent: boolean,
+    profile_pic?: string,
+    matchRank: number
+  }>,
+  total: number,
+  page: number,
+  limit: number,
+  totalPages: number
+}

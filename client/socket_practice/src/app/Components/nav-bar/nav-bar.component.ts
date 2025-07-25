@@ -14,6 +14,8 @@ import { RouterModuleComponent } from '../router-module/router-module.component'
 import { AuthService } from '../../services/auth/auth.service';
 import { FormsModule, NgForm } from '@angular/forms';
 import { CoreJsService } from '../../services/coreJs/core-js.service';
+import { UsersService } from '../../services/users/users.service';
+import { SearchUserList } from '../../DTO/users.dto';
 
 @Component({
   selector: 'raj-chat-nav-bar',
@@ -39,11 +41,20 @@ export class NavBarComponent implements OnInit {
   private breakpointObserver = inject(BreakpointObserver);
   private authService = inject(AuthService)
   private coreJsService = inject(CoreJsService)
+  private usersService = inject(UsersService)
 
-  debouncedSearchUser: (user: string) => void = () => {};
+  searchedUser: SearchUserList = {
+    users: new Array(),
+    total: 0,
+    page: 0,
+    limit: 0,
+    totalPages: 0
+  }
+
+  debouncedSearchUser: (user: string) => void = () => { };
 
   ngOnInit() {
-    this.debouncedSearchUser = this.coreJsService.debounceFunc(this.searchUser.bind(this), 500);
+    this.debouncedSearchUser = this.coreJsService.debounceFunc(this.searchUser.bind(this), 300);
   }
 
   userName: string | null = null
@@ -64,7 +75,12 @@ export class NavBarComponent implements OnInit {
 
   searchUser(user: string) {
     if (user) {
-      console.log(user)
+      this.usersService.fetchUsers(user, 1, 2).subscribe({
+        next: (res) => {
+          this.searchedUser = res
+          console.log(this.searchedUser)
+        }, error: (err) => console.error(err)
+      })
     }
   }
 

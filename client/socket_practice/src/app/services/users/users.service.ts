@@ -1,12 +1,21 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { UserDetails, usersList } from '../../DTO/users.dto';
+import { ApiResponse } from '../../DTO/commonResponse.dto';
+import { SearchUserList } from '../../DTO/users.dto';
+import { map, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UsersService {
 
-  constructor() { }
+  constructor(
+    private http: HttpClient
+  ) { }
 
-  getAllUsers = (): Array<UserDetails> => usersList
+  fetchUsers(user: string, page: number, limit: number): Observable<SearchUserList> {
+    return this.http.get<ApiResponse<SearchUserList>>(`/rchat/user/searchUser/${user}?page=${page}&limit=${limit}`).pipe(
+      map((res) => res.data)
+    )
+  }
 }
