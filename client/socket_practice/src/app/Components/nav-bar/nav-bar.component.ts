@@ -15,7 +15,8 @@ import { AuthService } from '../../services/auth/auth.service';
 import { FormsModule, NgForm } from '@angular/forms';
 import { CoreJsService } from '../../services/coreJs/core-js.service';
 import { UsersService } from '../../services/users/users.service';
-import { SearchUserList } from '../../DTO/users.dto';
+import { defaultSearchedUser, SearchUserList } from '../../DTO/users.dto';
+import { SingleSearchedUserComponent } from "./single-searched-user/single-searched-user.component";
 
 @Component({
   selector: 'raj-chat-nav-bar',
@@ -33,6 +34,8 @@ import { SearchUserList } from '../../DTO/users.dto';
     // AppComponent,
     // HomeComponent,
     // RouterModuleComponent
+    ,
+    SingleSearchedUserComponent
   ],
   templateUrl: './nav-bar.component.html',
   styleUrl: './nav-bar.component.css'
@@ -43,15 +46,10 @@ export class NavBarComponent implements OnInit {
   private coreJsService = inject(CoreJsService)
   private usersService = inject(UsersService)
 
-  searchedUser: SearchUserList = {
-    users: new Array(),
-    total: 0,
-    page: 0,
-    limit: 0,
-    totalPages: 0
-  }
+  searchedUser: SearchUserList = defaultSearchedUser
 
   debouncedSearchUser: (user: string) => void = () => { };
+  loading: boolean = true;
 
   ngOnInit() {
     this.debouncedSearchUser = this.coreJsService.debounceFunc(this.searchUser.bind(this), 300);
@@ -67,24 +65,40 @@ export class NavBarComponent implements OnInit {
 
   isLoggedIn = () => this.authService.isLoggedIn()
 
-  logout = () => this.authService.setIsLoggedIn(false, true)
+  logout = () => {
+    this.authService.setIsLoggedIn(false, true);
+    this.searchedUser = defaultSearchedUser
+    this.userName = null
+    this.loading = true
+  }
 
   searchUserFormSubmit(chatForm: NgForm) {
     this.searchUser(chatForm.value.user)
   }
 
   searchUser(user: string) {
+    this.loading = true
     if (user) {
-      this.usersService.fetchUsers(user, 1, 2).subscribe({
+      this.usersService.fetchUsers(user, 1, 5).subscribe({
         next: (res) => {
           this.searchedUser = res
-          console.log(this.searchedUser)
-        }, error: (err) => console.error(err)
+          this.loading = false
+          // console.log(this.searchedUser)
+        }, error: (err) => {
+          this.loading = false
+          console.error(err)
+        }
       })
+    } else {
+      this.searchedUser = defaultSearchedUser
     }
   }
 
   onNameChange(user: string) {
     this.debouncedSearchUser(user)
+  }
+
+  resetSearchUser() {
+    this.searchedUser = defaultSearchedUser
   }
 }

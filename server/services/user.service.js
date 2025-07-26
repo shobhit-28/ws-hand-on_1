@@ -1,6 +1,8 @@
 import cloudinary from "../config/cloudinary.js";
 import User from "../models/auth.model.js";
+import Follow from '../models/follow.model.js'
 import { AppError } from '../utils/appError.js';
+import mongoose from "mongoose";
 
 export const uploadProfilePicService = async ({ userId, file }) => {
     if (!file || !file.path) {
@@ -30,10 +32,12 @@ export const findUsers = async ({ user, userToBeSearched, limit, page }) => {
 
     const q = userToBeSearched;
 
+    const userObjectId = new mongoose.Types.ObjectId(user);
+
     const pipeline = [
         {
             $match: {
-                _id: { $ne: user },
+                _id: { $ne: userObjectId },
                 $or: [
                     { name: { $regex: q, $options: 'i' } },
                     { email: { $regex: q, $options: 'i' } }
@@ -64,12 +68,40 @@ export const findUsers = async ({ user, userToBeSearched, limit, page }) => {
         { $count: 'total' }
     ]);
 
-    const [users, totalRes] = await Promise.all([
+    let [users, totalRes] = await Promise.all([
         User.aggregate(pipeline),
         User.aggregate(countPipeline)
     ]);
 
     const total = totalRes[0]?.total || 0;
+
+    const userIds = users.map(u => u._id);
+
+    // Get relationship data
+    const [imFollowing, followingMe] = await Promise.all([
+        Follow.find({ follower: userObjectId, following: { $in: userIds } }).select('following'),
+        Follow.find({ follower: { $in: userIds }, following: userObjectId }).select('follower')
+    ]);
+
+    const imFollowingSet = new Set(imFollowing.map(f => f.following.toString()));
+    const followingMeSet = new Set(followingMe.map(f => f.follower.toString()));
+
+    // Annotate
+    users = users.map(u => {
+        const id = u._id.toString();
+        const iFollow = imFollowingSet.has(id);
+        const followsMe = followingMeSet.has(id);
+        let relationship;
+        if (iFollow && followsMe) relationship = "mutual";
+        else if (iFollow) relationship = "following";
+        else if (followsMe) relationship = "follower";
+        else relationship = "none";
+        return { ...u, relationship };
+    });
+
+    // Sort by relationship
+    const relationshipRank = { mutual: 0, following: 1, follower: 2, none: 3 };
+    users.sort((a, b) => relationshipRank[a.relationship] - relationshipRank[b.relationship]);
 
     return {
         users,

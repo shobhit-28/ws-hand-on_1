@@ -18,4 +18,20 @@ export class UsersService {
       map((res) => res.data)
     )
   }
+
+  followUser(userId: string): Observable<string> {
+    return this.http.post<ApiResponse<{}>>(`/rchat/toggle-follow/follow`, {
+      followingId: userId
+    }).pipe(
+      map(res => res.message)
+    )
+  }
+
+  unfollowUser(userId: string): Observable<void> {
+    return this.http.delete<void>('/rchat/toggle-follow/unfollow', {
+      body: {
+        followingId: userId
+      }
+    })
+  }
 }

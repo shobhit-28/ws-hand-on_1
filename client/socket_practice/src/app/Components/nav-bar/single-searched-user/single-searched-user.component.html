@@ -1,0 +1,40 @@
+<div class="">
+    @if (loading) {
+    <div class="py-4">
+        <raj-chat-loader [diameter]="40"></raj-chat-loader>
+    </div>
+    } @else {
+    @if (users.users.length) {
+    <div class="p-2 flex flex-col gap-4 max-h-[50vh] overflow-auto">
+        @for (user of users.users; track $index) {
+        <div
+            class="w-full rounded-md cursor-pointer duration-200 hover:bg-slate-200/90 p-[.5rem] flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <div class="flex items-center justify-center border-0 rounded-full h-[3rem] w-[3rem] overflow-hidden ">
+                    <img class="w-full h-full object-cover" [src]="getResizedImg(user?.profile_pic)" alt="" srcset="">
+                </div>
+                <div class="flex flex-col" [title]="user.name">
+                    <span class="">{{returnTruncatedStr(user.name, 13)}}</span>
+                    <span class="text-xs italic opacity-60">{{returnTruncatedStr(user.email.toLocaleLowerCase(),
+                        15)}}</span>
+                </div>
+            </div>
+            <button class="text-xs border border-white rounded-md p-2 italic" (click)="followUnfollowUser(getButtonType(user), user._id)">{{getButtonType(user)}}</button>
+        </div>
+        }
+        @if (viewMoreLoading) {
+        <raj-chat-loader [diameter]="25"></raj-chat-loader>
+        }
+        @if (users.total !== users.users.length) {
+        <button class="p-2 rounded-md border text-xs" (click)="showMore()">Load more</button>
+        }
+    </div>
+    } @else {
+    <div class="h-24 flex justify-center items-center">
+        <p class="text-slate-900/80 italic">
+            No users found
+        </p>
+    </div>
+    }
+    }
+</div>

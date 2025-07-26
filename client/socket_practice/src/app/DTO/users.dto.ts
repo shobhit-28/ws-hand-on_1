@@ -19,10 +19,19 @@ export type SearchUserList = {
     email: string,
     firstMessageSent: boolean,
     profile_pic?: string,
-    matchRank: number
+    matchRank: number,
+    relationship: 'mutual' | 'following' | 'follower' | 'none'
   }>,
   total: number,
   page: number,
   limit: number,
   totalPages: number
+}
+
+export const defaultSearchedUser: SearchUserList = {
+  users: new Array(),
+  total: 0,
+  page: 0,
+  limit: 0,
+  totalPages: 0
 }
