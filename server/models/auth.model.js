@@ -4,9 +4,9 @@ import bcrypt from 'bcrypt';
 const userSchema = new mongoose.Schema({
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
+    password: { type: String, required: true, select: false },
     profile_pic: { type: String, required: false },
-    profile_pic_id: { type: String, required: false },
+    profile_pic_id: { type: String, required: false, select: false },
     firstMessageSent: { type: Boolean, default: false }
 })
 
