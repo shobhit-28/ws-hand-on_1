@@ -9,7 +9,7 @@ export const uploadProfilePicService = async ({ userId, file }) => {
         throw new AppError(`No file uploaded`, 400)
     }
 
-    const user = await User.findById(userId)
+    const user = await User.findById(userId).select('+profile_pic_id')
 
     if (!user) {
         throw new AppError(`User not found`, 404);

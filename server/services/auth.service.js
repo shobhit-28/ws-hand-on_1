@@ -6,7 +6,7 @@ export const loginUser = async ({ email, password }) => {
     if (!testEmail(email)) {
         throw new AppError('Invalid Email', 400)
     }
-    const user = await authModel.findOne({ email })
+    const user = await authModel.findOne({ email }).select('+password')
     if (!user) {
         throw new AppError('User not found', 404)
     }

@@ -20,22 +20,22 @@ router.use(
     allowedMethods({ GET: getPosts })
 )
 
-router.get('/posts/photo/:filename', authenticateToken, async (req, res) => {
-    const fileName = `posts/${req.params.filename}`
+// router.get('/posts/photo/:filename', authenticateToken, async (req, res) => {
+//     const fileName = `posts/${req.params.filename}`
 
-    const { data: { authorizationToken } } = await b2.getDownloadAuthorization({
-        bucketId: process.env.B2_BUCKET_ID,
-        fileName,
-        validDurationInSeconds: 60
-    })
+//     const { data: { authorizationToken } } = await b2.getDownloadAuthorization({
+//         bucketId: process.env.B2_BUCKET_ID,
+//         fileName,
+//         validDurationInSeconds: 60
+//     })
 
-    const signedUrl = `${b2.downloadUrl}/file/${process.env.B2_BUCKET_NAME}/${fileName}?Authorization=${authorizationToken}`
+//     const signedUrl = `${b2.downloadUrl}/file/${process.env.B2_BUCKET_NAME}/${fileName}?Authorization=${authorizationToken}`
 
-    const response = await fetch(signedUrl)
-    const buffer = await response.arrayBuffer()
+//     const response = await fetch(signedUrl)
+//     const buffer = await response.arrayBuffer()
 
-    res.setHeader('Content-Type', response.headers.get('content-type'))
-    res.send(Buffer.from(buffer))
-})
+//     res.setHeader('Content-Type', response.headers.get('content-type'))
+//     res.send(Buffer.from(buffer))
+// })
 
 export default router
