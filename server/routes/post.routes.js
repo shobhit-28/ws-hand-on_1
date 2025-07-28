@@ -1,7 +1,7 @@
 import express from 'express'
 import { authenticateToken } from '../middleware/auth.middleware.js'
 import { allowedMethods } from '../utils/allowedMethods.util.js'
-import { createPost, getPosts } from '../controllers/posts.controller.js'
+import { createPost, getPostPhoto, getPosts } from '../controllers/posts.controller.js'
 import postUpload from '../middleware/postUpload.js'
 import { b2 } from '../config/b2Bucket.js'
 
@@ -19,6 +19,8 @@ router.use(
     authenticateToken,
     allowedMethods({ GET: getPosts })
 )
+
+router.use('/photo/:postId', authenticateToken, allowedMethods({GET: getPostPhoto}))
 
 // router.get('/posts/photo/:filename', authenticateToken, async (req, res) => {
 //     const fileName = `posts/${req.params.filename}`

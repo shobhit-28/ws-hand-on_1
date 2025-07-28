@@ -14,18 +14,32 @@ export const createPostService = async (dto) => {
 }
 
 export const getPosts = async (userId) => {
-    const user = User.findById(userId)
-
+    const user = await User.findById(userId)
     if (!user) {
         throw new AppError(`User not found`, 404)
     }
 
-    const posts = await Post.find().sort({ createdAt: -1 }).populate('userId').populate('comments.userId')
-    const postsWithData = await Promise.all(posts.map(async (post) => {
-        const url = await generateDownloadUrl(post.photoFileName)
-        return { ...post.toObject(), photoUrl: url }
-    }))
+    const posts = await Post.find()
+        .sort({ createdAt: -1 })
+        .populate('userId')
+        .populate('comments.userId')
+
+    const postsWithData = await Promise.all(
+        posts.map(async (post) => {
+            const photoUrl = await generateDownloadUrl(post.photoFileName)
+            return { ...post.toObject(), photoEndpoint: `/rchat/posts/photo/${post._id}` }
+        })
+    )
+
     return postsWithData
+}
+
+export const getPostsForUrlBinding = async (postId) => {
+    const post = await Post.findById(postId)
+    if (!post) throw new AppError('Post not found', 404)
+
+    const signedUrl = await generateDownloadUrl(post.photoFileName)
+    return signedUrl
 }
 
 export const getPostById = async (id) => {

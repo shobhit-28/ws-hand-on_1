@@ -2,7 +2,8 @@ import * as postService from '../services/post.service.js'
 import { CreatePostDto } from '../dto/posts/create_post.dto.js'
 import { asyncHandler } from '../middleware/asyncHandler.js'
 import { successResponse } from '../utils/apiResponse.util.js'
-import { b2 } from '../config/b2Bucket.js'
+import { AppError } from '../utils/appError.js'
+import https from 'https'
 
 export const createPost = asyncHandler(async (req, res) => {
   const dto = new CreatePostDto({
@@ -24,13 +25,16 @@ export const getPosts = asyncHandler(async (req, res) => {
   successResponse(res, 'Posts fetched', posts, 200)
 })
 
-// export const getPostImageUrl = async (req, res) => {
-//   const post = await postService.getPostById(req.params.id)
-//   if (!post) return res.status(404).json({ error: 'Post not found' })
+export const getPostPhoto = asyncHandler(async (req, res) => {
+  const signedUrl = await postService.getPostsForUrlBinding(req.params.postId)
 
-//   const url = await generateDownloadUrl(post.photoFileName)
-//   res.json({ url })
-// }
+  https.get(signedUrl, (fileRes) => {
+    res.setHeader('Content-Type', fileRes.headers['content-type'])
+    fileRes.pipe(res)
+  }).on('error', () => {
+    throw new AppError('Error streaming file', 500)
+  })
+})
 
 // export const deletePost = async (req, res) => {
 //   const post = await postService.deletePostById(req.params.id)
