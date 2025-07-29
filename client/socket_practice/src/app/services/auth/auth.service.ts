@@ -90,6 +90,7 @@ export class AuthService {
       if (isNav) {
         this.router.navigateByUrl('/auth')
       }
+      this.chatService.clearSelection()
       this.chromeDataTransactionService.clearAllCookies()
       this.disconnectSocket()
     }
