@@ -60,3 +60,25 @@ export type GetFollowingList = Array<{
   updatedAt: string,
   __v: number
 }>
+
+export type UserProfileLoader = {
+  profile_pic: boolean
+}
+
+export const defaultUserProfileLoaderValue: UserProfileLoader = {
+  profile_pic: true
+}
+
+export type UserProfileUser = {
+  userDetails: ChatFriendsList,
+  followers: GetFollowerList,
+  following: GetFollowingList,
+  status: { isGettingFollowed: boolean, isAlreadyFollowing: boolean }
+}
+
+export const defaultUserProfileUser: UserProfileUser = {
+  userDetails: defaultChatFriendVal,
+  followers: new Array(),
+  following: new Array(),
+  status: { isGettingFollowed: true, isAlreadyFollowing: true }
+}

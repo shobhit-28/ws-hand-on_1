@@ -32,7 +32,7 @@
       </div>
       @if (userName) {
         <div class="fixed top-[11vh] right-8 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] rounded w-80 max-h-[50vh] z-50">
-          <raj-chat-single-searched-user [users]="searchedUser" [loading]="loading" [searchedText]="userName"></raj-chat-single-searched-user>
+          <raj-chat-single-searched-user [users]="searchedUser" [loading]="loading" [searchedText]="userName" (navigationEmitter)="clearSearchedUser()"></raj-chat-single-searched-user>
         </div>
         }
       }

@@ -1,1 +1,4 @@
-<p>profile-page works!</p>
+<div class="sub-page p-6">
+    <raj-chat-top-section [imgUrl]="getImgOfUser()" [loader]="loader" [user]="user" (ToggleFollowEmitter)="toggleFollow($event)"></raj-chat-top-section>
+    <hr class="my-4">
+</div>

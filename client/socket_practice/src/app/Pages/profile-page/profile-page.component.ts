@@ -1,31 +1,29 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ChromeDataTransactionService } from '../../services/chromeDataTransaction/chrome-data-transaction.service';
-import { ChatFriendsList, defaultChatFriendVal, GetFollowerList, GetFollowingList } from '../../DTO/users.dto';
+import { ChatFriendsList, defaultChatFriendVal, defaultUserProfileLoaderValue, defaultUserProfileUser, GetFollowerList, GetFollowingList, UserProfileLoader, UserProfileUser } from '../../DTO/users.dto';
 import { UsersService } from '../../services/users/users.service';
+import { CoreJsService } from '../../services/coreJs/core-js.service';
+import { TopSectionComponent } from "../../Components/profile-page-components/top-section/top-section.component";
 
 @Component({
   selector: 'raj-chat-profile-page',
   standalone: true,
-  imports: [],
+  imports: [TopSectionComponent],
   templateUrl: './profile-page.component.html',
   styleUrl: './profile-page.component.css'
 })
 export class ProfilePageComponent implements OnInit {
-  user: {
-    userDetails: ChatFriendsList,
-    followers: GetFollowerList,
-    following: GetFollowingList
-  } = {
-      userDetails: defaultChatFriendVal,
-      followers: new Array(),
-      following: new Array()
-    }
+  user: UserProfileUser = defaultUserProfileUser
+
+  loader: UserProfileLoader = defaultUserProfileLoaderValue
 
   constructor(
     private activatedRoute: ActivatedRoute,
     private dataService: ChromeDataTransactionService,
-    private userService: UsersService
+    private userService: UsersService,
+    private coreJsService: CoreJsService,
+    private cd: ChangeDetectorRef
   ) { }
 
   ngOnInit(): void {
@@ -40,6 +38,7 @@ export class ProfilePageComponent implements OnInit {
       this.getFollowers(profileId),
       this.getFollowing(profileId)
     ])
+    this.loader['profile_pic'] = false
 
     results.forEach((result, index) => {
       if (result.status === 'rejected') {
@@ -52,12 +51,13 @@ export class ProfilePageComponent implements OnInit {
   private getProfileDetails(profileId: string): Promise<void> {
     return new Promise<void>((resolve, rej) => {
       if (profileId === this.dataService.getCookies('user')?.id) {
-        this.user['userDetails'] = this.dataService.getCookies('user')
+        this.user['userDetails'] = { ...this.dataService.getCookies('user'), _id: this.dataService.getCookies('user')?.id }
         resolve()
       } else {
         this.userService.fetchUser(profileId).subscribe({
-          next: (res) => {
+          next: async (res) => {
             this.user['userDetails'] = res;
+            this.user['status'] = await this.userService.getFollowStatuses(res._id)
             resolve()
           },
           error: (err) => {
@@ -95,5 +95,35 @@ export class ProfilePageComponent implements OnInit {
         }
       })
     })
+  }
+
+  getImgOfUser = () => this.coreJsService.imgResizer(this.user.userDetails.profile_pic, 600, 600) || "/assets/profile/empty_profile_male.svg"
+
+  followUser(userId: string) {
+    this.userService.followUser(userId).subscribe({
+      next: (res) => {
+        this.user.status['isAlreadyFollowing'] = true
+      }, error: (err) => {
+        console.error(err)
+      }
+    })
+  }
+
+  unfollowUser(userId: string) {
+    this.userService.unfollowUser(userId).subscribe({
+      next: (res) => {
+        this.user.status['isAlreadyFollowing'] = false
+      }, error: (err) => {
+        console.error(err)
+      }
+    })
+  }
+
+  toggleFollow(event: 'follow' | 'unfollow') {
+    if (event === 'follow') {
+      this.followUser(this.user.userDetails._id)
+    } else {
+      this.unfollowUser(this.user.userDetails._id)
+    }
   }
 }

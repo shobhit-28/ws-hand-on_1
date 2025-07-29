@@ -67,9 +67,7 @@ export class NavBarComponent implements OnInit {
 
   logout = () => {
     this.authService.setIsLoggedIn(false, true);
-    this.searchedUser = defaultSearchedUser
-    this.userName = null
-    this.loading = true
+    this.clearSearchedUser()
   }
 
   searchUserFormSubmit(chatForm: NgForm) {
@@ -100,5 +98,11 @@ export class NavBarComponent implements OnInit {
 
   resetSearchUser() {
     this.searchedUser = defaultSearchedUser
+  }
+
+  clearSearchedUser() {
+    this.searchedUser = defaultSearchedUser
+    this.userName = null
+    this.loading = true
   }
 }

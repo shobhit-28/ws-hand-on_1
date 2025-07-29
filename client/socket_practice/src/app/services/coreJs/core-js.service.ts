@@ -61,4 +61,10 @@ export class CoreJsService {
     );
     this.router.navigateByUrl(urlTree);
   }
+
+  copyToClipboard(text: string) {
+    navigator.clipboard.writeText(text)
+      .then(() => console.log('Copied:', text))
+      .catch(err => console.error('Copy failed:', err));
+  }
 }

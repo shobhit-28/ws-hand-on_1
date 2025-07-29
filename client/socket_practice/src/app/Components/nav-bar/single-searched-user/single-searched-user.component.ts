@@ -16,6 +16,8 @@ export class SingleSearchedUserComponent implements AfterViewInit {
   @Input() loading!: boolean
   @Input() searchedText!: string | null
 
+  @Output() navigationEmitter: EventEmitter<void> = new EventEmitter()
+
   viewMoreLoading: boolean = false
 
   constructor(
@@ -85,5 +87,10 @@ export class SingleSearchedUserComponent implements AfterViewInit {
         console.error(err)
       }
     })
+  }
+
+  navigateToUserProfile(userId: string) {
+    this.coreJsService.navigateToProfilePage(userId)
+    this.navigationEmitter.emit()
   }
 }

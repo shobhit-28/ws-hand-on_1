@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ApiResponse } from '../../DTO/commonResponse.dto';
 import { ChatFriendsList, GetFollowerList, GetFollowingList, SearchUserList } from '../../DTO/users.dto';
-import { map, Observable } from 'rxjs';
+import { firstValueFrom, forkJoin, map, Observable } from 'rxjs';
 import { ChromeDataTransactionService } from '../chromeDataTransaction/chrome-data-transaction.service';
 
 @Injectable({
@@ -60,4 +60,19 @@ export class UsersService {
       map(res => res.data)
     )
   }
+
+  getFollowStatuses(withUserId: string): Promise<{ isGettingFollowed: boolean, isAlreadyFollowing: boolean }> {
+    const baseUrl = 'http://localhost:5000/rchat/toggle-follow/checkStatus';
+
+    const isGettingFollowed$ = this.http.get<ApiResponse<boolean>>(`${baseUrl}?action=isGettingFollowed&withUserId=${withUserId}`);
+    const isAlreadyFollowing$ = this.http.get<ApiResponse<boolean>>(`${baseUrl}?action=isAlreadyFollowing&withUserId=${withUserId}`);
+
+    return firstValueFrom(
+      forkJoin({
+        isGettingFollowed: isGettingFollowed$.pipe(map(res => res.data)),
+        isAlreadyFollowing: isAlreadyFollowing$.pipe(map(res => res.data))
+      })
+    );
+  }
+
 }
