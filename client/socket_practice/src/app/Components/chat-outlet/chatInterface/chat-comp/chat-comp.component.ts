@@ -78,4 +78,8 @@ export class ChatCompComponent implements OnInit {
       }, error: (err) => console.error(err)
     })
   }
+
+  navigateToUserProfile() {
+    this.coreJsService.navigateToProfilePage(this.chatService.getSelectedChat()._id)
+  }
 }

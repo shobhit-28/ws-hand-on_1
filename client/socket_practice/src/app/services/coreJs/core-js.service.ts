@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ChatFriendsList } from '../../DTO/users.dto';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -7,7 +8,9 @@ import { ChatFriendsList } from '../../DTO/users.dto';
 export class CoreJsService {
   private urlRegex: RegExp = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig
 
-  constructor() { }
+  constructor(
+    private router: Router
+  ) { }
 
   makeDeepCopy = <T>(obj: T): T => structuredClone(obj)
 
@@ -50,5 +53,12 @@ export class CoreJsService {
     if (index === -1) return arr
     const item = arr[index]
     return [item, ...arr.slice(0, index), ...arr.slice(index + 1)]
+  }
+
+  navigateToProfilePage(userId: string) {
+    const urlTree = this.router.createUrlTree(
+      ['/rc', { outlets: { sideBar: ['profile', userId] } }]
+    );
+    this.router.navigateByUrl(urlTree);
   }
 }

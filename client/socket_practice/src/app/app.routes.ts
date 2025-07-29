@@ -31,6 +31,12 @@ export const routes: Routes = [
         loadComponent: () => import('./Pages/chat/chat.component').then((m) => m.ChatComponent),
         canMatch: [loginCanMatchGuard], canActivate: [loginCanActivateGuard],
         outlet: 'sideBar'
+      },
+      {
+        path: 'profile/:id',
+        loadComponent: () => import('./Pages/profile-page/profile-page.component').then((m) => m.ProfilePageComponent),
+        canMatch: [loginCanMatchGuard], canActivate: [loginCanActivateGuard],
+        outlet: 'sideBar'
       }
     ]
   },

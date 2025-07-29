@@ -27,4 +27,5 @@
 
 <mat-menu #menu="matMenu">
   <button mat-menu-item (click)="addProfilePic()">{{getImgOfUser().includes('empty') ? 'Add Profile Picture' : 'Edit Profile Picture'}}</button>
+  <button mat-menu-item (click)="navigateToProfile()">Profile</button>
 </mat-menu>

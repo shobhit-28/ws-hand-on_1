@@ -35,3 +35,28 @@ export const defaultSearchedUser: SearchUserList = {
   limit: 0,
   totalPages: 0
 }
+
+export type ExpandedUser = {
+  _id: string,
+  name: string,
+  email: string,
+  profile_pic?: string
+}
+
+export type GetFollowerList = Array<{
+  _id: string,
+  follower: string,
+  following: ExpandedUser,
+  createdAt: string,
+  updatedAt: string,
+  __v: number
+}>
+
+export type GetFollowingList = Array<{
+  _id: string,
+  follower: ExpandedUser,
+  following: string,
+  createdAt: string,
+  updatedAt: string,
+  __v: number
+}>

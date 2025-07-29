@@ -45,3 +45,9 @@ export const searchUsers = asyncHandler(async (req, res) => {
 
     successResponse(res, 'Users fetched successfully', users, 200)
 })
+
+export const getUserById = asyncHandler(async (req, res) => {
+    const user = await findUser(req.params.userId)
+
+    successResponse(res, 'User fetched successfully', user, 200)
+})

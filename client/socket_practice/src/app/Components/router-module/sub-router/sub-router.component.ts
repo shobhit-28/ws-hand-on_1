@@ -63,4 +63,8 @@ export class SubRouterComponent {
       }, error: (err) => console.error(err)
     })
   }
+
+  navigateToProfile() {
+    this.coreJsService.navigateToProfilePage(this.dataService.getCookies('user')?.id)
+  }
 }
