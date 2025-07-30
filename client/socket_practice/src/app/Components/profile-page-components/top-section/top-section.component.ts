@@ -27,6 +27,7 @@ export class TopSectionComponent {
 
   @Output() ToggleFollowEmitter: EventEmitter<'follow' | 'unfollow'> = new EventEmitter()
   @Output() UserUpdationEmitter: EventEmitter<updateProfileApiPayload> = new EventEmitter()
+  @Output() ProfilePictureEmitter: EventEmitter<string> = new EventEmitter()
 
   constructor(
     private dataService: ChromeDataTransactionService,
@@ -110,7 +111,7 @@ export class TopSectionComponent {
     dialogRef.afterClosed().subscribe({
       next: (res) => {
         if (res) {
-          console.log(res)
+          this.ProfilePictureEmitter.emit(res)
         }
       }, error: (err) => console.error(err)
     })

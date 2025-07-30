@@ -54,8 +54,11 @@ export class AuthService {
         });
 
         this.socket.on('profile-pic-changed', (changedBool: true) => {
-          console.log('changed')
           this.profilePicHandler.updateLatestProfilePic();
+        });
+        
+        this.socket.on('profile-user-changed', (changedBool: true) => {
+          this.profilePicHandler.updateLatestProfileDetails();
         });
 
         this.socket.on('got-followed', (follower) => {

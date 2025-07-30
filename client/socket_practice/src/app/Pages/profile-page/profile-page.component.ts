@@ -127,4 +127,8 @@ export class ProfilePageComponent implements OnInit {
   userUpdation(event: updateProfileApiPayload) {
     this.user['userDetails'] = { ...this.user['userDetails'], ...event }
   }
+
+  profilePicUpdation(event: string) {
+    this.user['userDetails'] = { ...this.user['userDetails'], profile_pic: event }
+  }
 }

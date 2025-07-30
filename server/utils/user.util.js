@@ -24,3 +24,13 @@ export const updateProfilePictureCookie = (res, user, url) => {
     console.log(updatedUser)
     res.cookie('user', JSON.stringify(updatedUser), getCookieConfig())
 }
+
+export const updateProfileDetailsCookieUtil = (res, user, newUser) => {
+    const updatedUser = {
+        ...user,
+        name: newUser?.name,
+        email: newUser?.email
+    }
+    console.log(updatedUser)
+    res.cookie('user', JSON.stringify(updatedUser), getCookieConfig())
+}

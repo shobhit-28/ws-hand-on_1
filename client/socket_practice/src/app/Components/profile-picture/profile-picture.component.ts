@@ -31,8 +31,8 @@ export class ProfilePictureComponent implements OnInit {
     this.img = this.profilePicHandler.getImg()
   }
 
-  closeDialog() {
-    this.dialogRef.close()
+  closeDialog(msg?: string) {
+    this.dialogRef.close(msg ? msg : false)
   }
 
   async reUpload() {
@@ -45,8 +45,7 @@ export class ProfilePictureComponent implements OnInit {
     if (this.img.img) {
       this.profilePicHandler.uploadFile(this.img.img).subscribe({
         next: (res) => {
-          console.log(res.message);
-          this.closeDialog()
+          this.closeDialog(res.data)
           this.loading = false
         },
         error: (error) => {

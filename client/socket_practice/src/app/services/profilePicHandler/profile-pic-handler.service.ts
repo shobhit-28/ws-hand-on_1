@@ -76,4 +76,10 @@ export class ProfilePicHandlerService {
       error: (err) => console.error(err)
     })
   }
+  
+  updateLatestProfileDetails(): void {
+    this.http.get<ApiResponse<null>>('/rchat/user/updateProfileDetails').subscribe({
+      error: (err) => console.error(err)
+    })
+  }
 }
