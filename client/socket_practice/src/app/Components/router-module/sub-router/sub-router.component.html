@@ -11,8 +11,8 @@
   }
   <div class="w-2/4">
     <div class="py-6 pr-2">
-      <div class="p-2 flex gap-2 hover:bg-slate-200/90 rounded-md cursor-pointer duration-700"
-        [matMenuTriggerFor]="menu" #menuTrigger>
+      <a class="p-2 flex gap-2 hover:bg-slate-200/90 rounded-md cursor-pointer duration-700"
+        [routerLink]="[{ outlets: { sideBar: ['profile', getProfileId()] } }]">
         <div class="flex items-center justify-center border-0 rounded-full h-[3rem] w-[3rem] overflow-hidden">
           <img class="w-full h-full object-cover" [src]="getImgOfUser()" alt="" srcset="">
         </div>
@@ -20,12 +20,7 @@
           <p class="cursive-font">{{getUserDetails()?.name}}</p>
           <p class="text-sm italic opacity-80 cursive-font">{{getUserDetails()?.email?.toLocaleLowerCase()}}</p>
         </div>
-      </div>
+      </a>
     </div>
   </div>
 </div>
-
-<mat-menu #menu="matMenu">
-  <button mat-menu-item (click)="addProfilePic()">{{getImgOfUser().includes('empty') ? 'Add Profile Picture' : 'Edit Profile Picture'}}</button>
-  <button mat-menu-item (click)="navigateToProfile()">Profile</button>
-</mat-menu>

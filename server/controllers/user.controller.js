@@ -1,7 +1,8 @@
 import { SearchUserDTO } from "../dto/user/searchUser.dto.js";
+import { UpdateProfileDTO } from "../dto/user/updateProfile.dto.js";
 import { UploadProfilePicDto } from "../dto/user/uploadProfilePic.dto.js";
 import { asyncHandler } from "../middleware/asyncHandler.js";
-import { findUsers, uploadProfilePicService } from "../services/user.service.js";
+import { findUsers, uploadProfilePicService, updateBioService } from "../services/user.service.js";
 import { successResponse } from "../utils/apiResponse.util.js";
 import { findUser, updateProfilePictureCookie } from "../utils/user.util.js";
 
@@ -50,4 +51,15 @@ export const getUserById = asyncHandler(async (req, res) => {
     const user = await findUser(req.params.userId)
 
     successResponse(res, 'User fetched successfully', user, 200)
+})
+
+export const updateProfile = asyncHandler(async (req, res) => {
+    const dto = new UpdateProfileDTO({
+        ...req.body,
+        userId: req.user.id,
+    })
+
+    await updateBioService(dto)
+
+    successResponse(res, `Profile Updated successfully`, '', 204)
 })

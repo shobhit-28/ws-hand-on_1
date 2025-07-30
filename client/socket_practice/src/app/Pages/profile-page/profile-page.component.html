@@ -1,4 +1,5 @@
 <div class="sub-page p-6">
-    <raj-chat-top-section [imgUrl]="getImgOfUser()" [loader]="loader" [user]="user" (ToggleFollowEmitter)="toggleFollow($event)"></raj-chat-top-section>
-    <hr class="my-4">
+  <raj-chat-top-section [imgUrl]="getImgOfUser()" [loader]="loader" [user]="user"
+    (ToggleFollowEmitter)="toggleFollow($event)" (UserUpdationEmitter)="userUpdation($event)"></raj-chat-top-section>
+  <hr class="my-4">
 </div>

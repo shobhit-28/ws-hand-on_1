@@ -64,6 +64,8 @@ export class SubRouterComponent {
     })
   }
 
+  getProfileId = (): string =>  this.dataService.getCookies('user')?.id
+
   navigateToProfile() {
     this.coreJsService.navigateToProfilePage(this.dataService.getCookies('user')?.id)
   }

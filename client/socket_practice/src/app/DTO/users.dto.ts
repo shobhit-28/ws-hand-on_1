@@ -2,14 +2,16 @@ export type ChatFriendsList = {
   _id: string;
   name: string;
   email: string;
-  profile_pic: string
+  profile_pic: string,
+  bio?: string
 }
 
 export const defaultChatFriendVal: ChatFriendsList = {
   _id: '',
   name: '',
   email: '',
-  profile_pic: ''
+  profile_pic: '',
+  bio: ''
 }
 
 export type SearchUserList = {
@@ -81,4 +83,9 @@ export const defaultUserProfileUser: UserProfileUser = {
   followers: new Array(),
   following: new Array(),
   status: { isGettingFollowed: true, isAlreadyFollowing: true }
+}
+export type updateProfileApiPayload = {
+  name: string,
+  email: string,
+  bio: string
 }

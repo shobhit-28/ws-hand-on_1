@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ChromeDataTransactionService } from '../../services/chromeDataTransaction/chrome-data-transaction.service';
-import { ChatFriendsList, defaultChatFriendVal, defaultUserProfileLoaderValue, defaultUserProfileUser, GetFollowerList, GetFollowingList, UserProfileLoader, UserProfileUser } from '../../DTO/users.dto';
+import { ChatFriendsList, defaultChatFriendVal, defaultUserProfileLoaderValue, defaultUserProfileUser, GetFollowerList, GetFollowingList, updateProfileApiPayload, UserProfileLoader, UserProfileUser } from '../../DTO/users.dto';
 import { UsersService } from '../../services/users/users.service';
 import { CoreJsService } from '../../services/coreJs/core-js.service';
 import { TopSectionComponent } from "../../Components/profile-page-components/top-section/top-section.component";
@@ -50,22 +50,19 @@ export class ProfilePageComponent implements OnInit {
 
   private getProfileDetails(profileId: string): Promise<void> {
     return new Promise<void>((resolve, rej) => {
-      if (profileId === this.dataService.getCookies('user')?.id) {
-        this.user['userDetails'] = { ...this.dataService.getCookies('user'), _id: this.dataService.getCookies('user')?.id }
-        resolve()
-      } else {
-        this.userService.fetchUser(profileId).subscribe({
-          next: async (res) => {
-            this.user['userDetails'] = res;
+      this.userService.fetchUser(profileId).subscribe({
+        next: async (res) => {
+          this.user['userDetails'] = res;
+          if (profileId !== this.dataService.getCookies('user')?.id) {
             this.user['status'] = await this.userService.getFollowStatuses(res._id)
-            resolve()
-          },
-          error: (err) => {
-            console.error(err)
-            rej(err)
           }
-        })
-      }
+          resolve()
+        },
+        error: (err) => {
+          console.error(err)
+          rej(err)
+        }
+      })
     })
   }
 
@@ -125,5 +122,9 @@ export class ProfilePageComponent implements OnInit {
     } else {
       this.unfollowUser(this.user.userDetails._id)
     }
+  }
+
+  userUpdation(event: updateProfileApiPayload) {
+    this.user['userDetails'] = { ...this.user['userDetails'], ...event }
   }
 }

@@ -111,3 +111,18 @@ export const findUsers = async ({ user, userToBeSearched, limit, page }) => {
         totalPages: Math.ceil(total / limit)
     }
 };
+
+export const updateBioService = async ({ userId, name, email, bio }) => {
+    try {
+        await User.findByIdAndUpdate(userId, {
+            name,
+            email,
+            bio
+        })
+    } catch (error) {
+        if (error.code === 11000) {
+            throw new AppError(`Email already exists`, 400)
+        }
+    }
+    return { name, email, bio }
+}

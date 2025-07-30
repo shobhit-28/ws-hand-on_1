@@ -1,0 +1,73 @@
+<div class="dialog-header">
+  <div class="flex justify-between items-center w-full pr-4">
+    <span mat-dialog-title>Edit your profile</span>
+    <button mat-icon-button class="" (click)="closeDialog()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+</div>
+
+<div mat-dialog-content class="dialog-content">
+  <div class="text-sm">
+    @if (data.form && data.formFields.length) {
+    <div class="flex justify-center items-center">
+      <div class="w-11/12">
+        <form [formGroup]="data.form" (ngSubmit)="editProfile()">
+          <div class="example-form">
+            @for (item of data.formFields; track $index) {
+            @switch (item.type) {
+            @case ('mail') {
+            <mat-form-field class="w-full" appearance="fill">
+              <mat-label>{{item.displayName}}</mat-label>
+              <input [required]="item.isMandatory" type="text" matInput autocomplete="email"
+                [formControlName]="item.controlName" [placeholder]="item.placeHolder">
+              @if (data.form.controls[item.controlName].hasError('invalidEmail') &&
+              !data.form.controls[item.controlName].hasError('invalidFormat') &&
+              !data.form.controls[item.controlName].hasError('required')) {
+              <mat-error>{{ data.form.value[item.controlName] }} is not a valid email</mat-error>
+              }
+              @if (data.form.controls[item.controlName].hasError('invalidFormat') &&
+              !data.form.controls[item.controlName].hasError('required')) {
+              <mat-error>{{ data.form.value[item.controlName] }} is not a valid {{ item.displayName
+                }}</mat-error>
+              }
+              @if (data.form.controls[item.controlName].hasError('required')) {
+              <mat-error>{{ item.displayName }} is
+                <strong>required</strong></mat-error>
+              }
+            </mat-form-field>
+            }
+            @case ('string') {
+            <mat-form-field class="w-full" appearance="fill">
+              <mat-label>{{item.displayName}}</mat-label>
+              <input [required]="item.isMandatory" type="string" matInput autocomplete="name"
+                [formControlName]="item.controlName" [placeholder]="item.placeHolder">
+              @if (data.form.controls[item.controlName].hasError('invalidFormat') &&
+              !data.form.controls[item.controlName].hasError('required') &&
+              (item.controlName === 'bio')) {
+              <mat-error>Maximum 40 characters allowed in bio.</mat-error>
+              }
+              @if (data.form.controls[item.controlName].hasError('invalidFormat') &&
+              !data.form.controls[item.controlName].hasError('required')) {
+              <mat-error>{{ data.form.value[item.controlName] }} is not a valid {{ item.displayName
+                }}</mat-error>
+              }
+              @if (data.form.controls[item.controlName].hasError('required')) {
+              <mat-error>{{ item.displayName }} is <strong>required</strong></mat-error>
+              }
+            </mat-form-field>
+            }
+            }
+            }
+          </div>
+        </form>
+      </div>
+    </div>
+    }
+  </div>
+</div>
+
+<div mat-dialog-actions class="dialog-actions" align="end">
+  <button mat-button (click)="closeDialog()">Cancel</button>
+  <button mat-flat-button (click)="editProfile()">Change</button>
+</div>
