@@ -25,6 +25,15 @@ export const getPosts = asyncHandler(async (req, res) => {
   successResponse(res, 'Posts fetched', posts, 200)
 })
 
+export const getPostsById = asyncHandler(async (req, res) => {
+  // const currUser = req.user.id
+  const userId = req.user.id
+
+  const posts = await postService.getPostsByUserId(userId)
+
+  successResponse(res, 'Posts fetched', posts, 200)
+})
+
 export const getPostPhoto = asyncHandler(async (req, res) => {
   const signedUrl = await postService.getPostsForUrlBinding(req.params.postId)
 

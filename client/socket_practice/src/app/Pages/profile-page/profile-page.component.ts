@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ChromeDataTransactionService } from '../../services/chromeDataTransaction/chrome-data-transaction.service';
 import { ChatFriendsList, defaultChatFriendVal, defaultUserProfileLoaderValue, defaultUserProfileUser, GetFollowerList, GetFollowingList, updateProfileApiPayload, UserProfileLoader, UserProfileUser } from '../../DTO/users.dto';
@@ -23,7 +23,6 @@ export class ProfilePageComponent implements OnInit {
     private dataService: ChromeDataTransactionService,
     private userService: UsersService,
     private coreJsService: CoreJsService,
-    private cd: ChangeDetectorRef
   ) { }
 
   ngOnInit(): void {
