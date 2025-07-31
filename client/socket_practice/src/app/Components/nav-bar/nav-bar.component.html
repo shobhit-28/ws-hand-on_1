@@ -26,6 +26,14 @@
             </button>
           </div>
         </form>
+        <button class="relative">
+          @if (true) {
+            <span class="absolute -right-1 block h-[.4rem] w-[.4rem] rounded-full bg-red-500 ring-1 ring-white"></span>
+            <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="notifications"></mat-icon>
+          } @else {
+            <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="notifications_none"></mat-icon>
+          }
+        </button>
         <button (click)="logout()">
           <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="logout"></mat-icon>
         </button>

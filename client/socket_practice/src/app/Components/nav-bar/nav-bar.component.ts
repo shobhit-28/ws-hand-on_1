@@ -17,6 +17,7 @@ import { CoreJsService } from '../../services/coreJs/core-js.service';
 import { UsersService } from '../../services/users/users.service';
 import { defaultSearchedUser, SearchUserList } from '../../DTO/users.dto';
 import { SingleSearchedUserComponent } from "./single-searched-user/single-searched-user.component";
+import { NotificationType } from '../../DTO/notifications.dto';
 
 @Component({
   selector: 'raj-chat-nav-bar',
@@ -47,6 +48,8 @@ export class NavBarComponent implements OnInit {
   private usersService = inject(UsersService)
 
   searchedUser: SearchUserList = defaultSearchedUser
+
+  notifications!: Array<NotificationType>
 
   debouncedSearchUser: (user: string) => void = () => { };
   loading: boolean = true;
