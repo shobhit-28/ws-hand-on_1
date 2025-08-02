@@ -2,6 +2,8 @@ import { ChangeDetectorRef, Component, ElementRef, Input, ViewChild } from '@ang
 import { MatIconModule } from '@angular/material/icon';
 import { CoreJsService } from '../../services/coreJs/core-js.service';
 import { FormsModule, NgForm } from '@angular/forms';
+import { Post } from '../../DTO/posts.dto';
+import { ChromeDataTransactionService } from '../../services/chromeDataTransaction/chrome-data-transaction.service';
 
 type User = {
   _id: string
@@ -27,22 +29,6 @@ type Comment = {
   updatedAt: number
 }
 
-type Post = {
-  _id: string
-  content: string
-  pic: string
-  username: string
-  postedBy: User
-  likes: {
-    likeCount: number
-    likedBy: User[]
-    dislikedBy: User[]
-  }
-  comments: Comment[]
-  createdAt: number
-  updatedAt: number
-}
-
 type NumberNull = number | null
 type StringNull = string | null
 
@@ -64,7 +50,8 @@ export class PostsComponent {
 
   constructor(
     private coreJsService: CoreJsService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private dataTransactionService: ChromeDataTransactionService
   ) { }
 
   expandedPost: StringNull = null
@@ -106,9 +93,9 @@ export class PostsComponent {
     }
   } = this.coreJsService.makeDeepCopy(this.defaultCommentReplyValue)
 
-  public parseDate = (dateStr: number): string => new Date(dateStr).toDateString();
+  public parseDate = (dateStr: string): string => new Date(dateStr).toDateString();
 
-  public isLikedByUser = (post: Post) => post.likes.likedBy.find((user) => user.username === 'shobhitraj')
+  public isLikedByUser = (post: Post) => post.likes.find((user) => user._id === this.dataTransactionService.getCookies('user')?.id)
 
   public expandColumn = (index: string) => {
     if (index === this.expandedPost) {
@@ -180,7 +167,7 @@ export class PostsComponent {
     console.log(formGroup.value)
     console.log(postIndex)
     console.log(commentId)
-    console.log(this.postsData.find((post) => post._id === postIndex)?.comments.find((comment) => comment._id === commentId))
+    // console.log(this.postsData.find((post) => post._id === postIndex)?.comments.find((comment) => comment._id === commentId))
   }
 
   private focusOnHtmlComponent(element: ElementRef<HTMLInputElement>) {
@@ -191,5 +178,5 @@ export class PostsComponent {
 
   public getUrls = (text: string): Array<{ url: boolean, text: string }> => this.coreJsService.bifurcateTextIntoTextAndUrls(text)
 
-  isMyPost = (post: User): boolean => post.username === 'shobhitraj'
+  isMyPost = (user: string): boolean => this.dataTransactionService.getCookies('user')?.id === user
 }

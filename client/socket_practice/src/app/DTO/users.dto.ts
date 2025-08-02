@@ -1,3 +1,5 @@
+import { Post } from "./posts.dto";
+
 export type ChatFriendsList = {
   _id: string;
   name: string;
@@ -64,25 +66,29 @@ export type GetFollowingList = Array<{
 }>
 
 export type UserProfileLoader = {
-  profile_pic: boolean
+  profile_pic: boolean,
+  fullPageLoader: boolean
 }
 
 export const defaultUserProfileLoaderValue: UserProfileLoader = {
-  profile_pic: true
+  profile_pic: true,
+  fullPageLoader: true
 }
 
 export type UserProfileUser = {
   userDetails: ChatFriendsList,
   followers: GetFollowerList,
   following: GetFollowingList,
-  status: { isGettingFollowed: boolean, isAlreadyFollowing: boolean }
+  status: { isGettingFollowed: boolean, isAlreadyFollowing: boolean },
+  posts: Array<Post>
 }
 
 export const defaultUserProfileUser: UserProfileUser = {
   userDetails: defaultChatFriendVal,
   followers: new Array(),
   following: new Array(),
-  status: { isGettingFollowed: true, isAlreadyFollowing: true }
+  status: { isGettingFollowed: true, isAlreadyFollowing: true },
+  posts: new Array()
 }
 export type updateProfileApiPayload = {
   name: string,

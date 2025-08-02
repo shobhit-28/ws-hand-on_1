@@ -26,7 +26,7 @@ export const getPosts = async (userId) => {
 
     const postsWithData = await Promise.all(
         posts.map((post) => {
-            return { ...post.toObject(), photoEndpoint: `/rchat/posts/photo/${post._id}` }
+            return { ...post.toObject(), photoEndpoint: `/rchat/post/photo/${post._id}` }
         })
     )
 
@@ -45,7 +45,7 @@ export const getPostsByUserId = async (userId) => {
         .populate('comments.userId')
 
     const postsWithData = posts.map((post) => {
-        return { ...post.toObject(), photoEndpoint: `/rchat/posts/photo/${post._id}` }
+        return { ...post.toObject(), photoEndpoint: `/rchat/post/photo/${post._id}` }
     })
 
     return postsWithData
@@ -65,7 +65,7 @@ export const getPostsById = async (userId) => {
     const postsWithData = await Promise.all(
         posts.map(async (post) => {
             const photoUrl = await generateDownloadUrl(post.photoFileName)
-            return { ...post.toObject(), photoEndpoint: `/rchat/posts/photo/${post._id}` }
+            return { ...post.toObject(), photoEndpoint: `/rchat/post/photo/${post._id}` }
         })
     )
 

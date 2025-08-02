@@ -21,7 +21,7 @@ router.use(
 )
 
 router.use(
-    '/getPostWithUserId',
+    '/getPostWithUserId/:userId',
     authenticateToken,
     allowedMethods({ GET: getPostsById })
 )

@@ -5,11 +5,13 @@ import { ChatFriendsList, defaultChatFriendVal, defaultUserProfileLoaderValue, d
 import { UsersService } from '../../services/users/users.service';
 import { CoreJsService } from '../../services/coreJs/core-js.service';
 import { TopSectionComponent } from "../../Components/profile-page-components/top-section/top-section.component";
+import { PostsService } from '../../services/postsService/posts.service';
+import { PostsComponent } from "../../Components/posts/posts.component";
 
 @Component({
   selector: 'raj-chat-profile-page',
   standalone: true,
-  imports: [TopSectionComponent],
+  imports: [TopSectionComponent, PostsComponent],
   templateUrl: './profile-page.component.html',
   styleUrl: './profile-page.component.css'
 })
@@ -23,6 +25,7 @@ export class ProfilePageComponent implements OnInit {
     private dataService: ChromeDataTransactionService,
     private userService: UsersService,
     private coreJsService: CoreJsService,
+    private postService: PostsService
   ) { }
 
   ngOnInit(): void {
@@ -35,9 +38,13 @@ export class ProfilePageComponent implements OnInit {
     const results = await Promise.allSettled([
       this.getProfileDetails(profileId),
       this.getFollowers(profileId),
-      this.getFollowing(profileId)
+      this.getFollowing(profileId),
+      this.getPostsForUser(profileId)
     ])
-    this.loader['profile_pic'] = false
+    this.loader = {
+      fullPageLoader: false,
+      profile_pic: false
+    }
 
     results.forEach((result, index) => {
       if (result.status === 'rejected') {
@@ -129,5 +136,13 @@ export class ProfilePageComponent implements OnInit {
 
   profilePicUpdation(event: string) {
     this.user['userDetails'] = { ...this.user['userDetails'], profile_pic: event }
+  }
+
+  getPostsForUser(userId: string) {
+    this.postService.getPostByUserId(userId).subscribe({
+      next: (res) => {
+        this.user['posts'] = res
+      }
+    })
   }
 }

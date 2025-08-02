@@ -1,3 +1,5 @@
+import { ChatFriendsList } from "./users.dto"
+
 export type commentsType = {
   userId: number,
   text: string,
@@ -12,6 +14,22 @@ export type postsType = {
   likedBy: Array<string>,
   comments: Array<commentsType>,
   postedOn: Date
+}
+
+export type Post = {
+  "_id": string,
+  "userId": ChatFriendsList,
+  "content": string,
+  "photoFileName": string,
+  "likes": Array<ChatFriendsList>,
+  "comments": Array<{
+    userId: ChatFriendsList,
+    text: string,
+    createdAt: string
+  }>,
+  "createdAt": string,
+  "__v": number,
+  "photoEndpoint": string
 }
 
 export const posts = [

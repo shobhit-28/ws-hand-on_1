@@ -26,8 +26,7 @@ export const getPosts = asyncHandler(async (req, res) => {
 })
 
 export const getPostsById = asyncHandler(async (req, res) => {
-  // const currUser = req.user.id
-  const userId = req.user.id
+  const userId = req.params.userId
 
   const posts = await postService.getPostsByUserId(userId)
 

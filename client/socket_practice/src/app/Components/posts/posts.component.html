@@ -6,15 +6,16 @@
     <div class="px-2 flex justify-between items-center">
       <div class="flex gap-2">
         <div class="flex items-center justify-center border-0 rounded-full h-[3.25rem] w-[3.25rem] overflow-hidden ">
-          <img class="w-full h-full object-cover" [src]="post.postedBy.profile_pic" alt="" srcset="">
+          <img class="w-full h-full object-cover"
+            [src]="post.userId.profile_pic || '/assets/profile/empty_profile_male.svg'" alt="" srcset="">
         </div>
         <div class="flex flex-col">
-          <span class="">{{post.postedBy.firstName}} {{post.postedBy.lastName}}</span>
-          <span class="text-xs italic opacity-60 -mt-1">{{"@"+post.postedBy.username.toLocaleLowerCase()}}</span>
+          <span class="">{{post.userId.name}}</span>
+          <span class="text-xs italic opacity-60 -mt-1">{{post.userId.email}}</span>
           <span class="text-xs italic opacity-60">{{parseDate(post.createdAt)}}</span>
         </div>
       </div>
-      @if (isMyPost(post.postedBy)) {
+      @if (isMyPost(post.userId._id)) {
       <div class="">
         <button class="p-1 rounded-lg">
           <mat-icon aria-hidden="false" fontIcon="delete"></mat-icon>
@@ -39,15 +40,14 @@
     </div>
     <div class="">
       <!-- /rchat/post/photo/68862687fc2aa53295b4664a -->
-      <img [src]="post.pic" alt="Img"
-        loading="lazy" decoding="async" referrerpolicy="no-referrer" draggable="false"
-        style="pointer-events: none; user-select: none;">
+      <img [src]="post.photoEndpoint" alt="Img" loading="lazy" decoding="async" referrerpolicy="no-referrer"
+        draggable="false" style="pointer-events: none; user-select: none;">
     </div>
     <div class="flex justify-around">
       <button class="flex items-center gap-1">
         <mat-icon aria-hidden="false" [fontIcon]="isLikedByUser(post) ? 'favorite' : 'favorite_border'"
           class="text-red-700"></mat-icon>
-        {{post.likes.likeCount}}
+        {{post.likes.length}}
       </button>
       <button class="flex items-center gap-1" (click)="expandColumn(post._id)">
         <mat-icon aria-hidden="false" fontIcon="comment"></mat-icon>
@@ -57,7 +57,7 @@
         <mat-icon aria-hidden="false" fontIcon="share"></mat-icon>
       </button>
     </div>
-    @if (expandedPost === post._id) {
+    <!-- @if (expandedPost === post._id) {
     <hr class="mx-4 my-1">
     <div class="px-2 flex flex-col gap-2">
       @for (comment of post.comments; track comment._id) {
@@ -102,7 +102,6 @@
                   <span class="text-xs flex items-center justify-between">
                     <span class="flex items-center gap-2">
                       <span class="italic">{{"@"+reply.user.username}}</span>
-                      <!-- <span class="opacity-90">{{timeAgo(reply.updatedAt)}}</span> -->
                     </span>
                     @if (isMyComment(reply.user)) {
                     <button class="border-2 box-border py-[0.1rem] px-1 italic text-xs rounded">Delete</button>
@@ -125,7 +124,6 @@
             }
           </div>
         </div>
-        <!-- <hr> -->
       </div>
       }
       <form (ngSubmit)="addComment(commentsForm, post._id)" #commentsForm="ngForm">
@@ -138,7 +136,7 @@
         </div>
       </form>
     </div>
-    }
+    } -->
   </div>
   }
 </div>
