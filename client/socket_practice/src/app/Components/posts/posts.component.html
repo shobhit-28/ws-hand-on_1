@@ -57,7 +57,7 @@
         <mat-icon aria-hidden="false" fontIcon="share"></mat-icon>
       </button>
     </div>
-    <!-- @if (expandedPost === post._id) {
+    @if (expandedPost === post._id) {
     <hr class="mx-4 my-1">
     <div class="px-2 flex flex-col gap-2">
       @for (comment of post.comments; track comment._id) {
@@ -65,19 +65,19 @@
         <div class="flex gap-2">
           <div
             class="flex items-center justify-center border-0 rounded-full h-[2rem] min-w-[2rem] w-[2rem] overflow-hidden ">
-            <img class="w-full h-full object-cover" [src]="comment.user.profile_pic" alt="" srcset="">
+            <img class="w-full h-full object-cover" [src]="comment.userId.profile_pic" alt="" srcset="">
           </div>
           <div class="flex flex-col w-full">
             <span class="text-xs flex items-center justify-between">
               <span class="flex items-center gap-2">
-                <span class="italic">{{"@"+comment.user.username}}</span>
-                <span class="opacity-90">{{timeAgo(comment.updatedAt)}}</span>
+                <span class="italic">{{"@"+comment.userId.email}}</span>
+                <span class="opacity-90">{{timeAgo(comment.createdAt)}}</span>
               </span>
-              @if (isMyComment(comment.user)) {
+              @if (isMyComment(comment.userId._id)) {
               <button class="border-2 box-border py-[0.1rem] px-1 italic text-xs rounded">Delete</button>
               }
             </span>
-            <p class="text-sm">{{comment.content}}</p>
+            <p class="text-sm">{{comment.text}}</p>
             <div class="text-[0.7rem] flex gap-2">
               <button (click)="replyToAComment(post._id, comment._id)">Reply</button>
               @if (comment.replies.length) {
@@ -96,18 +96,18 @@
               <div class="flex gap-2">
                 <div
                   class="flex items-center justify-center border-0 rounded-full h-[2rem] min-w-[2rem] w-[2rem] overflow-hidden ">
-                  <img class="w-full h-full object-cover" [src]="reply.user.profile_pic" alt="" srcset="">
+                  <img class="w-full h-full object-cover" [src]="reply.userId.profile_pic" alt="" srcset="">
                 </div>
                 <div class="flex flex-col w-full">
                   <span class="text-xs flex items-center justify-between">
                     <span class="flex items-center gap-2">
-                      <span class="italic">{{"@"+reply.user.username}}</span>
+                      <span class="italic">{{"@"+reply.userId.email}}</span>
                     </span>
-                    @if (isMyComment(reply.user)) {
+                    @if (isMyComment(reply.userId._id)) {
                     <button class="border-2 box-border py-[0.1rem] px-1 italic text-xs rounded">Delete</button>
                     }
                   </span>
-                  <p class="text-sm">{{reply.content}}</p>
+                  <p class="text-sm">{{reply.text}}</p>
                 </div>
               </div>
               }
@@ -136,7 +136,7 @@
         </div>
       </form>
     </div>
-    } -->
+    }
   </div>
   }
 </div>

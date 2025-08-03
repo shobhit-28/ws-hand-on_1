@@ -112,7 +112,8 @@ export class PostsComponent {
     this.commentReplies = this.coreJsService.makeDeepCopy(this.defaultCommentReplyValue)
   }
 
-  timeAgo(ms: number): string {
+  timeAgo(isoString: string) {
+    const ms = new Date(isoString).getTime()
     const now = Date.now()
     const diff = Math.max(0, now - ms)
 
@@ -131,7 +132,7 @@ export class PostsComponent {
     return `${seconds}s`
   }
 
-  isMyComment = (user: User): boolean => user.username === 'shobhitraj'
+  isMyComment = (user: string): boolean => user === this.dataTransactionService.getCookies('user')?.id
 
   expandReply = (postIndex: string, commentIndex: string): void => {
     if (postIndex === this.expandedReplies.postIndex && commentIndex === this.expandedReplies.commentIndex) {

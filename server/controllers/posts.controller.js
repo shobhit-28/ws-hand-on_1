@@ -4,6 +4,7 @@ import { asyncHandler } from '../middleware/asyncHandler.js'
 import { successResponse } from '../utils/apiResponse.util.js'
 import { AppError } from '../utils/appError.js'
 import https from 'https'
+import { AddCommentDTO } from '../dto/posts/create_comment.dto.js'
 
 export const createPost = asyncHandler(async (req, res) => {
   const dto = new CreatePostDto({
@@ -42,6 +43,18 @@ export const getPostPhoto = asyncHandler(async (req, res) => {
   }).on('error', () => {
     throw new AppError('Error streaming file', 500)
   })
+})
+
+export const addComment = asyncHandler(async (req, res) => {
+  const dto = new AddCommentDTO({
+    userId: req.user.id,
+    postId: req.body.postId,
+    text: req.body.text
+  })
+
+  const comment = await postService.addComment(dto)
+
+  successResponse(res, 'Successfully posted a comment', comment)
 })
 
 // export const deletePost = async (req, res) => {

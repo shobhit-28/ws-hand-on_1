@@ -16,17 +16,23 @@ export type postsType = {
   postedOn: Date
 }
 
+type Comment = {
+  "_id": string,
+  "postId": string,
+  "userId": ChatFriendsList,
+  "text": string,
+  "createdAt": string,
+  "replies": Array<Comment>,
+  "__v": number
+}
+
 export type Post = {
   "_id": string,
   "userId": ChatFriendsList,
   "content": string,
   "photoFileName": string,
   "likes": Array<ChatFriendsList>,
-  "comments": Array<{
-    userId: ChatFriendsList,
-    text: string,
-    createdAt: string
-  }>,
+  "comments": Array<Comment>,
   "createdAt": string,
   "__v": number,
   "photoEndpoint": string
