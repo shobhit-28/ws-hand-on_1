@@ -4,6 +4,7 @@ import { CoreJsService } from '../../services/coreJs/core-js.service';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Post } from '../../DTO/posts.dto';
 import { ChromeDataTransactionService } from '../../services/chromeDataTransaction/chrome-data-transaction.service';
+import { RouterModule } from '@angular/router';
 
 type User = {
   _id: string
@@ -37,7 +38,8 @@ type StringNull = string | null
   standalone: true,
   imports: [
     MatIconModule,
-    FormsModule
+    FormsModule,
+    RouterModule
   ],
   templateUrl: './posts.component.html',
   styleUrl: './posts.component.css'

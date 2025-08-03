@@ -1,7 +1,13 @@
-<div class="sub-page p-6">
+<div class="sub-page p-6 pb-0">
     <raj-chat-top-section [imgUrl]="getImgOfUser()" [loader]="loader" [user]="user"
         (ToggleFollowEmitter)="toggleFollow($event)" (UserUpdationEmitter)="userUpdation($event)"
         (ProfilePictureEmitter)="profilePicUpdation($event)"></raj-chat-top-section>
-    <hr class="my-4">
-    <raj-chat-posts></raj-chat-posts>
+    <hr class="mt-4">
+    @if (user.posts.length) {
+    <raj-chat-posts [postsData]="user.posts"></raj-chat-posts>
+    } @else {
+    <div class="flex justify-center items-center text-center font-medium opacity-50 text-2xl h-[24vh]">
+        <p class="">No Posts found</p>
+    </div>
+    }
 </div>

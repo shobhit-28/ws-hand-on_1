@@ -4,7 +4,7 @@
   <div
     class="border rounded-xl overflow-hidden flex flex-col gap-2 py-2 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] duration-700 hover:shadow-[rgba(0,_0,_0,_0.5)_0px_8px_18px]">
     <div class="px-2 flex justify-between items-center">
-      <div class="flex gap-2">
+      <a class="flex gap-2" [routerLink]="[{ outlets: { sideBar: ['profile', post.userId._id] } }]">
         <div class="flex items-center justify-center border-0 rounded-full h-[3.25rem] w-[3.25rem] overflow-hidden ">
           <img class="w-full h-full object-cover"
             [src]="post.userId.profile_pic || '/assets/profile/empty_profile_male.svg'" alt="" srcset="">
@@ -14,7 +14,7 @@
           <span class="text-xs italic opacity-60 -mt-1">{{post.userId.email}}</span>
           <span class="text-xs italic opacity-60">{{parseDate(post.createdAt)}}</span>
         </div>
-      </div>
+      </a>
       @if (isMyPost(post.userId._id)) {
       <div class="">
         <button class="p-1 rounded-lg">
