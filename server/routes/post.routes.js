@@ -1,7 +1,7 @@
 import express from 'express'
 import { authenticateToken } from '../middleware/auth.middleware.js'
 import { allowedMethods } from '../utils/allowedMethods.util.js'
-import { addComment, createPost, getPostPhoto, getPosts, getPostsById } from '../controllers/posts.controller.js'
+import { addComment, addReply, createPost, deleteComment, deletePost, deleteReply, editComment, editReply, getPostPhoto, getPosts, getPostsById } from '../controllers/posts.controller.js'
 import postUpload from '../middleware/postUpload.js'
 import { b2 } from '../config/b2Bucket.js'
 
@@ -28,6 +28,18 @@ router.use(
 
 router.use('/photo/:postId', authenticateToken, allowedMethods({ GET: getPostPhoto }))
 
-router.use('/addComment', authenticateToken, allowedMethods({ GET: addComment }))
+router.use('/addComment', authenticateToken, allowedMethods({ POST: addComment }))
+
+router.use('/addReply', authenticateToken, allowedMethods({ POST: addReply }))
+
+router.use('/editComment', authenticateToken, allowedMethods({ PUT: editComment }))
+
+router.use('/editReply', authenticateToken, allowedMethods({ PUT: editReply }))
+
+router.use('/deleteComment/:commentId', authenticateToken, allowedMethods({ DELETE: deleteComment }))
+
+router.use('/deleteReply', authenticateToken, allowedMethods({ DELETE: deleteReply }))
+
+router.use('/deletePost/:postId', authenticateToken, allowedMethods({ DELETE: deletePost }))
 
 export default router

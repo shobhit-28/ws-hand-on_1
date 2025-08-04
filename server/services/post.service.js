@@ -111,7 +111,10 @@ export const getPostById = async (id) => {
 }
 
 export const deletePostById = async (id) => {
-    const post = await Post.findByIdAndDelete(id)
+    const post = await Post.findByIdAndDelete(id);
+    if (!post) {
+        throw new AppError(`Post not found`, 404);
+    }
     if (post) await deleteFileFromB2(post.photoFileName)
     return post
 }

@@ -5,6 +5,9 @@ import { successResponse } from '../utils/apiResponse.util.js'
 import { AppError } from '../utils/appError.js'
 import https from 'https'
 import { AddCommentDTO } from '../dto/posts/create_comment.dto.js'
+import { AddReplyDTO } from '../dto/posts/add_reply.dto.js'
+import { EditCommentDTO } from '../dto/posts/edit_comment.dto.js'
+import { EditReplyDTO } from '../dto/posts/edit_reply.dto.js'
 
 export const createPost = asyncHandler(async (req, res) => {
   const dto = new CreatePostDto({
@@ -57,11 +60,77 @@ export const addComment = asyncHandler(async (req, res) => {
   successResponse(res, 'Successfully posted a comment', comment)
 })
 
-// export const deletePost = async (req, res) => {
-//   const post = await postService.deletePostById(req.params.id)
-//   if (!post) return res.status(404).json({ error: 'Post not found' })
-//   res.json({ message: 'Post deleted' })
-// }
+export const addReply = asyncHandler(async (req, res) => {
+  const dto = new AddReplyDTO({
+    commentId: req.body.commentId,
+    userId: req.user.id,
+    text: req.body.reply
+  });
+
+  const reply = await postService.addReply(dto);
+
+  successResponse(res, 'Successfully added reply', reply)
+})
+
+export const editComment = asyncHandler(async (req, res) => {
+  const dto = new EditCommentDTO({
+    userId: req.user.id,
+    commentId: req.body.commentId,
+    text: req.body.newComment
+  })
+
+  const comment = await postService.editComment(dto)
+
+  successResponse(res, `Successfully edited comment`, comment)
+})
+
+export const editReply = asyncHandler(async (req, res) => {
+  const dto = new EditReplyDTO({
+    userId: req.user.id,
+    commentId: req.body.commentId,
+    replyId: req.body.replyId,
+    text: req.body.newReply
+  })
+
+  const reply = await postService.editReply(dto)
+
+  successResponse(res, `Successfully edited reply`, reply)
+})
+
+export const deleteComment = asyncHandler(async (req, res) => {
+  const dto = {
+    commentId: req.params.commentId,
+    userId: req.user.id
+  };
+
+  await postService.deleteComment(dto);
+
+  successResponse(res, `Successfully deleted comment`, '', 204);
+})
+
+export const deleteReply = asyncHandler(async (req, res) => {
+  const dto = {
+    userId: req.user.id,
+    commentId: req.query.commentId,
+    replyId: req.query.replyId
+  };
+
+  await postService.deleteReply(dto);
+
+  successResponse(res, 'Successfully deleted reply', '', 204);
+})
+
+export const deletePost = asyncHandler(async (req, res) => {
+  const postId = req.params.postId
+
+  await postService.deletePostById(postId)
+
+  successResponse(res, 'Successfully deleted post', '', 204)
+})
+
+export const likePost = asyncHandler(async (req, res) => {
+  
+})
 
 // export const likePost = async (req, res) => {
 //   const { error } = likeDto.validate(req.body)
@@ -76,13 +145,5 @@ export const addComment = asyncHandler(async (req, res) => {
 //   if (error) return res.status(400).json({ error: error.details[0].message })
 
 //   const post = await postService.removeLike(req.params.id, req.body.userId)
-//   res.json(post)
-// }
-
-// export const commentPost = async (req, res) => {
-//   const { error } = commentDto.validate(req.body)
-//   if (error) return res.status(400).json({ error: error.details[0].message })
-
-//   const post = await postService.addComment(req.params.id, req.body.userId, req.body.text)
 //   res.json(post)
 // }
