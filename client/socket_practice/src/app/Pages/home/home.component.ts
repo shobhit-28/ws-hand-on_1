@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { PostsComponent } from '../../Components/posts/posts.component';
 import { ChatComponent } from "../chat/chat.component";
-import { Post, posts } from '../../DTO/posts.dto';
+import { Post } from '../../DTO/posts.dto';
 import { PostsService } from '../../services/postsService/posts.service';
 
 @Component({

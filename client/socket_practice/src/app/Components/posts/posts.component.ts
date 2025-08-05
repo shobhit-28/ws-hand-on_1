@@ -5,6 +5,9 @@ import { FormsModule, NgForm } from '@angular/forms';
 import { Post } from '../../DTO/posts.dto';
 import { ChromeDataTransactionService } from '../../services/chromeDataTransaction/chrome-data-transaction.service';
 import { RouterModule } from '@angular/router';
+import { PostsService } from '../../services/postsService/posts.service';
+import { HttpErrorResponse } from '@angular/common/http';
+import { ChatFriendsList } from '../../DTO/users.dto';
 
 type User = {
   _id: string
@@ -53,7 +56,8 @@ export class PostsComponent {
   constructor(
     private coreJsService: CoreJsService,
     private cdr: ChangeDetectorRef,
-    private dataTransactionService: ChromeDataTransactionService
+    private dataTransactionService: ChromeDataTransactionService,
+    private postService: PostsService
   ) { }
 
   expandedPost: StringNull = null
@@ -97,7 +101,7 @@ export class PostsComponent {
 
   public parseDate = (dateStr: string): string => new Date(dateStr).toDateString();
 
-  public isLikedByUser = (post: Post) => post.likes.find((user) => user._id === this.dataTransactionService.getCookies('user')?.id)
+  public isLikedByUser = (post: Post) => post.likes.find((user) => user === this.dataTransactionService.getCookies('user')?.id)
 
   public expandColumn = (index: string) => {
     if (index === this.expandedPost) {
@@ -182,4 +186,34 @@ export class PostsComponent {
   public getUrls = (text: string): Array<{ url: boolean, text: string }> => this.coreJsService.bifurcateTextIntoTextAndUrls(text)
 
   isMyPost = (user: string): boolean => this.dataTransactionService.getCookies('user')?.id === user
+
+  likeUnlikePost(post: Post) {
+    if (this.isLikedByUser(post)) {
+      this.unlikePost(post._id)
+    } else {
+      this.likePost(post._id)
+    }
+  }
+
+  likePost(postId: string) {
+    this.postService.likePost(postId).subscribe({
+      next: (res) => this.addRemoveLikes(postId, res.userId, 'add'),
+      error: (err: HttpErrorResponse) => console.error(err)
+    })
+  }
+
+  unlikePost(postId: string) {
+    this.postService.unlikePost(postId).subscribe({
+      next: (res) => this.addRemoveLikes(postId, res.userId, 'remove'),
+      error: (err: HttpErrorResponse) => console.error(err)
+    })
+  }
+
+  addRemoveLikes(postId: string, user: ChatFriendsList, action: 'add' | 'remove'): void {
+    if (action === 'add') {
+      this.postsData.map((post) => post._id === postId ? { ...post, likes: post.likes.push(user) } : post)
+    } else {
+      this.postsData.map((post) => post._id === postId ? { ...post, likes: post.likes.filter((likedBy) => likedBy._id !== user._id) } : post)
+    }
+  }
 }

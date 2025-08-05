@@ -38,13 +38,12 @@
         }
       </p>
     </div>
-    <div class="">
-      <!-- /rchat/post/photo/68862687fc2aa53295b4664a -->
-      <img [src]="post.photoEndpoint" alt="Img" loading="lazy" decoding="async" referrerpolicy="no-referrer"
-        draggable="false" style="pointer-events: none; user-select: none;">
+    <div class="image-container">
+      <img class="image-item" [src]="post.photoEndpoint" alt="Img" loading="lazy" decoding="async"
+        referrerpolicy="no-referrer" draggable="false" style="pointer-events: none; user-select: none;">
     </div>
     <div class="flex justify-around">
-      <button class="flex items-center gap-1">
+      <button class="flex items-center gap-1" (click)="likeUnlikePost(post)">
         <mat-icon aria-hidden="false" [fontIcon]="isLikedByUser(post) ? 'favorite' : 'favorite_border'"
           class="text-red-700"></mat-icon>
         {{post.likes.length}}
