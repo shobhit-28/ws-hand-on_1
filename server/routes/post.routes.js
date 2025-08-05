@@ -1,7 +1,7 @@
 import express from 'express'
 import { authenticateToken } from '../middleware/auth.middleware.js'
 import { allowedMethods } from '../utils/allowedMethods.util.js'
-import { addComment, addReply, createPost, deleteComment, deletePost, deleteReply, editComment, editReply, getPostPhoto, getPosts, getPostsById } from '../controllers/posts.controller.js'
+import { addComment, addReply, createPost, deleteComment, deletePost, deleteReply, editComment, editReply, getPostPhoto, getPosts, getPostsById, likePost, unlikePost } from '../controllers/posts.controller.js'
 import postUpload from '../middleware/postUpload.js'
 import { b2 } from '../config/b2Bucket.js'
 
@@ -41,5 +41,9 @@ router.use('/deleteComment/:commentId', authenticateToken, allowedMethods({ DELE
 router.use('/deleteReply', authenticateToken, allowedMethods({ DELETE: deleteReply }))
 
 router.use('/deletePost/:postId', authenticateToken, allowedMethods({ DELETE: deletePost }))
+
+router.use('/like', authenticateToken, allowedMethods({ PUT: likePost }))
+
+router.use('/unlike', authenticateToken, allowedMethods({ PUT: unlikePost }))
 
 export default router

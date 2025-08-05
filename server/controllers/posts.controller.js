@@ -8,6 +8,7 @@ import { AddCommentDTO } from '../dto/posts/create_comment.dto.js'
 import { AddReplyDTO } from '../dto/posts/add_reply.dto.js'
 import { EditCommentDTO } from '../dto/posts/edit_comment.dto.js'
 import { EditReplyDTO } from '../dto/posts/edit_reply.dto.js'
+import { LikeDislikeDTO } from '../dto/posts/like_dislike.dto.js'
 
 export const createPost = asyncHandler(async (req, res) => {
   const dto = new CreatePostDto({
@@ -129,21 +130,23 @@ export const deletePost = asyncHandler(async (req, res) => {
 })
 
 export const likePost = asyncHandler(async (req, res) => {
-  
+  const dto = new LikeDislikeDTO({
+    user: req.user.id,
+    post: req.body.postId
+  })
+
+  const post = await postService.addLike(dto.post, dto.user)
+
+  successResponse(res, `Successfully liked post`, post)
 })
 
-// export const likePost = async (req, res) => {
-//   const { error } = likeDto.validate(req.body)
-//   if (error) return res.status(400).json({ error: error.details[0].message })
+export const unlikePost = asyncHandler(async (req, res) => {
+  const dto = new LikeDislikeDTO({
+    user: req.user.id,
+    post: req.body.postId
+  })
 
-//   const post = await postService.addLike(req.params.id, req.body.userId)
-//   res.json(post)
-// }
+  const post = await postService.removeLike(dto.post, dto.user)
 
-// export const unlikePost = async (req, res) => {
-//   const { error } = likeDto.validate(req.body)
-//   if (error) return res.status(400).json({ error: error.details[0].message })
-
-//   const post = await postService.removeLike(req.params.id, req.body.userId)
-//   res.json(post)
-// }
+  successResponse(res, `Successfully liked post`, post)
+})
