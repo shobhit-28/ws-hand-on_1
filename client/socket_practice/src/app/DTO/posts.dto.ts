@@ -31,7 +31,7 @@ export type Post = {
   userId: ChatFriendsList,
   content: string,
   photoFileName: string,
-  likes: Array<ChatFriendsList>,
+  likes: Array<string>,
   comments: Array<Comment>,
   createdAt: string,
   __v: number,
@@ -45,12 +45,4 @@ export type ReplyType = {
   _id: string
 }
 
-export type CommentType = {
-  postId: string,
-  userId: string,
-  text: string,
-  _id: string,
-  createdAt: string,
-  replies: Array<ReplyType>,
-  __v: number
-}
+export type CommentType = Comment

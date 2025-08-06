@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ElementRef, Input, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { CoreJsService } from '../../services/coreJs/core-js.service';
 import { FormsModule, NgForm } from '@angular/forms';
@@ -47,11 +47,13 @@ type StringNull = string | null
   templateUrl: './posts.component.html',
   styleUrl: './posts.component.css'
 })
-export class PostsComponent {
+export class PostsComponent implements OnInit {
   @Input() postsData: Array<Post> = new Array()
 
   @ViewChild('replyInput') replyInput!: ElementRef<HTMLInputElement>
   @ViewChild('commentInput') commentInput!: ElementRef<HTMLInputElement>
+
+  debouncedLikeUnlikePost: (post: Post) => void = () => { }
 
   constructor(
     private coreJsService: CoreJsService,
@@ -59,6 +61,10 @@ export class PostsComponent {
     private dataTransactionService: ChromeDataTransactionService,
     private postService: PostsService
   ) { }
+
+  ngOnInit(): void {
+    this.debouncedLikeUnlikePost = this.coreJsService.debounceFunc(this.likeUnlikePost.bind(this), 300);
+  }
 
   expandedPost: StringNull = null
   expandedReplies: {
@@ -165,16 +171,38 @@ export class PostsComponent {
   isReplyExpanded = (postIndex: string, commentIndex: string) => postIndex === this.expandedReplies.postIndex && commentIndex === this.expandedReplies.commentIndex
 
   addComment(formGroup: NgForm, postIndex: string) {
-    console.log(this.postsData.find(post => post._id === postIndex))
-    console.log(formGroup.value)
-    console.log(postIndex)
+    this.postService.addCommentOnPost(postIndex, formGroup.value.Comment).subscribe({
+      next: (res) => {
+        this.postsData.map(post => post._id === postIndex ? { ...post, comments: post.comments.push(res) } : post)
+        formGroup.reset();
+      },
+      error: (err) => console.error(err)
+    })
   }
 
   addReply(formGroup: NgForm, postIndex: string, commentId: string) {
-    console.log(formGroup.value)
-    console.log(postIndex)
-    console.log(commentId)
-    // console.log(this.postsData.find((post) => post._id === postIndex)?.comments.find((comment) => comment._id === commentId))
+    this.postService.addReplyOnComment(commentId, formGroup.value?.Reply).subscribe({
+      next: (res) => {
+        this.postsData.map(post => post._id === postIndex
+          ?
+          {
+            ...post,
+            comments: post.comments.map(comment => comment._id === commentId
+              ?
+              {
+                ...comment,
+                replies: comment.replies.push(res)
+              }
+              :
+              comment)
+          }
+          :
+          post
+        )
+        formGroup.reset()
+      },
+      error: (err) => console.error(err)
+    })
   }
 
   private focusOnHtmlComponent(element: ElementRef<HTMLInputElement>) {
@@ -197,23 +225,68 @@ export class PostsComponent {
 
   likePost(postId: string) {
     this.postService.likePost(postId).subscribe({
-      next: (res) => this.addRemoveLikes(postId, res.userId, 'add'),
+      next: (res) => this.addRemoveLikes(postId, this.dataTransactionService.getCookies('user')?.id, 'add'),
       error: (err: HttpErrorResponse) => console.error(err)
     })
   }
 
   unlikePost(postId: string) {
     this.postService.unlikePost(postId).subscribe({
-      next: (res) => this.addRemoveLikes(postId, res.userId, 'remove'),
+      next: (res) => this.addRemoveLikes(postId, this.dataTransactionService.getCookies('user')?.id, 'remove'),
       error: (err: HttpErrorResponse) => console.error(err)
     })
   }
 
-  addRemoveLikes(postId: string, user: ChatFriendsList, action: 'add' | 'remove'): void {
+  addRemoveLikes(postId: string, user: string, action: 'add' | 'remove'): void {
     if (action === 'add') {
       this.postsData.map((post) => post._id === postId ? { ...post, likes: post.likes.push(user) } : post)
     } else {
-      this.postsData.map((post) => post._id === postId ? { ...post, likes: post.likes.filter((likedBy) => likedBy._id !== user._id) } : post)
+      this.postsData = this.postsData.map((post) => post._id === postId
+        ?
+        { ...post, likes: post.likes.filter(likedBy => likedBy !== user) }
+        :
+        post
+      )
     }
+  }
+
+  deleteComment(postId: string, commentId: string) {
+    this.postService.deleteComment(commentId).subscribe({
+      next: () => {
+        this.postsData = this.postsData.map(post => post._id === postId
+          ?
+          {
+            ...post,
+            comments: post.comments.filter(comment => comment._id !== commentId)
+          }
+          :
+          post
+        )
+      },
+      error: (err) => console.error(err)
+    })
+  }
+
+  deleteReply(postId: string, commentId: string, replyId: string) {
+    this.postService.deleteReply(commentId, replyId).subscribe({
+      next: () => {
+        this.postsData = this.postsData.map(post => post._id === postId
+          ?
+          {
+            ...post,
+            comments: post.comments.map(comment => comment._id === commentId
+              ?
+              {
+                ...comment,
+                replies: comment.replies.filter(reply => reply._id !== replyId)
+              }
+              :
+              comment)
+          }
+          :
+          post
+        )
+      }
+    })
   }
 }

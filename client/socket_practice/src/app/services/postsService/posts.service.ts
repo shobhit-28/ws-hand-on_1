@@ -62,6 +62,7 @@ export class PostsService {
   }
 
   deleteReply(commentId: string, replyId: string): Observable<null> {
+    // console.log(commentId, replyId)
     const params = new HttpParams()
       .set('commentId', commentId)
       .set('replyId', replyId)

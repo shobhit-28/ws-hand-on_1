@@ -3,6 +3,7 @@ import User from '../models/auth.model.js'
 import Comment from '../models/comment.model.js'
 import { deleteFileFromB2, generateDownloadUrl, uploadFileToB2 } from '../utils/b2Utils.js'
 import { AppError } from '../utils/appError.js'
+import mongoose from 'mongoose'
 
 export const createPostService = async (dto) => {
     const uploadedFileName = await uploadFileToB2(dto.file.buffer, dto.file.originalname, dto.file.mimetype)
@@ -144,16 +145,22 @@ export const removeLike = async (postId, userId) => {
 
 export const addComment = async ({ postId, userId, text }) => {
     const newComment = await Comment.create({ postId, userId, text })
+        .then(doc => doc.populate('userId'))
+        .then(doc => doc.populate('replies.userId'))
     return newComment
 }
 
 export const addReply = async ({ commentId, userId, text }) => {
-    const updatedComment = await Comment.findByIdAndUpdate(commentId,
-        { $push: { replies: { userId, text, createdAt: new Date() } } },
-        { new: true }
-    )
+    const _id = new mongoose.Types.ObjectId()
 
-    return updatedComment
+    const updatedComment = await Comment.findByIdAndUpdate(commentId,
+        { $push: { replies: { _id, userId, text, createdAt: new Date() } } },
+        { new: true }
+    ).then(doc => doc.populate('replies.userId'))
+
+    const reply = updatedComment.replies.find(reply => reply._id.equals(_id))
+
+    return reply
 }
 
 export const editComment = async ({ commentId, text, userId }) => {
@@ -161,7 +168,7 @@ export const editComment = async ({ commentId, text, userId }) => {
         { _id: commentId, userId },
         { text },
         { new: true }
-    )
+    ).then(doc => doc.populate('userId')).then(doc => doc.populate('replies.userId'))
 
     return updatedComment
 }
@@ -171,9 +178,11 @@ export const editReply = async ({ commentId, userId, replyId, text }) => {
         { _id: commentId, 'replies._id': replyId, 'replies.userId': userId },
         { $set: { 'replies.$.text': text } },
         { new: true }
-    )
+    ).then(doc => doc.populate('userId')).then(doc => doc.populate('replies.userId'))
 
-    return updatedComment
+    const reply = updatedComment.replies.find(reply => reply._id.equals(replyId))
+
+    return reply
 }
 
 export const deleteComment = async ({ commentId, userId }) => {
@@ -186,7 +195,7 @@ export const deleteReply = async ({ commentId, replyId, userId }) => {
         { _id: commentId },
         { $pull: { replies: { _id: replyId, userId } } },
         { new: true }
-    )
+    ).then(doc => doc.populate('userId')).then(doc => doc.populate('replies.userId'))
 
     return updatedComment
 }

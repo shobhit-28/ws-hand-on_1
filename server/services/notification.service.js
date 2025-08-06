@@ -52,3 +52,7 @@ export const deleteNotification = async ({ notificationId, userId }) => {
     })
     return notification
 }
+
+export const clearNotifications = async (recipientId) => {
+    await Notification.deleteMany({ recipientId })
+}
