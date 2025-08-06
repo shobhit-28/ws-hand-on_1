@@ -80,7 +80,7 @@ export type UserProfileUser = {
   followers: GetFollowerList,
   following: GetFollowingList,
   status: { isGettingFollowed: boolean, isAlreadyFollowing: boolean },
-  posts: Array<Post>
+  posts: Array<Post & { status: { isGettingFollowed: boolean, isAlreadyFollowing: boolean } }>
 }
 
 export const defaultUserProfileUser: UserProfileUser = {

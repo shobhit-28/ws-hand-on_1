@@ -8,6 +8,7 @@ import { RouterModule } from '@angular/router';
 import { PostsService } from '../../services/postsService/posts.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ChatFriendsList } from '../../DTO/users.dto';
+import { UsersService } from '../../services/users/users.service';
 
 type User = {
   _id: string
@@ -48,22 +49,25 @@ type StringNull = string | null
   styleUrl: './posts.component.css'
 })
 export class PostsComponent implements OnInit {
-  @Input() postsData: Array<Post> = new Array()
+  @Input() postsData: Array<Post & { status: { isGettingFollowed: boolean, isAlreadyFollowing: boolean } }> = new Array()
 
   @ViewChild('replyInput') replyInput!: ElementRef<HTMLInputElement>
   @ViewChild('commentInput') commentInput!: ElementRef<HTMLInputElement>
 
   debouncedLikeUnlikePost: (post: Post) => void = () => { }
+  debouncedFollowUnfollowUser: (userId: string, action: 'follow' | 'unfollow', postId: string) => void = () => { }
 
   constructor(
     private coreJsService: CoreJsService,
     private cdr: ChangeDetectorRef,
     private dataTransactionService: ChromeDataTransactionService,
-    private postService: PostsService
+    private postService: PostsService,
+    private userService: UsersService
   ) { }
 
   ngOnInit(): void {
     this.debouncedLikeUnlikePost = this.coreJsService.debounceFunc(this.likeUnlikePost.bind(this), 300);
+    this.debouncedFollowUnfollowUser = this.coreJsService.debounceFunc(this.followUnfollow.bind(this), 300);
   }
 
   expandedPost: StringNull = null
@@ -282,6 +286,46 @@ export class PostsComponent implements OnInit {
               }
               :
               comment)
+          }
+          :
+          post
+        )
+      }
+    })
+  }
+
+  followUnfollow(userId: string, action: 'follow' | 'unfollow', postId: string) {
+    if (action === 'follow') {
+      this.followUser(userId, postId)
+    } else {
+      this.unfollowUser(userId, postId)
+    }
+  }
+
+  followUser(user: string, postId: string) {
+    this.userService.followUser(user).subscribe({
+      next: () => {
+        this.postsData = this.postsData.map(post => post._id === postId
+          ?
+          {
+            ...post,
+            status: { ...post.status, isAlreadyFollowing: true }
+          }
+          :
+          post
+        )
+      }
+    })
+  }
+
+  unfollowUser(user: string, postId: string) {
+    this.userService.unfollowUser(user).subscribe({
+      next: () => {
+        this.postsData = this.postsData.map(post => post._id === postId
+          ?
+          {
+            ...post,
+            status: { ...post.status, isAlreadyFollowing: false }
           }
           :
           post

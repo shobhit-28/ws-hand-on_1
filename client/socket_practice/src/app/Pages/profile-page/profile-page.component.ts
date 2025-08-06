@@ -140,8 +140,13 @@ export class ProfilePageComponent implements OnInit {
 
   getPostsForUser(userId: string) {
     this.postService.getPostByUserId(userId).subscribe({
-      next: (res) => {
-        this.user['posts'] = res
+      next: async (res) => {
+        this.user['posts'] = await Promise.all(
+          res.map(async post => ({
+            ...post,
+            status: await this.userService.getFollowStatuses(post.userId._id)
+          }))
+        )
       }
     })
   }

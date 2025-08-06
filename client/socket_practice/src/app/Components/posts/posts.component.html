@@ -23,7 +23,10 @@
       </div>
       } @else {
       <div class="">
-        <button class="border-2 px-6 py-1 rounded-lg font-medium text-sm">Follow</button>
+        <button class="border-2 px-6 py-1 rounded-lg font-medium text-sm"
+          (click)="debouncedFollowUnfollowUser(post.userId._id, post.status.isAlreadyFollowing ? 'unfollow' : 'follow', post._id)">
+          {{post.status.isAlreadyFollowing ? 'Unfollow' : 'Follow'}}
+        </button>
       </div>
       }
     </div>
