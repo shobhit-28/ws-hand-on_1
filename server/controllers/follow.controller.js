@@ -2,6 +2,7 @@ import { CheckStatusDTO } from "../dto/follow/checkStatus.dto.js";
 import { FollowUnfollowDTO } from "../dto/follow/follow.dto.js";
 import { asyncHandler } from "../middleware/asyncHandler.js";
 import * as fs from '../services/follow.service.js'
+import * as notification from '../services/notification.service.js'
 import { successResponse } from "../utils/apiResponse.util.js";
 
 export const follow = asyncHandler(async (req, res) => {
@@ -14,6 +15,13 @@ export const follow = asyncHandler(async (req, res) => {
 
     const io = req.app.get('io')
     io.to(dto.following).emit('got-followed', response)
+
+    await notification.createNotification(req, {
+        recipientId: dto.following,
+        senderId: dto.follower,
+        type: 'follow',
+        content: `${response?.followerUser?.name} followed you`
+    })
 
     successResponse(res, `Followed ${response.followerUser.name} successfully`, {}, 201)
 })

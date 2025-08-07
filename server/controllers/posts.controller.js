@@ -1,4 +1,5 @@
 import * as postService from '../services/post.service.js'
+import * as notification from '../services/notification.service.js'
 import { CreatePostDto } from '../dto/posts/create_post.dto.js'
 import { asyncHandler } from '../middleware/asyncHandler.js'
 import { successResponse } from '../utils/apiResponse.util.js'
@@ -136,6 +137,14 @@ export const likePost = asyncHandler(async (req, res) => {
   })
 
   const post = await postService.addLike(dto.post, dto.user)
+
+  await notification.createNotification(req, {
+    recipientId: post.userId._id,
+    senderId: dto.user,
+    type: 'like',
+    content: `${dto.user} liked your post`,
+    postId: post._id
+  })
 
   successResponse(res, `Successfully liked post`, post)
 })

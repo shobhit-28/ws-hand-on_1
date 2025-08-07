@@ -1,23 +1,22 @@
-import Notification from "../models/notification.model"
+import Notification from "../models/notification.model.js"
 
-export const createNotification = async ({ recipientId, senderId, type, postId, messageId, content }) => {
-    let expiresAt = null
-
-    if (type === 'new_message') {
-        expiresAt = new Date(Date.now() + 1 * 24 * 60 * 60 * 1000)
-    } else {
-        expiresAt = new Date(Date.now() + 5 * 24 * 60 * 60 * 1000)
-    }
+export const createNotification = async (req, notificationPayload) => {
+    const expiresAt = new Date(Date.now() + (notificationPayload?.type === 'new_message' ? 1 : 5) * 24 * 60 * 60 * 1000)
 
     const notification = await Notification.create({
-        recipientId,
-        senderId,
-        type,
-        postId,
-        messageId,
-        content,
+        recipientId: notificationPayload?.recipientId,
+        senderId: notificationPayload?.senderId,
+        type: notificationPayload?.type,
+        postId: notificationPayload?.postId,
+        messageId: notificationPayload?.messageId,
+        content: notificationPayload?.content,
         expiresAt
     })
+
+    if (notificationPayload?.type !== 'new_message') {
+        const io = req.app.get('io')
+        io.to(notificationPayload?.recipientId).emit('notification', notification)
+    }
 
     return notification
 }
