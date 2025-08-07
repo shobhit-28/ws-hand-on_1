@@ -7,6 +7,7 @@ import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 import { ProfilePictureComponent } from '../../profile-picture/profile-picture.component';
 import { MatDialog } from '@angular/material/dialog';
 import { ProfilePicHandlerService } from '../../../services/profilePicHandler/profile-pic-handler.service';
+import { NewPostComponent } from '../../new-post/new-post.component';
 
 @Component({
   selector: 'raj-chat-sub-router',
@@ -68,5 +69,11 @@ export class SubRouterComponent {
 
   navigateToProfile() {
     this.coreJsService.navigateToProfilePage(this.dataService.getCookies('user')?.id)
+  }
+
+  openNewPostComponent() {
+    this.dialog.open(NewPostComponent, {
+      width: '400px'
+    })
   }
 }

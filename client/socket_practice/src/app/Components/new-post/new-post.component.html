@@ -1,0 +1,32 @@
+<div class="dialog-header">
+    <div class="flex justify-between items-center w-full pr-4">
+        <span mat-dialog-title>Edit your image</span>
+        <button mat-icon-button class="" (click)="closeDialog()">
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
+</div>
+
+<div mat-dialog-content class="no-padding">
+    <div class="image-container">
+        <img class="image-item"
+            src="https://res.cloudinary.com/dawlvarkh/image/upload/v1753894855/profile-pictures/dtppxyftw9l5elxxurhv.jpg"
+            alt="" srcset="">
+    </div>
+    <div class="p-2 text-xs">
+        <input #commentInput class="font-sans p-3 border outline-none w-full rounded-lg bg-transparent" type="text" name="Comment"
+            placeholder="Caption for this post" [(ngModel)]="newPost.caption" (ngModelChange)="onCaptionChange($event)">
+    </div>
+</div>
+
+<div mat-dialog-actions class="dialog-actions" align="end">
+    <button mat-button>ReUpload</button>
+    <button mat-button (click)="closeDialog()">Cancel</button>
+    <button mat-flat-button>Change</button>
+</div>
+
+@if (false) {
+<div class=" fixed top-0 right-0 h-screen w-screen flex justify-center items-center bg-black-200/80 z-50">
+    <raj-chat-loader></raj-chat-loader>
+</div>
+}
