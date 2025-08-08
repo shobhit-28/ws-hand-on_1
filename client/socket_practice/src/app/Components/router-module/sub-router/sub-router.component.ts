@@ -8,6 +8,7 @@ import { ProfilePictureComponent } from '../../profile-picture/profile-picture.c
 import { MatDialog } from '@angular/material/dialog';
 import { ProfilePicHandlerService } from '../../../services/profilePicHandler/profile-pic-handler.service';
 import { NewPostComponent } from '../../new-post/new-post.component';
+import { NewPostService } from '../../../services/new-post-service/new-post.service';
 
 @Component({
   selector: 'raj-chat-sub-router',
@@ -33,7 +34,8 @@ export class SubRouterComponent {
     private dataService: ChromeDataTransactionService,
     private coreJsService: CoreJsService,
     private dialog: MatDialog,
-    private profilePicService: ProfilePicHandlerService
+    private profilePicService: ProfilePicHandlerService,
+    private newPostService: NewPostService
   ) { }
 
   getUserDetails = () => this.dataService.getCookies('user')
@@ -69,6 +71,15 @@ export class SubRouterComponent {
 
   navigateToProfile() {
     this.coreJsService.navigateToProfilePage(this.dataService.getCookies('user')?.id)
+  }
+
+  async uploadImageForNewPost() {
+    try {
+      const {img, preview} = await this.newPostService.triggerFileUpload()
+      this.openNewPostComponent()
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   openNewPostComponent() {

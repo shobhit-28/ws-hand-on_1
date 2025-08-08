@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ApiResponse } from '../../DTO/commonResponse.dto';
 import { Observable } from 'rxjs';
+import { ImageUploaderService } from '../image-uploader/image-uploader.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,38 +17,9 @@ export class ProfilePicHandlerService {
     }
 
   constructor(
-    private http: HttpClient
+    private http: HttpClient,
+    private imgUploader: ImageUploaderService
   ) { }
-
-  private async takeFileInput(): Promise<{ file: File; preview: string }> {
-    return new Promise((resolve, reject) => {
-      const input = document.createElement('input');
-      input.type = 'file';
-      input.accept = '.jpg,.jpeg,.png';
-
-      input.onchange = () => {
-        if (!input.files?.length) return reject(null);
-
-        const file = input.files[0];
-        const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
-
-        if (!allowedTypes.includes(file.type)) {
-          console.error('❌ Invalid file type');
-          return reject(null);
-        }
-
-        const reader = new FileReader();
-        reader.onload = () => {
-          const preview = reader.result as string;
-          resolve({ file, preview });
-        };
-
-        reader.readAsDataURL(file);
-      };
-
-      input.click();
-    });
-  }
 
   uploadFile(file: File): Observable<ApiResponse<string>> {
     const formData = new FormData();
@@ -57,7 +29,7 @@ export class ProfilePicHandlerService {
   }
 
   public async triggerFileUpload() {
-    const { file, preview } = await this.takeFileInput()
+    const { file, preview } = await this.imgUploader.takeFileInput()
 
     this.imageFile = { img: file, preview }
 
@@ -76,7 +48,7 @@ export class ProfilePicHandlerService {
       error: (err) => console.error(err)
     })
   }
-  
+
   updateLatestProfileDetails(): void {
     this.http.get<ApiResponse<null>>('/rchat/user/updateProfileDetails').subscribe({
       error: (err) => console.error(err)
