@@ -15,7 +15,7 @@ export const createNotification = async (req, notificationPayload) => {
 
     if (notificationPayload?.type !== 'new_message') {
         const io = req.app.get('io')
-        io.to(notificationPayload?.recipientId).emit('notification', notification)
+        io.to(notificationPayload?.recipientId).emit('add-notification', notification)
     }
 
     return notification
@@ -54,4 +54,45 @@ export const deleteNotification = async ({ notificationId, userId }) => {
 
 export const clearNotifications = async (recipientId) => {
     await Notification.deleteMany({ recipientId })
+}
+
+export const unlikePost = async (req, { postId, recipientId, senderId }) => {
+    const notification = await Notification.findOneAndDelete({
+        postId,
+        recipientId,
+        senderId,
+        type: 'like'
+    })
+
+    if (notification) {
+        const io = req.app.get('io')
+        io.to(notification?.recipientId).emit('remove-notification', notification)
+    }
+}
+
+export const unfollowUser = async (req, { recipientId, senderId, content }) => {
+    const notification = await Notification.findOneAndDelete({
+        recipientId,
+        senderId,
+        content,
+        type: 'follow'
+    })
+
+    if (notification) {
+        const io = req.app.get('io')
+        io.to(notification?.recipientId).emit('remove-notification', notification)
+    }
+}
+
+export const removeComment = async (req, { recipientId, senderId, commentId }) => {
+    const notification = await Notification.findByIdAndDelete({
+        recipientId,
+        senderId,
+        commentId
+    })
+
+    if (notification) {
+        const io = req.app.get('io')
+        io.to(notification?.recipientId).emit('remove-notification', notification)
+    }
 }

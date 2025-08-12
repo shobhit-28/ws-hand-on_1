@@ -13,9 +13,6 @@ export const follow = asyncHandler(async (req, res) => {
 
     const response = await fs.followUser(dto)
 
-    const io = req.app.get('io')
-    io.to(dto.following).emit('got-followed', response)
-
     await notification.createNotification(req, {
         recipientId: dto.following,
         senderId: dto.follower,

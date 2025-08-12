@@ -134,19 +134,22 @@ export const deleteExpiredPhotos = async () => {
 export const addLike = async (postId, userId) => {
     return await Post.findByIdAndUpdate(postId, {
         $addToSet: { likes: userId }
-    }, { new: true }).populate('userId')
+    }, { new: true }).populate('likes')
 }
 
 export const removeLike = async (postId, userId) => {
     return await Post.findByIdAndUpdate(postId, {
         $pull: { likes: userId }
-    }, { new: true }).populate('userId')
+    }, { new: true }).populate('likes')
 }
 
 export const addComment = async ({ postId, userId, text }) => {
     const newComment = await Comment.create({ postId, userId, text })
-        .then(doc => doc.populate('userId'))
-        .then(doc => doc.populate('replies.userId'))
+        .then(doc => doc.populate([
+            { path: 'userId' },
+            { path: 'replies.userId' },
+            { path: 'postId', populate: { path: 'userId' } }
+        ]))
     return newComment
 }
 

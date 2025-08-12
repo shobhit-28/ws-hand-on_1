@@ -56,13 +56,9 @@ export class AuthService {
         this.socket.on('profile-pic-changed', (changedBool: true) => {
           this.profilePicHandler.updateLatestProfilePic();
         });
-        
+
         this.socket.on('profile-user-changed', (changedBool: true) => {
           this.profilePicHandler.updateLatestProfileDetails();
-        });
-
-        this.socket.on('got-followed', (follower) => {
-          console.log('You got followed', follower);
         });
 
         this.socket.on('disconnect', () => {

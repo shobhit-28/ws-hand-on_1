@@ -10,6 +10,7 @@ import { AddReplyDTO } from '../dto/posts/add_reply.dto.js'
 import { EditCommentDTO } from '../dto/posts/edit_comment.dto.js'
 import { EditReplyDTO } from '../dto/posts/edit_reply.dto.js'
 import { LikeDislikeDTO } from '../dto/posts/like_dislike.dto.js'
+import { findUser } from '../utils/user.util.js'
 
 export const createPost = asyncHandler(async (req, res) => {
   const dto = new CreatePostDto({
@@ -59,6 +60,17 @@ export const addComment = asyncHandler(async (req, res) => {
 
   const comment = await postService.addComment(dto)
 
+  if (comment.postId.userId._id !== dto.userId) {
+    await notification.createNotification(req, {
+      recipientId: comment.postId.userId._id,
+      senderId: dto.userId,
+      type: 'comment',
+      content: `${dto.userId} comment on your post`,
+      postId: comment.postId._id,
+      commentId: comment._id
+    })
+  }
+
   successResponse(res, 'Successfully posted a comment', comment)
 })
 
@@ -105,7 +117,12 @@ export const deleteComment = asyncHandler(async (req, res) => {
     userId: req.user.id
   };
 
-  await postService.deleteComment(dto);
+  const comment = await postService.deleteComment(dto);
+  await notification.removeComment(req, {
+    recipientId: comment.postId.userId._id,
+    senderId: dto.userId,
+    commentId: comment._id
+  })
 
   successResponse(res, `Successfully deleted comment`, '', 204);
 })
@@ -138,11 +155,13 @@ export const likePost = asyncHandler(async (req, res) => {
 
   const post = await postService.addLike(dto.post, dto.user)
 
+  const user = await findUser(dto.user)
+
   await notification.createNotification(req, {
     recipientId: post.userId._id,
     senderId: dto.user,
     type: 'like',
-    content: `${dto.user} liked your post`,
+    content: `${user.name} liked your post`,
     postId: post._id
   })
 
