@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { ImageUploaderService } from '../image-uploader/image-uploader.service';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { ApiResponse } from '../../DTO/commonResponse.dto';
 import { HttpClient } from '@angular/common/http';
+import { NewPost } from '../../DTO/posts.dto';
 
 @Injectable({
   providedIn: 'root'
@@ -26,15 +27,13 @@ export class NewPostService {
     return this.imageFile
   }
 
-  uploadPost(file: File, caption: string) {
-    console.log(file, caption)
-    console.log(caption)
+  uploadPost(file: File, caption: string): Observable<NewPost> {
     const formData = new FormData();
-    formData.append('file', file);
+    formData.append('photo', file);
     formData.append('content', caption)
 
-    console.log(formData)
-
-    // return this.http.put<ApiResponse<string>>('/rchat/post/create', formData)
+    return this.http.post<ApiResponse<NewPost>>('/rchat/post/create', formData).pipe(
+      map(res => res.data)
+    )
   }
 }

@@ -1,5 +1,6 @@
 import { ChatFriendsList } from "./users.dto"
 
+
 export type commentsType = {
   userId: number,
   text: string,
@@ -43,6 +44,16 @@ export type ReplyType = {
   text: string,
   createdAt: string,
   _id: string
+}
+
+export type NewPost = {
+  userId: string,
+  content: string,
+  photoFileName: string,
+  likes: [],
+  _id: string,
+  createdAt: string,
+  __v: number
 }
 
 export type CommentType = Comment

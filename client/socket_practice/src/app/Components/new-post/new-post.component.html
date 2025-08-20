@@ -24,7 +24,7 @@
   <button mat-flat-button (click)="createNewPost()" [disabled]="!(newPost.img?.img && newPost.caption)">Post</button>
 </div>
 
-@if (false) {
+@if (loading) {
 <div class=" fixed top-0 right-0 h-screen w-screen flex justify-center items-center bg-black-200/80 z-50">
   <raj-chat-loader></raj-chat-loader>
 </div>

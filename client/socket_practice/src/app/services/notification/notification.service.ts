@@ -1,11 +1,14 @@
 import { Injectable } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Injectable({
   providedIn: 'root'
 })
 export class NotificationService {
 
-  constructor() { }
+  constructor(
+    private snackBar: MatSnackBar
+  ) { }
 
   public askForBrowserNotificationPermission() {
     if (Notification.permission !== 'granted') {
@@ -21,5 +24,12 @@ export class NotificationService {
         body: message
       });
     }
+  }
+
+  public showSnackBar(message: string, type: 'success' | 'failure' | 'neutral', duration?: number) {
+    this.snackBar.open(message, 'Close', {
+      duration: duration ?? 1000,
+      panelClass: [`snackbar-${type}`]
+    })
   }
 }

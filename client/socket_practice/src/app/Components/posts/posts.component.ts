@@ -9,6 +9,7 @@ import { PostsService } from '../../services/postsService/posts.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ChatFriendsList } from '../../DTO/users.dto';
 import { UsersService } from '../../services/users/users.service';
+import { NotificationService } from '../../services/notification/notification.service';
 
 type User = {
   _id: string
@@ -62,7 +63,8 @@ export class PostsComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private dataTransactionService: ChromeDataTransactionService,
     private postService: PostsService,
-    private userService: UsersService
+    private userService: UsersService,
+    private notification: NotificationService
   ) { }
 
   ngOnInit(): void {
@@ -331,6 +333,15 @@ export class PostsComponent implements OnInit {
           post
         )
       }
+    })
+  }
+
+  deletePost(postId: string) {
+    this.postService.deletePost(postId).subscribe({
+      next: () => {
+        this.postsData = this.postsData.filter((post) => post._id !== postId)
+        this.notification.showSnackBar('Post deleted', 'success', 5000)
+      }, error: (err) => console.error(err)
     })
   }
 }

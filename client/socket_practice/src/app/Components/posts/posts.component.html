@@ -17,7 +17,7 @@
       </a>
       @if (isMyPost(post.userId._id)) {
       <div class="">
-        <button class="p-1 rounded-lg">
+        <button class="p-1 rounded-lg" (click)="deletePost(post._id)">
           <mat-icon aria-hidden="false" fontIcon="delete"></mat-icon>
         </button>
       </div>

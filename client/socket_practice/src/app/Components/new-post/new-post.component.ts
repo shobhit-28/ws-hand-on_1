@@ -5,6 +5,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { LoaderComponent } from '../loader/loader.component';
 import { FormsModule } from '@angular/forms';
 import { NewPostService } from '../../services/new-post-service/new-post.service';
+import { error } from 'console';
+import { NotificationService } from '../../services/notification/notification.service';
 
 @Component({
   selector: 'raj-chat-new-post',
@@ -27,11 +29,13 @@ export class NewPostComponent implements OnInit {
       img: null,
       caption: ''
     }
+  loading: boolean = false;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
     private dialogRef: MatDialogRef<NewPostComponent>,
-    private newPostService: NewPostService
+    private newPostService: NewPostService,
+    private notification: NotificationService
   ) { }
 
   ngOnInit(): void {
@@ -52,7 +56,16 @@ export class NewPostComponent implements OnInit {
 
   async createNewPost() {
     if (this.newPost.img?.img && this.newPost.caption) {
-      this.newPostService.uploadPost(this.newPost.img?.img, this.newPost.caption)
+      this.loading = true
+      this.newPostService.uploadPost(this.newPost.img?.img, this.newPost.caption).subscribe({
+        next: () => {
+          this.loading = false
+          this.closeDialog()
+          this.notification.showSnackBar('Posted Successfully', 'failure', 5000)
+        }, error: (err) => {
+          console.error(err)
+        }
+      })
     } else {
       console.error(`Fill the required fields`)
     }

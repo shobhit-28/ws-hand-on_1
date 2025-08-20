@@ -75,3 +75,29 @@ p {
 .box-shadow {
   box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 5px;
 }
+
+.snackbar-success {
+  background-color: #4caf50;
+  color: white;
+  font-weight: 500;
+  border-radius: 8px;
+}
+
+.snackbar-failure {
+  background-color: #f44336;
+  color: white;
+  font-weight: 500;
+  border-radius: 8px;
+}
+
+.snackbar-neutral {
+  background-color: #2196f3;
+  color: white;
+  font-weight: 500;
+  border-radius: 8px;
+}
+
+.mat-snack-bar-container {
+  margin: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
