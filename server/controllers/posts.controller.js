@@ -176,5 +176,13 @@ export const unlikePost = asyncHandler(async (req, res) => {
 
   const post = await postService.removeLike(dto.post, dto.user)
 
+  if (dto.user !== post.userId._id) {
+    await notification.unlikePost(req, {
+      postId: post._id,
+      recipientId: post.userId._id,
+      senderId: dto.user
+    })
+  }
+
   successResponse(res, `Successfully removed like from the post`, post)
 })

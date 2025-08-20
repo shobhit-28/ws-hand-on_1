@@ -26,12 +26,12 @@
             </button>
           </div>
         </form>
-        <button class="relative">
+        <button class="relative" (click)="toggleNotificationsBar()">
           @if (true) {
-            <span class="absolute -right-1 block h-[.4rem] w-[.4rem] rounded-full bg-red-500 ring-1 ring-white"></span>
-            <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="notifications"></mat-icon>
+          <span class="absolute -right-1 block h-[.4rem] w-[.4rem] rounded-full bg-red-500 ring-1 ring-white"></span>
+          <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="notifications"></mat-icon>
           } @else {
-            <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="notifications_none"></mat-icon>
+          <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="notifications_none"></mat-icon>
           }
         </button>
         <button (click)="logout()">
@@ -39,10 +39,16 @@
         </button>
       </div>
       @if (userName) {
-        <div class="fixed top-[11vh] right-8 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] rounded w-80 max-h-[50vh] z-50">
-          <raj-chat-single-searched-user [users]="searchedUser" [loading]="loading" [searchedText]="userName" (navigationEmitter)="clearSearchedUser()"></raj-chat-single-searched-user>
-        </div>
-        }
+      <div class="fixed top-[11vh] right-8 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] rounded w-80 max-h-[50vh] z-50">
+        <raj-chat-single-searched-user [users]="searchedUser" [loading]="loading" [searchedText]="userName"
+          (navigationEmitter)="clearSearchedUser()"></raj-chat-single-searched-user>
+      </div>
+      }
+      }
+      @if (notifications.isNotificationBarOpen) {
+      <div class="fixed top-[11vh] right-8 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] rounded w-80 max-h-[50vh] z-50">
+        <raj-chat-notifications [notifications]="notifications.notifications"></raj-chat-notifications>
+      </div>
       }
     </div>
   </div>

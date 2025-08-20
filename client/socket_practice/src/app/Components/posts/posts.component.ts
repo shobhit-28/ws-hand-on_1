@@ -10,6 +10,8 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { ChatFriendsList } from '../../DTO/users.dto';
 import { UsersService } from '../../services/users/users.service';
 import { NotificationService } from '../../services/notification/notification.service';
+import { MatDialog } from '@angular/material/dialog';
+import { DeleteConfirmationComponent } from '../delete-confirmation/delete-confirmation.component';
 
 type User = {
   _id: string
@@ -64,7 +66,8 @@ export class PostsComponent implements OnInit {
     private dataTransactionService: ChromeDataTransactionService,
     private postService: PostsService,
     private userService: UsersService,
-    private notification: NotificationService
+    private notification: NotificationService,
+    private dialog: MatDialog
   ) { }
 
   ngOnInit(): void {
@@ -332,6 +335,30 @@ export class PostsComponent implements OnInit {
           :
           post
         )
+      }
+    })
+  }
+
+  deleteConfirmation(postId: string) {
+    const dialogRef = this.dialog.open(
+      DeleteConfirmationComponent, {
+      data: {
+        dialog: `Are you sure you want to delete this post?`,
+        buttonNames: {
+          YES: `Delete`,
+          NO: "Cancel"
+        }
+      },
+      width: '400px'
+    })
+
+    dialogRef.afterClosed().subscribe({
+      next: (res) => {
+        if (res === 'YES') {
+          this.deletePost(postId)
+        }
+      }, error: (err) => {
+        console.error(err)
       }
     })
   }

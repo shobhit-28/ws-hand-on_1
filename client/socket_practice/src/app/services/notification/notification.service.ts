@@ -26,8 +26,8 @@ export class NotificationService {
     }
   }
 
-  public showSnackBar(message: string, type: 'success' | 'failure' | 'neutral', duration?: number) {
-    this.snackBar.open(message, 'Close', {
+  public showSnackBar(message: string, type: 'success' | 'failure' | 'neutral', duration?: number, closeBtnName?: string) {
+    this.snackBar.open(message, closeBtnName ?? 'OK', {
       duration: duration ?? 1000,
       panelClass: [`snackbar-${type}`]
     })

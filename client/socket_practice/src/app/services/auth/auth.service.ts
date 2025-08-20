@@ -8,6 +8,8 @@ import { Subject } from 'rxjs';
 import { deletedMessageRecieverType, Messages } from '../../DTO/message.dto';
 import { ChatService } from '../chat/chat.service';
 import { ProfilePicHandlerService } from '../profilePicHandler/profile-pic-handler.service';
+import { NotificationType } from '../../DTO/notifications.dto';
+import { NotificationsService } from '../notifications-service/notifications.service';
 
 @Injectable({
   providedIn: 'root'
@@ -28,7 +30,8 @@ export class AuthService {
     private data: ChromeDataTransactionService,
     private ns: NotificationService,
     private chatService: ChatService,
-    private profilePicHandler: ProfilePicHandlerService
+    private profilePicHandler: ProfilePicHandlerService,
+    private getNotifications: NotificationsService
   ) { }
 
   initSocket(userId: string) {
@@ -61,6 +64,14 @@ export class AuthService {
           this.profilePicHandler.updateLatestProfileDetails();
         });
 
+        this.socket.on('remove-notification', (notification: NotificationType) => {
+          console.log(notification)
+        })
+
+        this.socket.on('add-notification', (notification: NotificationType) => {
+          console.log(notification)
+        })
+
         this.socket.on('disconnect', () => {
           console.log('❌ Disconnected from WebSocket');
         });
@@ -84,6 +95,7 @@ export class AuthService {
       }
       if (userId) {
         this.initSocket(userId)
+        this.getNotifications.getNotification()
       }
     } else {
       if (isNav) {

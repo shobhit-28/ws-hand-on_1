@@ -18,6 +18,8 @@ import { UsersService } from '../../services/users/users.service';
 import { defaultSearchedUser, SearchUserList } from '../../DTO/users.dto';
 import { SingleSearchedUserComponent } from "./single-searched-user/single-searched-user.component";
 import { NotificationType } from '../../DTO/notifications.dto';
+import { NotificationsService } from '../../services/notifications-service/notifications.service';
+import { NotificationsComponent } from "./notifications/notifications.component";
 
 @Component({
   selector: 'raj-chat-nav-bar',
@@ -36,7 +38,8 @@ import { NotificationType } from '../../DTO/notifications.dto';
     // HomeComponent,
     // RouterModuleComponent
     ,
-    SingleSearchedUserComponent
+    SingleSearchedUserComponent,
+    NotificationsComponent
   ],
   templateUrl: './nav-bar.component.html',
   styleUrl: './nav-bar.component.css'
@@ -46,10 +49,14 @@ export class NavBarComponent implements OnInit {
   private authService = inject(AuthService)
   private coreJsService = inject(CoreJsService)
   private usersService = inject(UsersService)
+  private notificationService = inject(NotificationsService)
 
   searchedUser: SearchUserList = defaultSearchedUser
 
-  notifications!: Array<NotificationType>
+  notifications: { notifications: Array<NotificationType>, isNotificationBarOpen: boolean } = {
+    notifications: new Array(),
+    isNotificationBarOpen: false
+  }
 
   debouncedSearchUser: (user: string) => void = () => { };
   loading: boolean = true;
@@ -108,4 +115,8 @@ export class NavBarComponent implements OnInit {
     this.userName = null
     this.loading = true
   }
+
+  getNotifications = (): Array<NotificationType> => this.notifications['notifications'] = this.notificationService.getNotifications()
+
+  toggleNotificationsBar = () => this.notifications['isNotificationBarOpen'] = !this.notifications['isNotificationBarOpen']
 }

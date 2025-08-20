@@ -15,7 +15,7 @@ export const createNotification = async (req, notificationPayload) => {
 
     if (notificationPayload?.type !== 'new_message') {
         const io = req.app.get('io')
-        io.to(notificationPayload?.recipientId).emit('add-notification', notification)
+        io.to(notificationPayload?.recipientId.toString()).emit('add-notification', notification)
     }
 
     return notification
@@ -66,7 +66,7 @@ export const unlikePost = async (req, { postId, recipientId, senderId }) => {
 
     if (notification) {
         const io = req.app.get('io')
-        io.to(notification?.recipientId).emit('remove-notification', notification)
+        io.to(notification?.recipientId.toString()).emit('remove-notification', notification)
     }
 }
 
@@ -80,7 +80,7 @@ export const unfollowUser = async (req, { recipientId, senderId, content }) => {
 
     if (notification) {
         const io = req.app.get('io')
-        io.to(notification?.recipientId).emit('remove-notification', notification)
+        io.to(notification?.recipientId.toString()).emit('remove-notification', notification)
     }
 }
 
@@ -93,6 +93,17 @@ export const removeComment = async (req, { recipientId, senderId, commentId }) =
 
     if (notification) {
         const io = req.app.get('io')
-        io.to(notification?.recipientId).emit('remove-notification', notification)
+        io.to(notification?.recipientId.toString()).emit('remove-notification', notification)
     }
+}
+
+export const getAllNotifications = async (userId) => {
+    const notifications = await Notification.find({ recipientId: userId })
+        .populate('recipientId')
+        .populate('senderId')
+        .populate('postId')
+        .populate('messageId')
+        .populate('commentId')
+
+    return notifications;
 }
