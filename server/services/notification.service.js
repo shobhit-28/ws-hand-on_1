@@ -10,6 +10,8 @@ export const createNotification = async (req, notificationPayload) => {
         postId: notificationPayload?.postId,
         messageId: notificationPayload?.messageId,
         content: notificationPayload?.content,
+        commentId: notificationPayload?.commentId,
+        replyId: notificationPayload?.replyId,
         expiresAt
     })
 
@@ -87,10 +89,24 @@ export const unfollowUser = async (req, { recipientId, senderId, content }) => {
 }
 
 export const removeComment = async (req, { recipientId, senderId, commentId }) => {
-    const notification = await Notification.findByIdAndDelete({
+    const notification = await Notification.findOneAndDelete({
         recipientId,
         senderId,
         commentId
+    })
+
+    if (notification) {
+        const io = req.app.get('io')
+        io.to(notification?.recipientId.toString()).emit('remove-notification', notification)
+    }
+}
+
+export const removeReply = async (req, { recipientId, senderId, commentId, replyId }) => {
+    const notification = await Notification.findOneAndDelete({
+        recipientId,
+        senderId,
+        commentId,
+        replyId
     })
 
     if (notification) {

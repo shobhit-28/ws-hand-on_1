@@ -65,7 +65,7 @@ export const addComment = asyncHandler(async (req, res) => {
       recipientId: comment.postId.userId._id,
       senderId: dto.userId,
       type: 'comment',
-      content: `${dto.userId} comment on your post`,
+      content: `${comment?.userId?.name} commented on your post`,
       postId: comment.postId._id,
       commentId: comment._id
     })
@@ -82,6 +82,18 @@ export const addReply = asyncHandler(async (req, res) => {
   });
 
   const reply = await postService.addReply(dto);
+
+  if (reply.updatedComment.postId.userId._id !== dto.userId) {
+    await notification.createNotification(req, {
+      recipientId: reply.updatedComment.postId.userId._id,
+      senderId: dto.userId,
+      type: 'comment',
+      content: `${reply?.updatedComment?.userId?.name} replied on a comment on your post`,
+      postId: reply?.updatedComment?.postId?._id,
+      commentId: dto.commentId,
+      replyId: reply._id
+    })
+  }
 
   successResponse(res, 'Successfully added reply', reply)
 })
@@ -119,9 +131,9 @@ export const deleteComment = asyncHandler(async (req, res) => {
 
   const comment = await postService.deleteComment(dto);
   await notification.removeComment(req, {
-    recipientId: comment.postId.userId._id,
-    senderId: dto.userId,
-    commentId: comment._id
+    recipientId: comment.postId.userId._id.toString(),
+    senderId: dto.userId.toString(),
+    commentId: comment._id.toString()
   })
 
   successResponse(res, `Successfully deleted comment`, '', 204);
@@ -134,7 +146,13 @@ export const deleteReply = asyncHandler(async (req, res) => {
     replyId: req.query.replyId
   };
 
-  await postService.deleteReply(dto);
+  const reply = await postService.deleteReply(dto);
+  await notification.removeReply(req, {
+    recipientId: reply.postId.userId._id.toString(),
+    senderId: dto.userId,
+    commentId: dto.commentId,
+    replyId: dto.replyId
+  })
 
   successResponse(res, 'Successfully deleted reply', '', 204);
 })

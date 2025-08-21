@@ -159,11 +159,15 @@ export const addReply = async ({ commentId, userId, text }) => {
     const updatedComment = await Comment.findByIdAndUpdate(commentId,
         { $push: { replies: { _id, userId, text, createdAt: new Date() } } },
         { new: true }
-    ).then(doc => doc.populate('replies.userId'))
+    ).then(doc => doc.populate([
+        { path: 'userId' },
+        { path: 'replies.userId' },
+        { path: 'postId', populate: { path: 'userId' } }
+    ]))
 
     const reply = updatedComment.replies.find(reply => reply._id.equals(_id))
 
-    return reply
+    return { ...reply.toObject(), updatedComment }
 }
 
 export const editComment = async ({ commentId, text, userId }) => {
@@ -190,6 +194,11 @@ export const editReply = async ({ commentId, userId, replyId, text }) => {
 
 export const deleteComment = async ({ commentId, userId }) => {
     const deleted = await Comment.findOneAndDelete({ _id: commentId, userId })
+        .then(doc => doc.populate([
+            { path: 'userId' },
+            { path: 'replies.userId' },
+            { path: 'postId', populate: { path: 'userId' } }
+        ]))
     return deleted
 }
 
@@ -198,7 +207,11 @@ export const deleteReply = async ({ commentId, replyId, userId }) => {
         { _id: commentId },
         { $pull: { replies: { _id: replyId, userId } } },
         { new: true }
-    ).then(doc => doc.populate('userId')).then(doc => doc.populate('replies.userId'))
+    ).then(doc => doc.populate([
+        { path: 'userId' },
+        { path: 'replies.userId' },
+        { path: 'postId', populate: { path: 'userId' } }
+    ]))
 
     return updatedComment
 }
