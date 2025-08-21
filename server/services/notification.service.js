@@ -78,6 +78,8 @@ export const unfollowUser = async (req, { recipientId, senderId, content }) => {
         type: 'follow'
     })
 
+    console.log(notification)
+
     if (notification) {
         const io = req.app.get('io')
         io.to(notification?.recipientId.toString()).emit('remove-notification', notification)

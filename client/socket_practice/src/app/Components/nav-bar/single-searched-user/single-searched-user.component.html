@@ -1,11 +1,11 @@
 <div class="">
     @if (loading) {
-    <div class="py-4">
+    <div class="py-4 bg-white">
         <raj-chat-loader [diameter]="40"></raj-chat-loader>
     </div>
     } @else {
     @if (users.users.length) {
-    <div class="p-2 flex flex-col gap-4 max-h-[50vh] overflow-auto">
+    <div class="p-2 flex flex-col gap-4 max-h-[50vh] overflow-auto bg-white">
         @for (user of users.users; track $index) {
         <div
             class="w-full rounded-md cursor-pointer duration-200 hover:bg-slate-200/90 p-[.5rem] flex justify-between items-center" (click)="navigateToUserProfile(user._id)">
@@ -30,7 +30,7 @@
         }
     </div>
     } @else {
-    <div class="h-24 flex justify-center items-center">
+    <div class="h-24 flex justify-center items-center bg-white">
         <p class="text-slate-900/80 italic">
             No users found
         </p>

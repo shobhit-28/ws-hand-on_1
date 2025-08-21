@@ -54,7 +54,7 @@ export class NavBarComponent implements OnInit {
   searchedUser: SearchUserList = defaultSearchedUser
 
   notifications: { notifications: Array<NotificationType>, isNotificationBarOpen: boolean } = {
-    notifications: new Array(),
+    notifications: this.notificationService.getNotifications(),
     isNotificationBarOpen: false
   }
 

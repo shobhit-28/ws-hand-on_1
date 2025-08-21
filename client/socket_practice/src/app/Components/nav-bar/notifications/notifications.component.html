@@ -1,1 +1,22 @@
-{{'jjsf'}}
+<div class="bg-white p-2">
+  <div class="px-1">
+    <p class="font-medium italic">
+      Notifications
+    </p>
+  </div>
+  @if (getNotifications().length) {
+  <div class="py-2 flex flex-col gap-2 text-sm max-h-[50vh] overflow-auto bg-white">
+    @for (notification of getNotifications(); track $index) {
+    <div class="w-full rounded-md cursor-pointer duration-200 hover:bg-slate-200/90 py-[.5rem] px-1 flex justify-between items-center">
+      {{notification.content}}
+    </div>
+    }
+  </div>
+  } @else {
+  <div class="h-24 flex justify-center items-center bg-white">
+    <p class="text-slate-900/80 italic">
+      All clear! No notifications yet.
+    </p>
+  </div>
+  }
+</div>
