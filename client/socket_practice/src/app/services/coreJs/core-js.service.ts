@@ -61,10 +61,37 @@ export class CoreJsService {
     );
     this.router.navigateByUrl(urlTree);
   }
+  
+  navigateToPostPage(postId: string) {
+    const urlTree = this.router.createUrlTree(
+      ['/rc', { outlets: { sideBar: ['post', postId] } }]
+    );
+    this.router.navigateByUrl(urlTree);
+  }
 
   copyToClipboard(text: string) {
     navigator.clipboard.writeText(text)
       .then(() => console.log('Copied:', text))
       .catch(err => console.error('Copy failed:', err));
+  }
+
+  timeAgo(isoString: string) {
+    const ms = new Date(isoString).getTime()
+    const now = Date.now()
+    const diff = Math.max(0, now - ms)
+
+    const seconds = Math.floor(diff / 1000)
+    const minutes = Math.floor(diff / 60000)
+    const hours = Math.floor(diff / 3600000)
+    const days = Math.floor(diff / 86400000)
+    const months = Math.floor(diff / (30 * 86400000))
+    const years = Math.floor(diff / (365 * 86400000))
+
+    if (years > 0) return `${years}y`
+    if (months > 0) return `${months}m`
+    if (days > 0) return `${days}d`
+    if (hours > 0) return `${hours}h`
+    if (minutes > 0) return `${minutes}m`
+    return `${seconds}s`
   }
 }

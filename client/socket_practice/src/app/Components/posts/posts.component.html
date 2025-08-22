@@ -55,7 +55,7 @@
         <mat-icon aria-hidden="false" fontIcon="comment"></mat-icon>
         {{post.comments.length}}
       </button>
-      <button class="flex items-center gap-1">
+      <button class="flex items-center gap-1" (click)="sharePost(post._id)">
         <mat-icon aria-hidden="false" fontIcon="share"></mat-icon>
       </button>
     </div>

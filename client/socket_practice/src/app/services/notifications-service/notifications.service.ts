@@ -46,7 +46,45 @@ export class NotificationsService {
     })
   }
 
-  getNotifications(): Array<NotificationType> {
+  public markAllNotificationsAsRead(): void {
+    this.http.post<ApiResponse<Array<NotificationType>>>('/rchat/notification/markallasread', {}).subscribe({
+      next: () => {
+        this.notificationsArr = this.notificationsArr.map((notification) => ({ ...notification, isRead: true }))
+      }, error: (err: HttpErrorResponse) => console.error(err)
+    })
+  }
+
+  public deleteAllNotifications(): void {
+    this.http.delete('/rchat/notification/clearNotifications').subscribe({
+      next: () => {
+        this.notificationsArr = []
+      }, error: (err: HttpErrorResponse) => console.error(err)
+    })
+  }
+
+  public getNotifications(): Array<NotificationType> {
     return this.notificationsArr
+  }
+
+  public isNewNotification = (): boolean => this.notificationsArr.some(notification => !notification.isRead)
+
+  public addNewNotification(notification: NotificationType) {
+    this.notificationsArr = [notification, ...this.notificationsArr]
+  }
+
+  public removeNotification(notification: NotificationType) {
+    this.notificationsArr = this.notificationsArr.filter(n => n._id !== notification._id)
+    switch (notification.type) {
+      case 'comment':
+        this.notificationsArr = this.notificationsArr.filter(n => n.commentId !== notification.commentId)
+        break;
+
+      case 'Post Removal':
+        this.notificationsArr = this.notificationsArr.filter(n => n.postId !== notification.postId)
+        break;
+
+      default:
+        break;
+    }
   }
 }

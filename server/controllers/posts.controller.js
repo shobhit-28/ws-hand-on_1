@@ -165,7 +165,7 @@ export const deletePost = asyncHandler(async (req, res) => {
   await postService.deletePostById(postId)
   await notification.clearPostRelatedNotifications(req, {
     recipientId: user,
-    postId: user
+    postId: postId
   })
 
   successResponse(res, 'Successfully deleted post', '', 204)

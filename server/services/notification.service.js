@@ -14,13 +14,14 @@ export const createNotification = async (req, notificationPayload) => {
         replyId: notificationPayload?.replyId,
         expiresAt
     })
+    const populatedNotification = await Notification.findById(notification._id).populate(['postId', 'senderId', 'recipientId'])
 
     if (notificationPayload?.type !== 'new_message') {
         const io = req.app.get('io')
-        io.to(notificationPayload?.recipientId.toString()).emit('add-notification', notification)
+        io.to(notificationPayload?.recipientId.toString()).emit('add-notification', populatedNotification)
     }
 
-    return notification
+    return populatedNotification
 }
 
 export const markNotificationAsRead = async ({ userId, notificationId }) => {
@@ -123,7 +124,9 @@ export const removeReply = async (req, { recipientId, senderId, commentId, reply
 }
 
 export const clearPostRelatedNotifications = async (req, { recipientId, postId }) => {
+    console.log(postId)
     const notifications = await Notification.deleteMany({ postId })
+    console.log(notifications)
 
     if (notifications.deletedCount > 0) {
         const io = req.app.get('io')
@@ -142,6 +145,7 @@ export const getAllNotifications = async (userId) => {
         .populate('postId')
         .populate('messageId')
         .populate('commentId')
+        .sort({ createdAt: -1 })
 
     return notifications;
 }

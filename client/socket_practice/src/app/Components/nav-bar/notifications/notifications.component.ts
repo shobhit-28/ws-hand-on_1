@@ -5,6 +5,7 @@ import { RouterModule } from '@angular/router';
 import { CoreJsService } from '../../../services/coreJs/core-js.service';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatIconModule } from '@angular/material/icon';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'raj-chat-notifications',
@@ -12,7 +13,8 @@ import { MatIconModule } from '@angular/material/icon';
   imports: [
     RouterModule,
     MatTooltipModule,
-    MatIconModule
+    MatIconModule,
+    CommonModule
   ],
   templateUrl: './notifications.component.html',
   styleUrl: './notifications.component.css'
@@ -31,6 +33,13 @@ export class NotificationsComponent {
   navigate(notification: NotificationType) {
     if (notification.type === 'follow') {
       this.coreJsService.navigateToProfilePage(notification.senderId._id)
+    } else if (notification.type === 'reply' || notification.type === 'comment' || notification.type === 'like') {
+      console.log(notification.postId)
+      if (notification.postId) {
+        this.coreJsService.navigateToPostPage(notification.postId._id)
+      } else {
+        console.error('Something went wrong')
+      }
     }
     this.afterNavigation(notification._id)
   }
@@ -49,4 +58,16 @@ export class NotificationsComponent {
   deleteNotification(notificationId: string) {
     this.notificationsService.deleteNotification(notificationId)
   }
+
+  markAllAsRead() {
+    this.notificationsService.markAllNotificationsAsRead();
+  }
+
+  deleteAllNotifications() {
+    this.notificationsService.deleteAllNotifications();
+  }
+
+  isNewNotifications = () => this.notificationsService.isNewNotification()
+
+  timeAgo = (isoString: string) => this.coreJsService.timeAgo(isoString)
 }

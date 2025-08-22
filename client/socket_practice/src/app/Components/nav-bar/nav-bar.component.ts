@@ -119,4 +119,6 @@ export class NavBarComponent implements OnInit {
   getNotifications = (): Array<NotificationType> => this.notifications['notifications'] = this.notificationService.getNotifications()
 
   toggleNotificationsBar = () => this.notifications['isNotificationBarOpen'] = !this.notifications['isNotificationBarOpen']
+
+  isNotificationsNew = () => this.notificationService.isNewNotification()
 }

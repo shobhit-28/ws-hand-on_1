@@ -5,7 +5,7 @@ export type NotificationType = {
   _id: string
   recipientId: ChatFriendsList
   senderId: ChatFriendsList
-  type: 'follow' | 'like' | 'comment' | 'new_message' | 'reply'
+  type: 'follow' | 'like' | 'comment' | 'new_message' | 'reply' | 'Post Removal'
   postId?: Post
   messageId?: string
   commentId?: string

@@ -37,6 +37,12 @@ export const routes: Routes = [
         loadComponent: () => import('./Pages/profile-page/profile-page.component').then((m) => m.ProfilePageComponent),
         canMatch: [loginCanMatchGuard], canActivate: [loginCanActivateGuard],
         outlet: 'sideBar'
+      },
+      {
+        path: 'post/:id',
+        loadComponent: () => import('./Pages/post-page/post-page.component').then((m) => m.PostPageComponent),
+        canMatch: [loginCanMatchGuard], canActivate: [loginCanActivateGuard],
+        outlet: 'sideBar'
       }
     ]
   },

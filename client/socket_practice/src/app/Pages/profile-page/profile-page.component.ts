@@ -30,11 +30,11 @@ export class ProfilePageComponent implements OnInit {
 
   ngOnInit(): void {
     this.activatedRoute.params.subscribe(async (params) => {
-      await this.inititeProfilePage(params['id'])
+      await this.initiateProfilePage(params['id'])
     })
   }
 
-  private async inititeProfilePage(profileId: string) {
+  private async initiateProfilePage(profileId: string) {
     const results = await Promise.allSettled([
       this.getProfileDetails(profileId),
       this.getFollowers(profileId),

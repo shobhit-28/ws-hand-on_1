@@ -28,7 +28,7 @@ export const markAllNotificationsRead = asyncHandler(async (req, res) => {
 
     const notifications = await notificationService.markAllNotificationReadForUser(user);
 
-    successResponse(res, `${notifications.length} notifications marked as read`, notifications)
+    successResponse(res, `${notifications.modifiedCount} notifications marked as read`, notifications)
 })
 
 export const deleteNotification = asyncHandler(async (req, res) => {

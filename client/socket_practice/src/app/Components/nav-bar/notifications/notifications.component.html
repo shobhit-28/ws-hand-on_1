@@ -1,35 +1,51 @@
-<div class="bg-white p-2">
-  <div class="px-1 flex justify-between items-center border-b">
-    <p class="font-medium italic">
-      Notifications
-    </p>
-    <div class="">
-      <button>
-        <mat-icon matTooltip="Mark all as read">done_all</mat-icon>
+<div class="bg-white p-2 max-h-[50vh] overflow-auto">
+  <div class="px-3 py-2 flex items-center justify-between border-b">
+    <p class="text-slate-700 font-semibold leading-6">Notifications</p>
+    @if (getNotifications().length) {
+    <div class="flex items-center gap-2">
+      @if (isNewNotifications()) {
+      <button
+        class="h-6 w-6 inline-flex items-center justify-center rounded-md text-slate-500 hover:text-blue-600 hover:bg-slate-100 transition"
+        (click)="markAllAsRead()">
+        <mat-icon matTooltip="Mark all as read"
+          class="text-[18px] leading-none align-middle relative top-px">done_all</mat-icon>
       </button>
-      <button>
-        <mat-icon matTooltip="Delete all">delete</mat-icon>
+      }
+      <button
+        class="h-6 w-6 inline-flex items-center justify-center rounded-md text-slate-500 hover:text-red-600 hover:bg-slate-100 transition"
+        (click)="deleteAllNotifications()">
+        <mat-icon matTooltip="Delete all"
+          class="text-[18px] leading-none align-middle relative top-px">delete</mat-icon>
       </button>
     </div>
+    }
   </div>
+
+
   @if (getNotifications().length) {
-  <div class="py-2 flex flex-col gap-2 text-sm max-h-[50vh] overflow-auto bg-white">
+  <div class="py-2 flex flex-col gap-2 text-sm bg-white">
     @for (notification of getNotifications(); track $index) {
     @if (notification.content) {
     <div
-      class="w-full rounded-md cursor-pointer duration-200 hover:bg-slate-300/90 py-[.5rem] px-1 flex justify-between items-center text-sm bg-slate-200/90"
-      [matTooltip]="notification.content" (click)="navigate(notification)">
-      <div>
-        {{truncateText(notification.content)}}
+      class="w-full rounded-lg cursor-pointer duration-200 hover:bg-slate-100 py-3 px-2 flex justify-between items-center shadow-sm border border-slate-200"
+      [matTooltip]="notification.content" (click)="navigate(notification)"
+      [ngClass]="!notification.isRead ? 'border-l-4 border-blue-500 bg-slate-50' : ''">
+      <div class="flex flex-col">
+        <span class="text-sm font-medium text-slate-800">
+          {{ truncateText(notification.content) }}
+        </span>
+        <span class="text-xs text-slate-500 mt-0.5">{{timeAgo(notification.createdAt)}}</span>
       </div>
-      <div class="text-sm flex items-center gap-1">
+      <div class="flex items-center gap-1">
+        @if (!notification.isRead) {
         <button (click)="markAsRead(notification._id); $event.stopPropagation()"
-          class="flex justify-center items-center">
-          <mat-icon matTooltip="Mark as read" class="text-[1rem]">done_all</mat-icon>
+          class="flex justify-center items-center text-slate-500 hover:text-blue-600 transition">
+          <mat-icon class="text-[1rem]">done_all</mat-icon>
         </button>
+        }
         <button (click)="deleteNotification(notification._id); $event.stopPropagation()"
-          class="flex justify-center items-center">
-          <mat-icon matTooltip="Delete" class="text-[1rem]">delete</mat-icon>
+          class="flex justify-center items-center text-slate-500 hover:text-red-600 transition">
+          <mat-icon class="text-[1rem]">delete</mat-icon>
         </button>
       </div>
     </div>
@@ -38,7 +54,7 @@
   </div>
   } @else {
   <div class="h-24 flex justify-center items-center bg-white">
-    <p class="text-slate-900/80 italic">
+    <p class="text-slate-900/80 italic text-sm">
       All clear! No notifications yet.
     </p>
   </div>

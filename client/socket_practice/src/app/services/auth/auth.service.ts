@@ -31,7 +31,7 @@ export class AuthService {
     private ns: NotificationService,
     private chatService: ChatService,
     private profilePicHandler: ProfilePicHandlerService,
-    private getNotifications: NotificationsService
+    private notificationService: NotificationsService
   ) { }
 
   initSocket(userId: string) {
@@ -65,11 +65,11 @@ export class AuthService {
         });
 
         this.socket.on('remove-notification', (notification: NotificationType) => {
-          console.log(notification)
+          this.notificationService.removeNotification(notification)
         })
 
         this.socket.on('add-notification', (notification: NotificationType) => {
-          console.log(notification)
+          this.notificationService.addNewNotification(notification)
         })
 
         this.socket.on('disconnect', () => {
@@ -95,7 +95,7 @@ export class AuthService {
       }
       if (userId) {
         this.initSocket(userId)
-        this.getNotifications.getNotification()
+        this.notificationService.getNotification()
       }
     } else {
       if (isNav) {
