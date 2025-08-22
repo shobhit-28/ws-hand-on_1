@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ApiResponse } from '../../DTO/commonResponse.dto';
 import { map, Observable } from 'rxjs';
@@ -19,6 +19,30 @@ export class NotificationsService {
       next: (res) => {
         this.notificationsArr = res.data
       }, error: (err) => console.error(err)
+    })
+  }
+
+  public markNotificationAsRead(notificationId: string): void {
+    this.http.post<ApiResponse<NotificationType>>(`/rchat/notification/markasread`, {
+      notificationId
+    }).subscribe({
+      next: (res) => {
+        this.notificationsArr = this.notificationsArr
+          .map(notification => res.data._id === notification._id
+            ?
+            { ...notification, isRead: true }
+            :
+            notification
+          )
+      }, error: (err: HttpErrorResponse) => console.error(err)
+    })
+  }
+
+  public deleteNotification(notificationId: string): void {
+    this.http.delete(`/rchat/notification/deleteNotification/${notificationId}`).subscribe({
+      next: () => {
+        this.notificationsArr = this.notificationsArr.filter(notification => notification._id !== notificationId)
+      }, error: (err: HttpErrorResponse) => console.error(err)
     })
   }
 

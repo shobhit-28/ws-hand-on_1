@@ -88,14 +88,21 @@ export const unfollowUser = async (req, { recipientId, senderId, content }) => {
     }
 }
 
-export const removeComment = async (req, { recipientId, senderId, commentId }) => {
+export const removeComment = async (req, { recipientId, senderId, commentId, content }) => {
     const notification = await Notification.findOneAndDelete({
         recipientId,
         senderId,
-        commentId
+        commentId,
+        content
     })
 
     if (notification) {
+        await Notification.deleteMany({
+            recipientId,
+            senderId,
+            commentId
+        })
+
         const io = req.app.get('io')
         io.to(notification?.recipientId.toString()).emit('remove-notification', notification)
     }
@@ -112,6 +119,19 @@ export const removeReply = async (req, { recipientId, senderId, commentId, reply
     if (notification) {
         const io = req.app.get('io')
         io.to(notification?.recipientId.toString()).emit('remove-notification', notification)
+    }
+}
+
+export const clearPostRelatedNotifications = async (req, { recipientId, postId }) => {
+    const notifications = await Notification.deleteMany({ postId })
+
+    if (notifications.deletedCount > 0) {
+        const io = req.app.get('io')
+        io.to(recipientId).emit('remove-notification', {
+            ...notifications[0],
+            type: 'Post Removal',
+            postId
+        })
     }
 }
 

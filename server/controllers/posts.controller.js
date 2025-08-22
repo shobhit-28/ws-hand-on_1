@@ -133,7 +133,8 @@ export const deleteComment = asyncHandler(async (req, res) => {
   await notification.removeComment(req, {
     recipientId: comment.postId.userId._id.toString(),
     senderId: dto.userId.toString(),
-    commentId: comment._id.toString()
+    commentId: comment._id.toString(),
+    content: `${comment?.userId?.name} commented on your post`
   })
 
   successResponse(res, `Successfully deleted comment`, '', 204);
@@ -159,8 +160,13 @@ export const deleteReply = asyncHandler(async (req, res) => {
 
 export const deletePost = asyncHandler(async (req, res) => {
   const postId = req.params.postId
+  const user = req.user.id
 
   await postService.deletePostById(postId)
+  await notification.clearPostRelatedNotifications(req, {
+    recipientId: user,
+    postId: user
+  })
 
   successResponse(res, 'Successfully deleted post', '', 204)
 })

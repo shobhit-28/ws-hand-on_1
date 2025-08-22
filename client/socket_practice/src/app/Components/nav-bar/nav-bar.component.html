@@ -47,7 +47,7 @@
       }
       @if (notifications.isNotificationBarOpen) {
       <div class="fixed top-[11vh] right-8 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] rounded w-80 max-h-[50vh] z-50">
-        <raj-chat-notifications [notifications]="notifications.notifications"></raj-chat-notifications>
+        <raj-chat-notifications [notifications]="notifications.notifications" (notificationCloserEmitter)="toggleNotificationsBar()"></raj-chat-notifications>
       </div>
       }
     </div>

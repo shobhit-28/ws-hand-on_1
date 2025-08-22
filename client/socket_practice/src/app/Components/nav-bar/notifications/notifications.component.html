@@ -1,15 +1,39 @@
 <div class="bg-white p-2">
-  <div class="px-1">
+  <div class="px-1 flex justify-between items-center border-b">
     <p class="font-medium italic">
       Notifications
     </p>
+    <div class="">
+      <button>
+        <mat-icon matTooltip="Mark all as read">done_all</mat-icon>
+      </button>
+      <button>
+        <mat-icon matTooltip="Delete all">delete</mat-icon>
+      </button>
+    </div>
   </div>
   @if (getNotifications().length) {
   <div class="py-2 flex flex-col gap-2 text-sm max-h-[50vh] overflow-auto bg-white">
     @for (notification of getNotifications(); track $index) {
-    <div class="w-full rounded-md cursor-pointer duration-200 hover:bg-slate-200/90 py-[.5rem] px-1 flex justify-between items-center">
-      {{notification.content}}
+    @if (notification.content) {
+    <div
+      class="w-full rounded-md cursor-pointer duration-200 hover:bg-slate-300/90 py-[.5rem] px-1 flex justify-between items-center text-sm bg-slate-200/90"
+      [matTooltip]="notification.content" (click)="navigate(notification)">
+      <div>
+        {{truncateText(notification.content)}}
+      </div>
+      <div class="text-sm flex items-center gap-1">
+        <button (click)="markAsRead(notification._id); $event.stopPropagation()"
+          class="flex justify-center items-center">
+          <mat-icon matTooltip="Mark as read" class="text-[1rem]">done_all</mat-icon>
+        </button>
+        <button (click)="deleteNotification(notification._id); $event.stopPropagation()"
+          class="flex justify-center items-center">
+          <mat-icon matTooltip="Delete" class="text-[1rem]">delete</mat-icon>
+        </button>
+      </div>
     </div>
+    }
     }
   </div>
   } @else {
