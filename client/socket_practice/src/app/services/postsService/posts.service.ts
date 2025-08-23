@@ -85,4 +85,10 @@ export class PostsService {
       map(res => res.data)
     )
   }
+
+  getPostByPostId(postId: string): Observable<Post> {
+    return this.http.get<ApiResponse<Post>>(`/rchat/post/post/${postId}`).pipe(
+      map(res => res.data)
+    )
+  }
 }

@@ -1,4 +1,5 @@
 import Notification from "../models/notification.model.js"
+import Post from "../models/posts.model.js"
 
 export const createNotification = async (req, notificationPayload) => {
     const expiresAt = new Date(Date.now() + (notificationPayload?.type === 'new_message' ? 1 : 5) * 24 * 60 * 60 * 1000)
@@ -123,17 +124,15 @@ export const removeReply = async (req, { recipientId, senderId, commentId, reply
     }
 }
 
-export const clearPostRelatedNotifications = async (req, { recipientId, postId }) => {
-    console.log(postId)
+export const clearPostRelatedNotifications = async (req, { recipientId, postId, post }) => {
     const notifications = await Notification.deleteMany({ postId })
-    console.log(notifications)
 
     if (notifications.deletedCount > 0) {
         const io = req.app.get('io')
         io.to(recipientId).emit('remove-notification', {
             ...notifications[0],
             type: 'Post Removal',
-            postId
+            postId: post
         })
     }
 }

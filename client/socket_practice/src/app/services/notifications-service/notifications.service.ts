@@ -74,13 +74,17 @@ export class NotificationsService {
 
   public removeNotification(notification: NotificationType) {
     this.notificationsArr = this.notificationsArr.filter(n => n._id !== notification._id)
+    console.log(notification)
+    console.log(this.notificationsArr)
+    console.log(this.notificationsArr.filter(n => n.postId?._id !== notification.postId?._id))
+    console.log(notification.postId?._id)
     switch (notification.type) {
       case 'comment':
         this.notificationsArr = this.notificationsArr.filter(n => n.commentId !== notification.commentId)
         break;
 
       case 'Post Removal':
-        this.notificationsArr = this.notificationsArr.filter(n => n.postId !== notification.postId)
+        this.notificationsArr = this.notificationsArr.filter(n => n.postId?._id !== notification.postId?._id)
         break;
 
       default:

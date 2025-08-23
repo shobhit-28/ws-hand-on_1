@@ -32,6 +32,14 @@ export const getPosts = asyncHandler(async (req, res) => {
   successResponse(res, 'Posts fetched', posts, 200)
 })
 
+export const getPost = asyncHandler(async (req, res) => {
+  const postId = req.params.postId;
+
+  const post = await postService.getPostById(postId)
+
+  successResponse(res, `Post fetched successfully`, post, 201)
+})
+
 export const getPostsById = asyncHandler(async (req, res) => {
   const userId = req.params.userId
 
@@ -60,7 +68,7 @@ export const addComment = asyncHandler(async (req, res) => {
 
   const comment = await postService.addComment(dto)
 
-  if (comment.postId.userId._id !== dto.userId) {
+  if (comment.postId.userId._id.toString() !== dto.userId) {
     await notification.createNotification(req, {
       recipientId: comment.postId.userId._id,
       senderId: dto.userId,
@@ -83,7 +91,7 @@ export const addReply = asyncHandler(async (req, res) => {
 
   const reply = await postService.addReply(dto);
 
-  if (reply.updatedComment.postId.userId._id !== dto.userId) {
+  if (reply.updatedComment.postId.userId._id.toString() !== dto.userId) {
     await notification.createNotification(req, {
       recipientId: reply.updatedComment.postId.userId._id,
       senderId: dto.userId,
@@ -162,10 +170,13 @@ export const deletePost = asyncHandler(async (req, res) => {
   const postId = req.params.postId
   const user = req.user.id
 
-  await postService.deletePostById(postId)
+  const post = await postService.deletePostById(postId)
+
+  console.log(post)
   await notification.clearPostRelatedNotifications(req, {
     recipientId: user,
-    postId: postId
+    postId: postId,
+    post
   })
 
   successResponse(res, 'Successfully deleted post', '', 204)
@@ -181,13 +192,15 @@ export const likePost = asyncHandler(async (req, res) => {
 
   const user = await findUser(dto.user)
 
-  await notification.createNotification(req, {
-    recipientId: post.userId._id,
-    senderId: dto.user,
-    type: 'like',
-    content: `${user.name} liked your post`,
-    postId: post._id
-  })
+  if (post.userId._id.toString() !== dto.user) {
+    await notification.createNotification(req, {
+      recipientId: post.userId._id,
+      senderId: dto.user,
+      type: 'like',
+      content: `${user.name} liked your post`,
+      postId: post._id
+    })
+  }
 
   successResponse(res, `Successfully liked post`, post)
 })

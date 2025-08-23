@@ -7,6 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { NewPostService } from '../../services/new-post-service/new-post.service';
 import { error } from 'console';
 import { NotificationService } from '../../services/notification/notification.service';
+import { CoreJsService } from '../../services/coreJs/core-js.service';
 
 @Component({
   selector: 'raj-chat-new-post',
@@ -35,7 +36,8 @@ export class NewPostComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any,
     private dialogRef: MatDialogRef<NewPostComponent>,
     private newPostService: NewPostService,
-    private notification: NotificationService
+    private notification: NotificationService,
+    private coreJsService: CoreJsService
   ) { }
 
   ngOnInit(): void {
@@ -58,10 +60,11 @@ export class NewPostComponent implements OnInit {
     if (this.newPost.img?.img && this.newPost.caption) {
       this.loading = true
       this.newPostService.uploadPost(this.newPost.img?.img, this.newPost.caption).subscribe({
-        next: () => {
+        next: (res) => {
           this.loading = false
           this.closeDialog()
-          this.notification.showSnackBar('Posted Successfully', 'failure', 5000)
+          this.notification.showSnackBar('Posted Successfully', 'success', 5000)
+          this.coreJsService.navigateToPostPage(res._id)
         }, error: (err) => {
           console.error(err)
         }

@@ -1,1 +1,149 @@
-<p>post-page works!</p>
+@if (post) {
+<div class="sub-page py-6 px-36">
+    <div
+        class="border rounded-xl overflow-hidden flex flex-col gap-2 py-2 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] duration-700 hover:shadow-[rgba(0,_0,_0,_0.5)_0px_8px_18px]">
+        <div class="px-2 flex justify-between items-center">
+            <a class="flex gap-2" [routerLink]="['/rc', { outlets: { sideBar: ['profile', post.userId._id] } }]">
+                <div
+                    class="flex items-center justify-center border-0 rounded-full h-[3.25rem] w-[3.25rem] overflow-hidden ">
+                    <img class="w-full h-full object-cover"
+                        [src]="post.userId.profile_pic || '/assets/profile/empty_profile_male.svg'" alt="" srcset="">
+                </div>
+                <div class="flex flex-col">
+                    <span class="">{{post.userId.name}}</span>
+                    <span class="text-xs italic opacity-60 -mt-1">{{post.userId.email}}</span>
+                    <span class="text-xs italic opacity-60">{{parseDate(post.createdAt)}}</span>
+                </div>
+            </a>
+            @if (isMyPost(post.userId._id)) {
+            <div class="">
+                <button class="p-1 rounded-lg" (click)="deleteConfirmation(post._id)">
+                    <mat-icon aria-hidden="false" fontIcon="delete"></mat-icon>
+                </button>
+            </div>
+            } @else {
+            <div class="">
+                <button class="border-2 px-6 py-1 rounded-lg font-medium text-sm"
+                    (click)="debouncedFollowUnfollowUser(post.userId._id, post.status.isAlreadyFollowing ? 'unfollow' : 'follow', post._id)">
+                    {{post.status.isAlreadyFollowing ? 'Unfollow' : 'Follow'}}
+                </button>
+            </div>
+            }
+        </div>
+        <div class="px-2">
+            <p class="text-sm opacity-80 italic">
+                @for (item of getUrls(post.content); track $index) {
+                @if (item.url) {
+                <a class="text-cyan-800" [href]="item.text" target="_blank">{{ item.text + " " }}</a>
+                } @else {
+                <span>{{item.text + " "}}</span>
+                }
+                }
+            </p>
+        </div>
+        <div class="image-container">
+            <img class="image-item" [src]="post.photoEndpoint" alt="Img" loading="lazy" decoding="async"
+                referrerpolicy="no-referrer" draggable="false" style="pointer-events: none; user-select: none;">
+        </div>
+        <div class="flex justify-around">
+            <button class="flex items-center gap-1" (click)="debouncedLikeUnlikePost(post)">
+                <mat-icon aria-hidden="false" [fontIcon]="isLikedByUser(post) ? 'favorite' : 'favorite_border'"
+                    class="text-red-700"></mat-icon>
+                {{post.likes.length}}
+            </button>
+            <button class="flex items-center gap-1" (click)="focusOnHtmlComponent(commentInput)">
+                <mat-icon aria-hidden="false" fontIcon="comment"></mat-icon>
+                {{post.comments.length}}
+            </button>
+            <button class="flex items-center gap-1" (click)="sharePost(post._id)">
+                <mat-icon aria-hidden="false" fontIcon="share"></mat-icon>
+            </button>
+        </div>
+        @if (true) {
+        <hr class="mx-4 my-1">
+        <div class="px-2 flex flex-col gap-2">
+            @for (comment of post.comments; track comment._id) {
+            <div class="">
+                <div class="flex gap-2">
+                    <div
+                        class="flex items-center justify-center border-0 rounded-full h-[2rem] min-w-[2rem] w-[2rem] overflow-hidden ">
+                        <img class="w-full h-full object-cover" [src]="getProfilePic(comment.userId.profile_pic)" alt=""
+                            srcset="">
+                    </div>
+                    <div class="flex flex-col w-full">
+                        <span class="text-xs flex items-center justify-between">
+                            <span class="flex items-center gap-2">
+                                <span class="italic">{{"@"+comment.userId.email}}</span>
+                                <span class="opacity-90">{{timeAgo(comment.createdAt)}}</span>
+                            </span>
+                            @if (isMyComment(comment.userId._id)) {
+                            <button class="border-2 box-border py-[0.1rem] px-1 italic text-xs rounded"
+                                (click)="deleteComment(post._id, comment._id)">Delete</button>
+                            }
+                        </span>
+                        <p class="text-sm">{{comment.text}}</p>
+                        <div class="text-[0.7rem] flex gap-2">
+                            <button (click)="replyToAComment(post._id, comment._id)">Reply</button>
+                            @if (comment.replies.length) {
+                            <button (click)="expandReply(post._id, comment._id)">
+                                {{
+                                (expandedReply === comment._id)
+                                ? "Hide Replies"
+                                : "View Replies"
+                                }}
+                            </button>
+                            }
+                        </div>
+                        @if (expandedReply === comment._id) {
+                        <div class="flex flex-col gap-2">
+                            @for (reply of comment.replies; track reply._id) {
+                            <div class="flex gap-2">
+                                <div
+                                    class="flex items-center justify-center border-0 rounded-full h-[2rem] min-w-[2rem] w-[2rem] overflow-hidden ">
+                                    <img class="w-full h-full object-cover" [src]="reply.userId.profile_pic" alt=""
+                                        srcset="">
+                                </div>
+                                <div class="flex flex-col w-full">
+                                    <span class="text-xs flex items-center justify-between">
+                                        <span class="flex items-center gap-2">
+                                            <span class="italic">{{"@"+reply.userId.email}}</span>
+                                        </span>
+                                        @if (isMyComment(reply.userId._id)) {
+                                        <button class="border-2 box-border py-[0.1rem] px-1 italic text-xs rounded"
+                                            (click)="deleteReply(post._id, comment._id, reply._id)">Delete</button>
+                                        }
+                                    </span>
+                                    <p class="text-sm">{{reply.text}}</p>
+                                </div>
+                            </div>
+                            }
+                            <form (ngSubmit)="addReply(replyForm, post._id, comment._id)" #replyForm="ngForm">
+                                <div class="border rounded-md flex items-center gap-2 text-xs">
+                                    <input #replyInput class="font-sans p-2 border-0 outline-none w-full" type="text"
+                                        name="Reply" placeholder="Reply to above comments"
+                                        [(ngModel)]="commentReplies.reply.reply">
+                                    <button class="flex justify-center items-center -mb-[0.4rem]">
+                                        <mat-icon class="text-[1rem]" aria-hidden="false" fontIcon="send"></mat-icon>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                        }
+                    </div>
+                </div>
+            </div>
+            }
+            <form (ngSubmit)="addComment(commentsForm, post._id)" #commentsForm="ngForm">
+                <div class="border rounded-md flex items-center gap-2 text-xs">
+                    <input #commentInput class="font-sans p-2 border-0 outline-none w-full" type="text" name="Comment"
+                        placeholder="Comment on this post" [(ngModel)]="commentReplies.comment.comment">
+                    <button class="flex justify-center items-center -mb-[0.4rem]">
+                        <mat-icon class="text-[1rem]" aria-hidden="false" fontIcon="send"></mat-icon>
+                    </button>
+                </div>
+            </form>
+        </div>
+        }
+    </div>
+</div>
+}

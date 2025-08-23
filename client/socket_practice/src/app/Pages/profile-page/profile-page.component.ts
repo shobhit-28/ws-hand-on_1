@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ChromeDataTransactionService } from '../../services/chromeDataTransaction/chrome-data-transaction.service';
 import { ChatFriendsList, defaultChatFriendVal, defaultUserProfileLoaderValue, defaultUserProfileUser, GetFollowerList, GetFollowingList, updateProfileApiPayload, UserProfileLoader, UserProfileUser } from '../../DTO/users.dto';
 import { UsersService } from '../../services/users/users.service';
@@ -25,7 +25,8 @@ export class ProfilePageComponent implements OnInit {
     private dataService: ChromeDataTransactionService,
     private userService: UsersService,
     private coreJsService: CoreJsService,
-    private postService: PostsService
+    private postService: PostsService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -66,6 +67,7 @@ export class ProfilePageComponent implements OnInit {
         },
         error: (err) => {
           console.error(err)
+          this.router.navigateByUrl('/')
           rej(err)
         }
       })

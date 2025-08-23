@@ -357,4 +357,6 @@ export class PostsComponent implements OnInit {
   sharePost(postId: string) {
     this.coreJsService.copyToClipboard(postId)
   }
+
+  getEmptyProfileImg = (imgUrl: string): string => this.coreJsService.getEmptyProfilePic(imgUrl)
 }

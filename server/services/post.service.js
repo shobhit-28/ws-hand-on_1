@@ -80,6 +80,7 @@ export const getPostsById = async (userId) => {
     const posts = await Post.find()
         .sort({ createdAt: -1 })
         .populate('userId')
+        .populate('replies.userId')
 
     const postsWithData = await Promise.all(
         posts.map(async (post) => {
@@ -108,7 +109,17 @@ export const getPostsForUrlBinding = async (postId) => {
 }
 
 export const getPostById = async (id) => {
-    return await Post.findById(id)
+    const post = await Post.findById(id).populate('userId')
+
+    const comments = await Comment.find({ postId: post._id }).populate('userId').populate('replies.userId')
+
+    const postWithData = {
+        ...post.toObject(),
+        comments: comments || [],
+        photoEndpoint: `/rchat/post/photo/${post._id}`
+    }
+
+    return postWithData
 }
 
 export const deletePostById = async (id) => {

@@ -61,7 +61,7 @@ export class CoreJsService {
     );
     this.router.navigateByUrl(urlTree);
   }
-  
+
   navigateToPostPage(postId: string) {
     const urlTree = this.router.createUrlTree(
       ['/rc', { outlets: { sideBar: ['post', postId] } }]
@@ -94,4 +94,6 @@ export class CoreJsService {
     if (minutes > 0) return `${minutes}m`
     return `${seconds}s`
   }
+
+  getEmptyProfilePic = (img: string) => img ? img : '/assets/profile/empty_profile_male.svg'
 }
