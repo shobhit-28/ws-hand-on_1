@@ -32,6 +32,14 @@ export const getPosts = asyncHandler(async (req, res) => {
   successResponse(res, 'Posts fetched', posts, 200)
 })
 
+export const getHomePagePosts = asyncHandler(async (req, res) => {
+  const userId = req.user.id
+
+  const posts = await postService.getPostOfFollowing(userId)
+
+  successResponse(res, 'Posts fetched', posts, 200)
+})
+
 export const getPost = asyncHandler(async (req, res) => {
   const postId = req.params.postId;
 

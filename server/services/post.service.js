@@ -1,6 +1,7 @@
 import Post from '../models/posts.model.js'
 import User from '../models/auth.model.js'
 import Comment from '../models/comment.model.js'
+import Follow from '../models/follow.model.js'
 import { deleteFileFromB2, generateDownloadUrl, uploadFileToB2 } from '../utils/b2Utils.js'
 import { AppError } from '../utils/appError.js'
 import mongoose from 'mongoose'
@@ -15,15 +16,43 @@ export const createPostService = async (dto) => {
     })
 }
 
+const excludePostOfUser = async (users) => {
+    const posts = await Post.find({
+        userId: { $ne: users }
+    })
+        .sort({ createdAt: -1 })
+        .populate('userId')
+
+    return posts
+}
+
+const includePostOfUser = async (users) => {
+    if (Array.isArray(users)) {
+        const userIds = [...new Set(users.map(user => user.follower))]
+
+        if (userIds.length === 0) {
+            return []
+        }
+
+        const posts = await Post.find({
+            userId: { $in: userIds }
+        })
+            .sort({ createdAt: -1 })
+            .populate('userId')
+
+        return posts
+    } else {
+        throw new AppError('users must be array')
+    }
+}
+
 export const getPosts = async (userId) => {
     const user = await User.findById(userId)
     if (!user) {
         throw new AppError(`User not found`, 404)
     }
 
-    const posts = await Post.find()
-        .sort({ createdAt: -1 })
-        .populate('userId')
+    const posts = await excludePostOfUser(userId)
 
     const postsWithData = await Promise.all(
         posts.map(async (post) => {
@@ -52,6 +81,38 @@ export const getPostsByUserId = async (userId) => {
     const posts = await Post.find({ userId })
         .sort({ createdAt: -1 })
         .populate('userId')
+
+    const postsWithData = await Promise.all(
+        posts.map(async (post) => {
+            const comments = await Comment.find({ postId: post._id })
+                .sort({ createdAt: 1 })
+                .populate('userId')
+                .populate('replies.userId')
+
+            return {
+                ...post.toObject(),
+                comments: comments || [],
+                photoEndpoint: `/rchat/post/photo/${post._id}`
+            }
+        })
+    )
+
+    return postsWithData
+}
+
+export const getPostOfFollowing = async (userId) => {
+    const user = await User.findById(userId)
+    if (!user) {
+        throw new AppError(`User not found`, 404)
+    }
+
+    const followingList = await Follow.find({
+        following: userId
+    }).select('follower')
+
+    console.log(followingList)
+
+    const posts = await includePostOfUser(followingList)
 
     const postsWithData = await Promise.all(
         posts.map(async (post) => {

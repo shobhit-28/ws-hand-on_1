@@ -25,6 +25,12 @@ export class PostsService {
     )
   }
 
+  getHomePagePosts(): Observable<Array<Post>> {
+    return this.http.get<ApiResponse<Array<Post>>>(`/rchat/post/getHomePagePosts`).pipe(
+      map(res => res.data)
+    )
+  }
+
   addCommentOnPost(postId: string, text: string): Observable<CommentType> {
     const payload = { postId, text }
 

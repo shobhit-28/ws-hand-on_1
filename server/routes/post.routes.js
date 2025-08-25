@@ -1,7 +1,7 @@
 import express from 'express'
 import { authenticateToken } from '../middleware/auth.middleware.js'
 import { allowedMethods } from '../utils/allowedMethods.util.js'
-import { addComment, addReply, createPost, deleteComment, deletePost, deleteReply, editComment, editReply, getPost, getPostPhoto, getPosts, getPostsById, likePost, unlikePost } from '../controllers/posts.controller.js'
+import { addComment, addReply, createPost, deleteComment, deletePost, deleteReply, editComment, editReply, getHomePagePosts, getPost, getPostPhoto, getPosts, getPostsById, likePost, unlikePost } from '../controllers/posts.controller.js'
 import postUpload from '../middleware/postUpload.js'
 import { b2 } from '../config/b2Bucket.js'
 
@@ -18,6 +18,12 @@ router.use(
     '/getAll',
     authenticateToken,
     allowedMethods({ GET: getPosts })
+)
+
+router.use(
+    '/getHomePagePosts',
+    authenticateToken,
+    allowedMethods({ GET: getHomePagePosts })
 )
 
 router.use(

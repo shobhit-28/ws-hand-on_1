@@ -34,5 +34,16 @@ export class HomeComponent implements OnInit {
       },
       error: (err) => console.error(err)
     })
+    this.postService.getHomePagePosts().subscribe({
+      next: async (res) => {
+        this.posts = await Promise.all(
+          res.map(async post => ({
+            ...post,
+            status: await this.userService.getFollowStatuses(post.userId._id)
+          }))
+        )
+      },
+      error: (err) => console.error(err)
+    })
   }
 }
