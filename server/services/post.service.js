@@ -28,7 +28,7 @@ const excludePostOfUser = async (users) => {
 
 const includePostOfUser = async (users) => {
     if (Array.isArray(users)) {
-        const userIds = [...new Set(users.map(user => user.follower))]
+        const userIds = [...new Set(users.map(user => user.following))]
 
         if (userIds.length === 0) {
             return []
@@ -107,8 +107,8 @@ export const getPostOfFollowing = async (userId) => {
     }
 
     const followingList = await Follow.find({
-        following: userId
-    }).select('follower')
+        follower: userId
+    }).select('following')
 
     console.log(followingList)
 
