@@ -1,9 +1,9 @@
 <div class="w-full flex">
-  <div class="page basis-[25%]">
+  <div class="page basis-[25%] md:hidden">
     <raj-chat-sub-router></raj-chat-sub-router>
   </div>
-  <div class="page basis-[50%] box-shadow">
+  <div class="page basis-[50%] box-shadow md:basis-full">
     <router-outlet name="sideBar"></router-outlet>
   </div>
-  <div class="page basis-[25%]"></div>
+  <div class="page basis-[25%] md:hidden"></div>
 </div>
