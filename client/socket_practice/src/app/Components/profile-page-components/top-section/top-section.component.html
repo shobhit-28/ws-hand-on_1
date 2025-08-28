@@ -1,5 +1,5 @@
-<div class="flex justify-between items-center px-8">
-    <div class="flex items-center justify-center border-0 rounded-full h-[12rem] w-[12rem] overflow-hidden ">
+<div class="flex justify-between items-center px-8 xl:px-4 md:px-0">
+    <div class="flex items-center justify-center border-0 rounded-full h-[12rem] w-[12rem] overflow-hidden md:h-40 md:w-40 sm:h-20 sm:w-20">
         @if (loader.profile_pic) {
         <raj-chat-loader></raj-chat-loader>
         }@else {
@@ -7,9 +7,9 @@
         }
     </div>
     <div class="flex flex-col gap-4">
-        <div class="flex items-center text-lg cursive-font justify-between gap-6">
+        <div class="flex items-center text-lg cursive-font justify-between gap-6 md:text-base sm:text-sm md:gap-4">
             <p>{{user.userDetails.email}}</p>
-            <button class="border py-1 px-2 rounded-md text-[0.9rem]" (click)="profileBtnClick()"
+            <button class="border py-1 px-2 sm:px-1 rounded-md text-[0.9rem]" (click)="profileBtnClick()"
                 [matMenuTriggerFor]="isMyAccount() ? menu : null" #menuTrigger>
                 {{isMyAccount() ? 'Edit Profile' : user.status.isAlreadyFollowing ? 'Unfollow' :
                 user.status.isGettingFollowed ? 'Follow Back' : 'Follow'}}
