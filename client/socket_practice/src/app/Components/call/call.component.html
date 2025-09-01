@@ -1,0 +1,11 @@
+<div class="wrap">
+    <div class="controls">
+        <button (click)="toggleMic()">{{ micOn() ? 'Mute' : 'Unmute' }}</button>
+        <button (click)="toggleCam()">{{ camOn() ? 'Camera Off' : 'Camera On' }}</button>
+        <button (click)="hangup()">Hang Up</button>
+    </div>
+    <div class="videos">
+        <video #localVideo autoplay playsinline></video>
+        <video #remoteVideo autoplay playsinline></video>
+    </div>
+</div>

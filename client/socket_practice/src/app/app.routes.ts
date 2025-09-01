@@ -4,6 +4,7 @@ import { loginCanMatchGuard } from './guards/authGuard/canMatchGuard/login-can-m
 import { loginCanActivateGuard } from './guards/authGuard/canActivateGuard/login-can-activate.guard';
 import { AuthPageComponent } from './Pages/auth-page/auth-page.component';
 import { signOutGuardGuard } from './guards/authGuard/signOutGuard/sign-out-guard.guard';
+import { CallComponent } from './Components/call/call.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'rc', pathMatch: 'full' },
@@ -45,6 +46,11 @@ export const routes: Routes = [
         outlet: 'sideBar'
       }
     ]
+  },
+  {
+    path: 'call',
+    component: CallComponent,
+    canActivate: [loginCanActivateGuard]
   },
   {
     path: 'auth',

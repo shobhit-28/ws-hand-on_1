@@ -10,6 +10,7 @@ import { ChatService } from '../chat/chat.service';
 import { ProfilePicHandlerService } from '../profilePicHandler/profile-pic-handler.service';
 import { NotificationType } from '../../DTO/notifications.dto';
 import { NotificationsService } from '../notifications-service/notifications.service';
+import { environment } from '../../../environments/environment.dev';
 
 @Injectable({
   providedIn: 'root'
@@ -22,6 +23,20 @@ export class AuthService {
 
   private deletedMessageSub = new Subject<deletedMessageRecieverType>();
   public deletedMessageReciever$ = this.deletedMessageSub.asObservable()
+
+  private offer$ = new Subject<{ from: string, sdp: RTCSessionDescriptionInit }>()
+  private answer$ = new Subject<{ from: string, sdp: RTCSessionDescriptionInit }>()
+  private ice$ = new Subject<{ from: string, candidate: RTCIceCandidateInit }>()
+  private hangup$ = new Subject<string>()
+  private busy$ = new Subject<void>()
+  private participants$ = new Subject<number>()
+
+  public onOffer$ = this.offer$.asObservable();
+  public onAnswer$ = this.answer$.asObservable();
+  public onIce$ = this.ice$.asObservable();
+  public onHangup$ = this.hangup$.asObservable();
+  public onBusy$ = this.busy$.asObservable();
+  public onParticipants$ = this.participants$.asObservable();
 
   constructor(
     private chromeDataTransactionService: ChromeDataTransactionService,
@@ -37,8 +52,9 @@ export class AuthService {
   initSocket(userId: string) {
     try {
       if (isPlatformBrowser(this.platformId) && !this.socket) {
-        this.socket = io('http://localhost:5000', {
-          query: { userId }
+        this.socket = io(environment.signalingUrl, {
+          query: { userId },
+          transports: ["websocket"]
         });
 
         this.socket.on('connect', () => {
@@ -47,7 +63,6 @@ export class AuthService {
         });
 
         this.socket.on('receive-message', (msg: Messages[0]) => {
-          // console.log(first)
           this.ns.sendBrowserNotification(msg.sender.name, msg.content, true)
           this.messageRevieverSub.next(msg)
         });
@@ -70,6 +85,30 @@ export class AuthService {
 
         this.socket.on('add-notification', (notification: NotificationType) => {
           this.notificationService.addNewNotification(notification)
+        })
+
+        this.socket.on("call:offer", ({ from, sdp }) => {
+          console.log("📞 Offer from", from, sdp);
+          this.offer$.next({ from, sdp })
+        });
+
+        this.socket.on("call:answer", ({ from, sdp }) => {
+          console.log("✅ Answer from", from, sdp);
+          this.answer$.next({ from, sdp })
+        });
+
+        this.socket.on("ice-candidate", ({ from, candidate }) => {
+          console.log("❄️ Candidate from", from, candidate);
+          this.ice$.next({ from, candidate })
+        });
+
+        this.socket.on("hangup", ({ from }) => {
+          console.log("🛑 Hangup from", from);
+          this.hangup$.next(from)
+        });
+
+        this.socket.on('busy', () => {
+          this.busy$.next()
         })
 
         this.socket.on('disconnect', () => {
@@ -108,4 +147,34 @@ export class AuthService {
   }
 
   public isLoggedIn = () => this.isLoggedInFlag
+
+  join(roomId: string, userId: string) {
+    if (isPlatformBrowser(this.platformId)) {
+      this.socket?.emit('join', { roomId, userId })
+    }
+  }
+
+  sendOffer(roomId: string, sdp: RTCSessionDescriptionInit) {
+    if (isPlatformBrowser(this.platformId)) {
+      this.socket?.emit('call:offer', { roomId, sdp })
+    }
+  }
+
+  sendAnswer(roomId: string, sdp: RTCSessionDescriptionInit) {
+    if (isPlatformBrowser(this.platformId)) {
+      this.socket?.emit('call:answer', { roomId, sdp })
+    }
+  }
+
+  sendIceCandidate(roomId: string, candidate: RTCIceCandidateInit) {
+    if (isPlatformBrowser(this.platformId)) {
+      this.socket?.emit('ice-candidate', { roomId, candidate })
+    }
+  }
+
+  sendHangup(roomId: string) {
+    if (isPlatformBrowser(this.platformId)) {
+      this.socket?.emit('hangup', { roomId })
+    }
+  }
 }
