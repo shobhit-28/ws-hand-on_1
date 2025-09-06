@@ -24,6 +24,8 @@ export class CallComponent implements OnInit {
   camOn = signal(true)
   deviceList: MediaDeviceInfo[] = []
 
+  isPopup: boolean = true
+
   constructor(
     private route: ActivatedRoute,
     private call: CallServiceService,
@@ -31,6 +33,8 @@ export class CallComponent implements OnInit {
   ) { }
 
   async ngOnInit(): Promise<void> {
+    this.isPopup = window.opener === null && window.name === 'video-call'
+
     this.roomId = this.route.snapshot.queryParamMap.get('roomId') || ''
     this.userId = this.route.snapshot.queryParamMap.get('userId') || ''
 
@@ -80,6 +84,12 @@ export class CallComponent implements OnInit {
 
   hangup() {
     this.call.hangup();
+    window.close()
+  }
+
+  openCall() {
+    const url = window.location.href
+    window.open(url, 'video-call', 'width=1000,height=700,noreferrer')
     window.close()
   }
 }

@@ -112,4 +112,6 @@ export class CallServiceService {
     this.roomId = ''
     this.isCaller = false
   }
+
+  public generateRoomId = (userId: string, toUserId: string): string => `${userId}_${toUserId}`
 }

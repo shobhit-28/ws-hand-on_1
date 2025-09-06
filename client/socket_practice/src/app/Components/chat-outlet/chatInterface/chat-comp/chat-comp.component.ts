@@ -9,6 +9,8 @@ import { CoreJsService } from '../../../../services/coreJs/core-js.service';
 import { deletedMessageRecieverType, Messages } from '../../../../DTO/message.dto';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AuthService } from '../../../../services/auth/auth.service';
+import { ChromeDataTransactionService } from '../../../../services/chromeDataTransaction/chrome-data-transaction.service';
+import { CallServiceService } from '../../../../services/call-service/call-service.service';
 
 @Component({
   selector: 'raj-chat-chat-comp',
@@ -31,7 +33,9 @@ export class ChatCompComponent implements OnInit {
   constructor(
     private chatService: ChatService,
     private coreJsService: CoreJsService,
-    private authService: AuthService
+    private authService: AuthService,
+    private data: ChromeDataTransactionService,
+    private callService: CallServiceService
   ) { }
 
   ngOnInit(): void {
@@ -81,5 +85,12 @@ export class ChatCompComponent implements OnInit {
 
   navigateToUserProfile() {
     this.coreJsService.navigateToProfilePage(this.chatService.getSelectedChat()._id)
+  }
+
+  startVideoCall() {
+    const userId: string = this.data.getCookies('user').id
+    const toUserId: string = this.user._id
+    const url = `${window.location.origin}/call?roomId=${this.callService.generateRoomId(userId, toUserId)}&userId=${userId}&to=${toUserId}`
+    window.open(url, 'video-call', 'width=1000,height=700,noreferrer')
   }
 }
