@@ -110,8 +110,6 @@ export const getPostOfFollowing = async (userId) => {
         follower: userId
     }).select('following')
 
-    console.log(followingList)
-
     const posts = await includePostOfUser(followingList)
 
     const postsWithData = await Promise.all(

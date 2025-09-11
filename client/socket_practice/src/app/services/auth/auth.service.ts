@@ -30,6 +30,7 @@ export class AuthService {
   private hangup$ = new Subject<string>()
   private busy$ = new Subject<void>()
   private participants$ = new Subject<number>()
+  private join$ = new Subject<string>()
 
   public onOffer$ = this.offer$.asObservable();
   public onAnswer$ = this.answer$.asObservable();
@@ -37,6 +38,7 @@ export class AuthService {
   public onHangup$ = this.hangup$.asObservable();
   public onBusy$ = this.busy$.asObservable();
   public onParticipants$ = this.participants$.asObservable();
+  public onJoin$ = this.join$.asObservable()
 
   constructor(
     private chromeDataTransactionService: ChromeDataTransactionService,
@@ -111,6 +113,24 @@ export class AuthService {
           this.busy$.next()
         })
 
+        this.socket.on('incoming-call', ({ from, roomId, callerName }) => {
+          console.log('Call hai ji', { from, roomId, callerName })
+          const accept = confirm(`Incoming call from ${callerName}. Accept?`);
+          console.log(accept)
+          if (accept) {
+            console.log(`accepted`)
+            const userId = this.data.getCookies('user')?.id;
+            const url = `${window.location.origin}/call?roomId=${roomId}&userId=${userId}&to=${from}`;
+            console.log(url)
+            window.open(url, 'video-call', 'width=1000,height=700,noreferrer')
+          }
+        });
+
+        this.socket.on('user-joined', ({ userId }) => {
+          console.log('👥 user-joined for', userId);
+          this.join$.next(userId)
+        });
+
         this.socket.on('disconnect', () => {
           console.log('❌ Disconnected from WebSocket');
         });
@@ -176,5 +196,9 @@ export class AuthService {
     if (isPlatformBrowser(this.platformId)) {
       this.socket?.emit('hangup', { roomId })
     }
+  }
+
+  initiateCall(toUserId: string, roomId: string, callerName: string) {
+    this.socket?.emit('initiate-call', { toUserId, roomId, callerName });
   }
 }

@@ -1,20 +1,110 @@
-@if (isPopup) {
-    <div class="wrap">
-        <div class="controls">
-            <button (click)="toggleMic()">{{ micOn() ? 'Mute' : 'Unmute' }}</button>
-            <button (click)="toggleCam()">{{ camOn() ? 'Camera Off' : 'Camera On' }}</button>
-            <button (click)="hangup()">Hang Up</button>
+<!-- @if (isPopup) { -->
+<div class="wrap">
+    <!-- Call Controls -->
+    <div class="controls">
+        <!-- Microphone Toggle -->
+        <button class="control-btn" (click)="toggleMic()" [class.active]="micOn()" title="Toggle Microphone">
+            <span class="icon">{{ micOn() ? '🎤' : '🔇' }}</span>
+            {{ micOn() ? 'Mute' : 'Unmute' }}
+        </button>
+
+        <!-- Camera Toggle -->
+        <button class="control-btn" (click)="toggleCam()" [class.active]="camOn()" title="Toggle Camera">
+            <span class="icon">{{ camOn() ? '📹' : '📵' }}</span>
+            {{ camOn() ? 'Turn Off' : 'Turn On' }}
+        </button>
+
+        <!-- Camera Switch (if multiple cameras available) -->
+        @if (deviceList.length > 1) {
+        <select class="camera-select" (change)="switchCamera($event)">
+            <option value="">Switch Camera</option>
+            <option *ngFor="let device of deviceList" [value]="device.deviceId">
+                {{ device.label || 'Camera ' + device.deviceId.substring(0, 8) }}
+            </option>
+        </select>
+        }
+
+        <!-- Hangup Button -->
+        <button class="hangup-btn" (click)="hangup()" title="End Call">
+            <span class="icon">📞</span>
+            Hang Up
+        </button>
+
+        <!-- Open in Popup (if not already in popup) -->
+        @if (!isPopup) {
+        <button class="popup-btn" (click)="openCall()" title="Open in popup window">
+            <span class="icon">🪟</span>
+            Popup
+        </button>
+        }
+    </div>
+
+    <!-- Video Container -->
+    <div class="videos">
+        <!-- Local Video (Your camera) -->
+        <div class="video-container local">
+            <video #localVideo autoplay muted playsinline class="video-element">
+            </video>
+            <div class="video-label">You</div>
+            <div class="video-controls">
+                <span class="status-indicator" [class.active]="micOn()">🎤</span>
+                <span class="status-indicator" [class.active]="camOn()">📹</span>
+            </div>
         </div>
-        <div class="videos">
-            <video #localVideo autoplay playsinline></video>
-            <video #remoteVideo autoplay playsinline></video>
+
+        <!-- Remote Video (Other person's camera) -->
+        <div class="video-container remote">
+            <video #remoteVideo autoplay playsinline class="video-element">
+            </video>
+            <div class="video-label">{{ user?.name || 'Remote User' }}</div>
+            <div class="connection-status">
+                <span class="status-dot" [class.connected]="connectionState() === 'connected'"></span>
+                {{ connectionState() }}
+            </div>
         </div>
     </div>
-} @else {
-    <div class="h-[50vh] w-full flex justify-center items-center">
-        <div class="flex justify-center items-center flex-col gap-4">
-            <p class="opacity-50">This call must open in a popup.</p>
-            <button class="border p-3 rounded-md" (click)="openCall()">Open Call</button>
+
+    <!-- Call Info -->
+    <div class="call-info">
+        <div class="room-info">
+            <span class="label">Room ID:</span>
+            <span class="value">{{ roomId }}</span>
+        </div>
+        <div class="participants-info">
+            <span class="label">Participants:</span>
+            <span class="value">{{ participants() }}</span>
         </div>
     </div>
-}
+
+    <!-- Loading/Connecting State -->
+    @if (connectionState() === 'connecting') {
+    <div class="loading-overlay">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <p>Connecting to call...</p>
+        </div>
+    </div>
+    }
+
+    <!-- Error State -->
+    @if (connectionState() === 'failed') {
+    <div class="error-overlay">
+        <div class="error-content">
+            <div class="error-icon">⚠️</div>
+            <h3>Connection Failed</h3>
+            <p>Unable to establish video call connection.</p>
+            <button class="retry-btn" (click)="retryConnection()">
+                Retry Connection
+            </button>
+        </div>
+    </div>
+    }
+</div>
+<!-- } @else {
+<div class="h-[50vh] w-full flex justify-center items-center">
+    <div class="flex justify-center items-center flex-col gap-4">
+        <p class="opacity-50">This call must open in a popup.</p>
+        <button class="border p-3 rounded-md" (click)="openCall()">Open Call</button>
+    </div>
+</div>
+} -->

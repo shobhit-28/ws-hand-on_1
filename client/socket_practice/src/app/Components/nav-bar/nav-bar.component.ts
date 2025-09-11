@@ -78,6 +78,7 @@ export class NavBarComponent implements OnInit {
   logout = () => {
     this.authService.setIsLoggedIn(false, true);
     this.clearSearchedUser()
+    this.notifications['isNotificationBarOpen'] = false
   }
 
   searchUserFormSubmit(chatForm: NgForm) {

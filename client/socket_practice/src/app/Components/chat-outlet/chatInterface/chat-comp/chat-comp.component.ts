@@ -90,6 +90,10 @@ export class ChatCompComponent implements OnInit {
   startVideoCall() {
     const userId: string = this.data.getCookies('user').id
     const toUserId: string = this.user._id
+    const roomId = this.callService.generateRoomId(userId, toUserId);
+
+    this.authService.initiateCall(toUserId, roomId, this.data.getCookies('user')?.name);
+
     const url = `${window.location.origin}/call?roomId=${this.callService.generateRoomId(userId, toUserId)}&userId=${userId}&to=${toUserId}`
     window.open(url, 'video-call', 'width=1000,height=700,noreferrer')
   }
