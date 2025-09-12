@@ -1,58 +1,60 @@
-<div class="page mt-[10.5vh]">
-  <div class="pr-2 bg-stone-900 fixed w-full opacity-95 top-0 h-[10.5vh] z-50 flex items-center box-shadow">
-    <div class="w-full flex justify-between items-center">
-      <a class="flex justify-center items-center cursor-pointer" routerLink="">
-        <div class="w-16">
-          <img src="assets/app/logo.svg" alt="" srcset="">
-        </div>
-        <div class="sm:hidden">
-          <p class="!m-0 !-ml-3 text-slate-50 text-xl cursive-font">R-Chat</p>
-        </div>
-      </a>
-      @if (isLoggedIn()) {
-      <div class="text-slate-50 flex gap-5">
-        <!-- <a mat-list-item routerLink="">Home</a>
-          <a mat-list-item routerLink="/auth">Auth</a> -->
-        <form (ngSubmit)="searchUserFormSubmit(chatForm)" #chatForm="ngForm"
-          class="search-bar h-[10vh] flex items-center max-w-xs w-full py-1 md:max-w-[10rem] md:h-[7vh]">
-          <div
-            class="flex items-center gap-2 bg-stone-800 rounded-full border border-stone-700 focus-within:ring-2 focus-within:ring-cyan-700 px-4 py-0 w-full h-full">
-            <input #commentInput
-              class="flex-1 min-w-0 bg-transparent outline-none text-sm md:text-xs text-slate-100 placeholder-slate-400 h-full" type="text"
-              name="user" placeholder="Search user..." [(ngModel)]="userName" autocomplete="off"
-              (ngModelChange)="onNameChange($event)" />
-            <button type="submit" class="text-slate-300 rounded-full flex items-center justify-center h-full px-1">
-              <mat-icon fontIcon="search" aria-hidden="true" class="md:text-base"></mat-icon>
-            </button>
+<div class="page" [ngClass]="{'mt-[10.5vh]': !isPopup()}">
+  @if (!isPopup()) {
+    <div class="pr-2 bg-stone-900 fixed w-full opacity-95 top-0 h-[10.5vh] z-50 flex items-center box-shadow">
+      <div class="w-full flex justify-between items-center">
+        <a class="flex justify-center items-center cursor-pointer" routerLink="">
+          <div class="w-16">
+            <img src="assets/app/logo.svg" alt="" srcset="">
           </div>
-        </form>
-        <button class="relative" (click)="toggleNotificationsBar()">
-          @if (isNotificationsNew()) {
-          <span class="absolute -right-1 block h-[.4rem] w-[.4rem] rounded-full bg-red-500 ring-1 ring-white"></span>
-          <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="notifications"></mat-icon>
-          } @else {
-          <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="notifications_none"></mat-icon>
-          }
-        </button>
-        <button (click)="logout()">
-          <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="logout"></mat-icon>
-        </button>
+          <div class="sm:hidden">
+            <p class="!m-0 !-ml-3 text-slate-50 text-xl cursive-font">R-Chat</p>
+          </div>
+        </a>
+        @if (isLoggedIn()) {
+        <div class="text-slate-50 flex gap-5">
+          <!-- <a mat-list-item routerLink="">Home</a>
+            <a mat-list-item routerLink="/auth">Auth</a> -->
+          <form (ngSubmit)="searchUserFormSubmit(chatForm)" #chatForm="ngForm"
+            class="search-bar h-[10vh] flex items-center max-w-xs w-full py-1 md:max-w-[10rem] md:h-[7vh]">
+            <div
+              class="flex items-center gap-2 bg-stone-800 rounded-full border border-stone-700 focus-within:ring-2 focus-within:ring-cyan-700 px-4 py-0 w-full h-full">
+              <input #commentInput
+                class="flex-1 min-w-0 bg-transparent outline-none text-sm md:text-xs text-slate-100 placeholder-slate-400 h-full" type="text"
+                name="user" placeholder="Search user..." [(ngModel)]="userName" autocomplete="off"
+                (ngModelChange)="onNameChange($event)" />
+              <button type="submit" class="text-slate-300 rounded-full flex items-center justify-center h-full px-1">
+                <mat-icon fontIcon="search" aria-hidden="true" class="md:text-base"></mat-icon>
+              </button>
+            </div>
+          </form>
+          <button class="relative" (click)="toggleNotificationsBar()">
+            @if (isNotificationsNew()) {
+            <span class="absolute -right-1 block h-[.4rem] w-[.4rem] rounded-full bg-red-500 ring-1 ring-white"></span>
+            <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="notifications"></mat-icon>
+            } @else {
+            <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="notifications_none"></mat-icon>
+            }
+          </button>
+          <button (click)="logout()">
+            <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="logout"></mat-icon>
+          </button>
+        </div>
+        @if (userName) {
+        <div class="fixed top-[11vh] right-8 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] rounded w-80 max-h-[50vh] z-50">
+          <raj-chat-single-searched-user [users]="searchedUser" [loading]="loading" [searchedText]="userName"
+            (navigationEmitter)="clearSearchedUser()"></raj-chat-single-searched-user>
+        </div>
+        }
+        }
+        @if (notifications.isNotificationBarOpen) {
+        <div class="fixed top-[11vh] right-8 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] rounded w-80 max-h-[50vh] z-50">
+          <raj-chat-notifications [notifications]="notifications.notifications"
+            (notificationCloserEmitter)="toggleNotificationsBar()"></raj-chat-notifications>
+        </div>
+        }
       </div>
-      @if (userName) {
-      <div class="fixed top-[11vh] right-8 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] rounded w-80 max-h-[50vh] z-50">
-        <raj-chat-single-searched-user [users]="searchedUser" [loading]="loading" [searchedText]="userName"
-          (navigationEmitter)="clearSearchedUser()"></raj-chat-single-searched-user>
-      </div>
-      }
-      }
-      @if (notifications.isNotificationBarOpen) {
-      <div class="fixed top-[11vh] right-8 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] rounded w-80 max-h-[50vh] z-50">
-        <raj-chat-notifications [notifications]="notifications.notifications"
-          (notificationCloserEmitter)="toggleNotificationsBar()"></raj-chat-notifications>
-      </div>
-      }
     </div>
-  </div>
+  }
   <router-outlet></router-outlet>
   <!-- <raj-chat-router-module></raj-chat-router-module> -->
 </div>

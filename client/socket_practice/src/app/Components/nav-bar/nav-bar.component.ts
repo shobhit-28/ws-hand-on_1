@@ -5,7 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule, RouterOutlet } from '@angular/router';
-import { AsyncPipe } from '@angular/common';
+import { AsyncPipe, NgClass } from '@angular/common';
 import { map, Observable, shareReplay } from 'rxjs';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { AppComponent } from "../../app.component";
@@ -39,8 +39,9 @@ import { NotificationsComponent } from "./notifications/notifications.component"
     // RouterModuleComponent
     ,
     SingleSearchedUserComponent,
-    NotificationsComponent
-  ],
+    NotificationsComponent,
+    NgClass
+],
   templateUrl: './nav-bar.component.html',
   styleUrl: './nav-bar.component.css'
 })
@@ -64,6 +65,8 @@ export class NavBarComponent implements OnInit {
   ngOnInit() {
     this.debouncedSearchUser = this.coreJsService.debounceFunc(this.searchUser.bind(this), 300);
   }
+
+  isPopup = () => window.opener !== null || window.name === 'video-call'
 
   userName: string | null = null
 
