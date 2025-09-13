@@ -1,11 +1,11 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, Inject, inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule, RouterOutlet } from '@angular/router';
-import { AsyncPipe, NgClass } from '@angular/common';
+import { AsyncPipe, isPlatformBrowser, NgClass } from '@angular/common';
 import { map, Observable, shareReplay } from 'rxjs';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { AppComponent } from "../../app.component";
@@ -41,7 +41,7 @@ import { NotificationsComponent } from "./notifications/notifications.component"
     SingleSearchedUserComponent,
     NotificationsComponent,
     NgClass
-],
+  ],
   templateUrl: './nav-bar.component.html',
   styleUrl: './nav-bar.component.css'
 })
@@ -51,6 +51,10 @@ export class NavBarComponent implements OnInit {
   private coreJsService = inject(CoreJsService)
   private usersService = inject(UsersService)
   private notificationService = inject(NotificationsService)
+
+  constructor(
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) { }
 
   searchedUser: SearchUserList = defaultSearchedUser
 
@@ -66,7 +70,7 @@ export class NavBarComponent implements OnInit {
     this.debouncedSearchUser = this.coreJsService.debounceFunc(this.searchUser.bind(this), 300);
   }
 
-  isPopup = () => window.opener !== null || window.name === 'video-call'
+  isPopup = () => isPlatformBrowser(this.platformId) ? window.opener !== null || window.name === 'video-call' : true
 
   userName: string | null = null
 

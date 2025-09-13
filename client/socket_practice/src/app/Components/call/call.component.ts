@@ -35,11 +35,19 @@ export class CallComponent implements OnInit, OnDestroy {
   ) { }
 
   async ngOnInit(): Promise<void> {
+    await this.initCallComponent()
+    window.addEventListener('beforeunload', this.beforeUnloadHandler);
+  }
+
+  ngOnDestroy(): void {
+    this.cleanup();
+    window.removeEventListener('beforeunload', this.beforeUnloadHandler);
+  }
+
+  async initCallComponent() {
     try {
-      // Check if this is a popup window
       this.isPopup = window.opener !== null || window.name === 'video-call';
 
-      // Get URL parameters
       this.roomId = this.route.snapshot.queryParamMap.get('roomId') || '';
       this.userId = this.route.snapshot.queryParamMap.get('userId') || '';
       this.toUserId = this.route.snapshot.queryParamMap.get('to') || '';
@@ -49,7 +57,6 @@ export class CallComponent implements OnInit, OnDestroy {
         await this.initializeCall();
         await this.loadAvailableDevices();
 
-        // Monitor connection state
         this.monitorConnectionState();
       } else {
         console.error('❌ Missing required parameters');
@@ -69,14 +76,18 @@ export class CallComponent implements OnInit, OnDestroy {
           );
         }
       })
+      this.authService.onHangup$.subscribe(() => {
+        console.log('call ended');
+        this.closeWindow()
+      })
     } catch (error) {
       console.error('❌ Error initializing call component:', error);
     }
   }
 
-  ngOnDestroy(): void {
-    this.cleanup();
-  }
+  beforeUnloadHandler = () => {
+    this.hangup();
+  };
 
   private async initializeCall(): Promise<void> {
     try {
@@ -229,7 +240,7 @@ export class CallComponent implements OnInit, OnDestroy {
     try {
       console.log('🔄 Retrying connection...');
       this.connectionState.set('connecting');
-      this.call.hangup();
+      this.call.hangup(this.toUserId);
       setTimeout(async () => {
         await this.initializeCall();
       }, 2000);
@@ -242,7 +253,7 @@ export class CallComponent implements OnInit, OnDestroy {
 
   hangup(): void {
     try {
-      this.call.hangup();
+      this.call.hangup(this.toUserId);
       this.cleanup();
       this.closeWindow();
     } catch (error) {
@@ -261,24 +272,26 @@ export class CallComponent implements OnInit, OnDestroy {
   }
 
   private cleanup(): void {
-    try {
-      // Stop all media tracks
-      const localVideo = this.localVideoRef?.nativeElement;
-      if (localVideo && localVideo.srcObject) {
-        const stream = localVideo.srcObject as MediaStream;
-        stream.getTracks().forEach(track => track.stop());
-        localVideo.srcObject = null;
-      }
+    setTimeout(() => {
+      try {
+        // Stop all media tracks
+        const localVideo = this.localVideoRef?.nativeElement;
+        if (localVideo && localVideo.srcObject) {
+          const stream = localVideo.srcObject as MediaStream;
+          stream.getTracks().forEach(track => track.stop());
+          localVideo.srcObject = null;
+        }
 
-      const remoteVideo = this.remoteVideoRef?.nativeElement;
-      if (remoteVideo && remoteVideo.srcObject) {
-        remoteVideo.srcObject = null;
-      }
+        const remoteVideo = this.remoteVideoRef?.nativeElement;
+        if (remoteVideo && remoteVideo.srcObject) {
+          remoteVideo.srcObject = null;
+        }
 
-      console.log('🧹 Cleaned up call component');
-    } catch (error) {
-      console.error('❌ Error during cleanup:', error);
-    }
+        console.log('🧹 Cleaned up call component');
+      } catch (error) {
+        console.error('❌ Error during cleanup:', error);
+      }
+    }, 100)
   }
 
   private closeWindow(): void {

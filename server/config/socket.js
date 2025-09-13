@@ -28,13 +28,6 @@ export const initSocket = async (server) => {
                     console.log(`👥 User ${userId} joined call room ${roomId}`);
                     socket.to(roomId).emit('user-joined', { userId });
                 }
-                if (data.roomId && data.userId) {
-                    console.log('call offer kro')
-                    socket.join(roomId);
-                    socket.data.userId = userId;
-                    socket.data.roomId = roomId;
-                    socket.to(roomId).emit('user-joined', { userId });
-                }
             })
 
             socket.on('call:offer', ({ roomId, sdp }) => {
@@ -61,9 +54,9 @@ export const initSocket = async (server) => {
                 });
             });
 
-            socket.on('hangup', ({ roomId }) => {
-                console.log(`🛑 Hangup from ${socket.data.userId} in room ${roomId}`);
-                socket.to(roomId).emit('hangup', {
+            socket.on('hangup', ({ toUserId }) => {
+                console.log(`🛑 Hangup from ${socket.data.userId}`);
+                socket.to(toUserId).emit('hangup', {
                     from: socket.data.userId
                 });
                 if (socket.data.roomId) {

@@ -70,10 +70,15 @@ export class CallServiceService {
       };
 
       this.pc.ontrack = e => {
-        console.log('📥 Received remote track');
-        e.streams[0].getTracks().forEach(t => {
-          this.remoteStream?.addTrack(t);
-        });
+        console.log('[Caller/Joiner] 📥 Received remote track:', e.track, e.streams);
+        if (this.remoteStream && e.streams[0]) {
+          e.streams[0].getTracks().forEach(t => {
+            this.remoteStream?.addTrack(t);
+            console.log('[Caller/Joiner] ➕ Added remote track:', t.kind);
+          });
+        }
+        // Additionally, for debugging:
+        console.log('[Caller/Joiner] remoteVideo.srcObject:', remoteVideo.srcObject);
       };
 
       this.authService.onOffer$.subscribe(async ({ from, sdp }) => {
@@ -217,10 +222,10 @@ export class CallServiceService {
     }
   }
 
-  hangup() {
+  hangup(toUserId: string) {
     try {
       if (!this.roomId) return;
-      this.authService.sendHangup(this.roomId);
+      this.authService.sendHangup(toUserId);
       console.log('📴 Sent hangup');
     } catch (error) {
       console.error('❌ Error hanging up:', error);

@@ -192,9 +192,9 @@ export class AuthService {
     }
   }
 
-  sendHangup(roomId: string) {
+  sendHangup(toUserId: string) {
     if (isPlatformBrowser(this.platformId)) {
-      this.socket?.emit('hangup', { roomId })
+      this.socket?.emit('hangup', { toUserId })
     }
   }
 
