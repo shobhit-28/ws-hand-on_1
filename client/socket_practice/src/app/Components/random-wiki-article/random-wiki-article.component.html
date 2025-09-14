@@ -1,0 +1,25 @@
+<div class="h-full flex flex-col p-4 gap-3">
+    <p class="text-2xl font-medium text-stone-800 cursive-font">📚 Random Wiki</p>
+
+    <hr>
+
+    <div class="flex-1 overflow-y-auto text-sm text-stone-700 leading-relaxed">
+        @if (!loading) {
+        <div class="flex flex-col gap-2">
+            <p class="text-md font-medium text-xl italic">{{ article?.title }}</p>
+            <p class="">{{ article?.extract }}</p>
+            <a [href]="article?.content_urls.desktop.page" target="_blank"
+                class="text-blue-600 hover:underline text-sm">
+                Read more →
+            </a>
+        </div>
+        } @else {
+        <raj-chat-loader></raj-chat-loader> 
+        }
+    </div>
+
+    <button (click)="loadArticle()"
+        class="mt-2 px-3 py-2 bg-stone-800 text-white text-sm rounded-xl hover:bg-stone-700 transition">
+        🔄 Shuffle
+    </button>
+</div>
