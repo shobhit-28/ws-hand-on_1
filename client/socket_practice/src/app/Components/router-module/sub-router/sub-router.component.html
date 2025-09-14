@@ -1,6 +1,6 @@
-<div class="page w-full flex flex-col justify-between items-end">
+<div class="page w-full flex flex-col justify-between items-end md:fixed md:bottom-0 md:flex-row md:z-30 md:border-t md:bg-slate-200/90 md:h-20 md:items-center md:px-4">
   @if (routes.length) {
-  <div class="flex flex-col gap-8 py-8 w-2/4 xl:w-3/4">
+  <div class="flex flex-col gap-8 py-8 w-2/4 xl:w-3/4 md:flex-row">
     @for (item of routes; track $index) {
     <a [routerLink]="[{ outlets: { sideBar: item.path } }]" class="flex items-center gap-4 text-xl cursive-font">
       <mat-icon aria-hidden="false" [fontIcon]="item.icon"></mat-icon>
@@ -10,7 +10,7 @@
   </div>
   }
   <button
-    class="flex w-2/4 xl:w-3/4 mx-4 border border-dashed border-black rounded-lg text-xl cursive-font hover:bg-slate-200/90"
+    class="flex w-2/4 xl:w-3/4 mx-4 border border-dashed border-black rounded-lg text-xl cursive-font hover:bg-slate-200/90 md:hover:bg-transparent"
     (click)="uploadImageForNewPost()">
     <div class="py-4 w-full flex gap-6 justify-center items-center">
       <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="add"
@@ -21,8 +21,8 @@
     </div>
   </button>
   <div class="w-2/4 xl:w-3/4">
-    <div class="py-6 pr-2">
-      <a class="p-2 flex gap-2 hover:bg-slate-200/90 rounded-md cursor-pointer duration-700"
+    <div class="py-6 pr-2 md:flex md:justify-end">
+      <a class="p-2 flex gap-2 hover:bg-slate-200/90 md:hover:bg-transparent rounded-md cursor-pointer duration-700"
         [routerLink]="[{ outlets: { sideBar: ['profile', getProfileId()] } }]">
         <div class="flex items-center justify-center border-0 rounded-full h-[3rem] w-[3rem] overflow-hidden">
           <img class="w-full h-full object-cover" [src]="getImgOfUser()" alt="" srcset="">
