@@ -1,9 +1,9 @@
 @if (usersList.length) {
 <div class="sub-page flex">
-  <div class="basis-[30%] border-r">
+  <div class="basis-[30%] md:basis-[15%] border-r">
     <raj-chat-connections-list [usersList]="usersList"></raj-chat-connections-list>
   </div>
-  <div class="basis-[70%]">
+  <div class="basis-[70%] md:basis-[75%]">
     @if (getSelectedUser()._id === '') {
       <raj-chat-empty-chat></raj-chat-empty-chat>
     } @else {

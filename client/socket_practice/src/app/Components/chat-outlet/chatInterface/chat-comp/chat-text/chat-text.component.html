@@ -7,7 +7,7 @@
     }" class="max-w-[60%] rounded-lg p-4 relative inline-block group 
            break-words overflow-hidden">
       <button (click)="deleteMessage(chat._id, isRecieved(chat))"
-        class="absolute top-2 right-2 text-red-600 hover:text-red-600 hidden group-hover:block">
+        class="absolute top-2 right-2 text-red-600 hover:text-red-600 hidden group-hover:block md:block">
         <mat-icon class="text-[1.2rem]" aria-hidden="false" aria-label="Example home icon" fontIcon="delete"></mat-icon>
       </button>
       <div class="text-sm break-all whitespace-pre-wrap">{{ chat.content }}</div>
